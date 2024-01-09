@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    // Recommended.
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "customConditions": ["module"],
+    "noEmit": true,
+    "allowArbitraryExtensions": true,
+    "allowImportingTsExtensions": true,
+    "allowSyntheticDefaultImports": true,
+    "verbatimModuleSyntax": true,
+    // Configs.
+    "allowJs": true,
+    "lib": [
+      "dom",
+      "esnext"
+    ],
+    "outDir": "dist",
+    "target": "es5",
+    "types": [
+      "./node_modules/@types/jquery/index.d.ts",
+      "./node_modules/@types/chosen-js/index.d.ts",
+      "./node_modules/@types/select2/index.d.ts",
+      "./node_modules/@types/jqueryui/index.d.ts",
+      "./node_modules/@types/jquery.ui.datetimepicker/index.d.ts",
+      "./node_modules/@types/eonasdan-bootstrap-datetimepicker/index.d.ts",
+      "./node_modules/moment/moment.d.ts",
+      "./src/ts/datatables-net.d.ts",
+      "./src/ts/index.d.ts"
+    ]
+  },
+  "include": [
+    "./src/jquery.dataTables.yadcf.css",
+    "./src/ts/jquery.dataTables.yadcf.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "./jquery.dataTables.yadcf.css",
+    "./jquery.dataTables.yadcf.js"
+  ]
+}
