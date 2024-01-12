@@ -1,1 +1,6 @@
+# Folders
 node_modules/
+
+# Files
+.DS_Store
+bun.lockb

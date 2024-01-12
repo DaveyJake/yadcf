@@ -2,8 +2,8 @@
 // Project: yadcf
 // Definitions by: Davey Jacobson <https://daveyjake.dev>
 
-import DataTable, { type Api, type ApiStatic, type ColumnIdx as ColumnNumber, type ColumnSelector as ColSelector, type Config } from 'datatables.net';
-import { DataTables, type DataTablesStaticExt, type DT, type DTSettings, type SettingsDT } from './datatables-net.d';
+import DataTable, { type Api, type ColumnIdx as ColumnNumber, type ColumnSelector as ColSelector, type Config } from 'datatables.net';
+import { DataTables, type DT } from './datatables-net.d';
 
 //
 // Column Parameters
@@ -880,6 +880,40 @@ type APMT               = AllParameters<FilterTypeMulti>;
 type FDL                = APFT['filter_default_label'];
 type FMM                = APFT['filter_match_mode'];
 type JQueryCallbackFunc = ( $filterSelector: JQuery<HTMLElement> ) => any;
+
+declare global {
+  interface JQuery<TElement = HTMLElement> {
+    chosen( select_type_options: Chosen.Options ): any;
+    data( arg: string ): number | string;
+    find( arg: string ): JQuery<HTMLElement>;
+    hasClass( arg: string ): boolean;
+    next(): JQuery<HTMLElement>;
+    off( events: string, handler: any ): any;
+    on( events: string, handler: (( e: JQuery.Event ) => any) ): any;
+    on( events: string, selector: string, handler: (( e: JQuery.Event ) => any) ): any;
+    parent(): JQuery<HTMLElement>;
+    prev(): JQuery<HTMLElement>;
+    prop( property: string, value?: any ): any;
+    slider( target: string, index: number, value: any ): any;
+    trigger( event: string ): any;
+    val( val?: any ): any;
+  }
+
+  namespace JQueryUI {
+    interface AutocompleteEvent {
+      (event: JQuery.Event, ui: AutocompleteUIParams): void;
+    }
+  }
+}
+
+interface ColumnNumberObject {
+  column_number_str: string;
+  column_number: ColumnIdx | Array<ColumnIdx | string>;
+}
+
+type ArrayObjects   = Array<{ [ key: string ]: any }>;
+type ColumnObj      = Partial<APFT>;
+declare type ConfigSettings = Api<any> & Config & DataTables.JQueryDataTables & DataTables.SettingsLegacy & DT;
 
 declare interface YADCF {
   /**

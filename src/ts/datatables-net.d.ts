@@ -8,11 +8,6 @@
 //   Armin Sander <https://github.com/pragmatrix>
 //   Craig Boland <https://github.com/CNBoland>
 
-/// <reference path="../../node_modules/datatables.net/types/types.d.ts" />
-/// <reference path="../../node_modules/datatables.net-editor/types/types.d.ts" />
-/// <reference path="../../node_modules/datatables.net-colreorder/types/types.d.ts" />
-/// <reference path="../../node_modules/datatables.net-fixedheader/types/types.d.ts" />
-
 import DataTable, { type Api, type ApiStatic, type Config as Config2, type DataTablesStaticExt as DTStaticExt, type DomSelector } from 'datatables.net';
 
 declare type JQueryDataTableJq = DataTables.JQueryDataTableJq;

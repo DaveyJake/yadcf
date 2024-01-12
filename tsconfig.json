@@ -19,6 +19,10 @@
     "outDir": "dist",
     "target": "es5",
     "types": [
+      "./node_modules/datatables.net/types/types.d.ts",
+      "./node_modules/datatables.net-editor/types/types.d.ts",
+      "./node_modules/datatables.net-colreorder/types/types.d.ts",
+      "./node_modules/datatables.net-fixedheader/types/types.d.ts",
       "./node_modules/@types/jquery/index.d.ts",
       "./node_modules/@types/chosen-js/index.d.ts",
       "./node_modules/@types/select2/index.d.ts",
