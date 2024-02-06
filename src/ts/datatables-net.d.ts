@@ -35,8 +35,6 @@ declare namespace DataTables {
          * $( selector ).dataTable().api();
          */
         api(): Api;
-
-        /** @deprecated Since 1.10. Use `settings`. */
         fnSettings(): Config;
     }
 

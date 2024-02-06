@@ -667,56 +667,56 @@ class Yadcf {
    * @returns yadcf
    */
   public static instance(): Record<keyof YADCF, YADCF[ keyof YADCF ]> {
-    if ( this._instance === null ) {
-      this._instance = {
-        init: this.init,
-        autocompleteKeyUP: this.autocompleteKeyUP,
-        dateKeyUP: this.dateKeyUP,
-        dateSelectSingle: this.dateSelectSingle,
-        doFilter: this.doFilter,
-        doFilterAutocomplete: this.doFilterAutocomplete,
-        doFilterCustomDateFunc: this.doFilterCustomDateFunc,
-        doFilterMultiSelect: this.doFilterMultiSelect,
-        doFilterMultiTables: this.doFilterMultiTables,
-        doFilterMultiTablesMultiSelect: this.doFilterMultiTablesMultiSelect,
-        eventTargetFixUp: this.eventTargetFixUp,
-        exFilterColumn: this.exFilterColumn,
-        exFilterExternallyTriggered: this.exFilterExternallyTriggered,
-        exGetColumnFilterVal: this.exGetColumnFilterVal,
-        exRefreshColumnFilterWithDataProp: this.exRefreshColumnFilterWithDataProp,
-        exResetAllFilters: this.exResetAllFilters,
-        exResetFilters: this.exResetFilters,
-        generateTableSelectorJQFriendlyNew: this.generateTableSelectorJQFriendlyNew,
-        generateTableSelectorJQFriendly2: this.generateTableSelectorJQFriendly2,
-        getOptions: this.getOptions,
-        initDefaults: this.initDefaults,
-        initMultipleColumns: this.initMultipleColumns,
-        initMultipleTables: this.initMultipleTables,
-        initOnDtXhrComplete: this.initOnDtXhrComplete,
-        initSelectPluginCustomTriggers: this.initSelectPluginCustomTriggers,
-        nullChecked: this.nullChecked,
-        preventDefaultForEnter: this.preventDefaultForEnter,
-        rangeClear: this.rangeClear,
-        rangeDateKeyUP: this.rangeDateKeyUP,
-        rangeNumberKeyUP: this.rangeNumberKeyUP,
-        rangeNumberSliderClear: this.rangeNumberSliderClear,
-        stopPropagation: this.stopPropagation,
-        textKeyUP: this.textKeyUP,
-        textKeyUpMultiTables: this.textKeyUpMultiTables,
+    if ( Yadcf._instance === null ) {
+      Yadcf._instance = {
+        init: Yadcf.init,
+        autocompleteKeyUP: Yadcf.autocompleteKeyUP,
+        dateKeyUP: Yadcf.dateKeyUP,
+        dateSelectSingle: Yadcf.dateSelectSingle,
+        doFilter: Yadcf.doFilter,
+        doFilterAutocomplete: Yadcf.doFilterAutocomplete,
+        doFilterCustomDateFunc: Yadcf.doFilterCustomDateFunc,
+        doFilterMultiSelect: Yadcf.doFilterMultiSelect,
+        doFilterMultiTables: Yadcf.doFilterMultiTables,
+        doFilterMultiTablesMultiSelect: Yadcf.doFilterMultiTablesMultiSelect,
+        eventTargetFixUp: Yadcf.eventTargetFixUp,
+        exFilterColumn: Yadcf.exFilterColumn,
+        exFilterExternallyTriggered: Yadcf.exFilterExternallyTriggered,
+        exGetColumnFilterVal: Yadcf.exGetColumnFilterVal,
+        exRefreshColumnFilterWithDataProp: Yadcf.exRefreshColumnFilterWithDataProp,
+        exResetAllFilters: Yadcf.exResetAllFilters,
+        exResetFilters: Yadcf.exResetFilters,
+        generateTableSelectorJQFriendlyNew: Yadcf.generateTableSelectorJQFriendlyNew,
+        generateTableSelectorJQFriendly2: Yadcf.generateTableSelectorJQFriendly2,
+        getOptions: Yadcf.getOptions,
+        initDefaults: Yadcf.initDefaults,
+        initMultipleColumns: Yadcf.initMultipleColumns,
+        initMultipleTables: Yadcf.initMultipleTables,
+        initOnDtXhrComplete: Yadcf.initOnDtXhrComplete,
+        initSelectPluginCustomTriggers: Yadcf.initSelectPluginCustomTriggers,
+        nullChecked: Yadcf.nullChecked,
+        preventDefaultForEnter: Yadcf.preventDefaultForEnter,
+        rangeClear: Yadcf.rangeClear,
+        rangeDateKeyUP: Yadcf.rangeDateKeyUP,
+        rangeNumberKeyUP: Yadcf.rangeNumberKeyUP,
+        rangeNumberSliderClear: Yadcf.rangeNumberSliderClear,
+        stopPropagation: Yadcf.stopPropagation,
+        textKeyUP: Yadcf.textKeyUP,
+        textKeyUpMultiTables: Yadcf.textKeyUpMultiTables,
       };
     }
 
-    return this._instance;
+    return Yadcf._instance;
   }
 
   public static init( oTable: ConfigSettings, options_arg: Array<APFT | APMT>, params: any ): void {
-    let instance = oTable.fnSettings()[0].oInstance,
+    console.log( oTable.oInstance );
+
+    let instance = oTable.oInstance,
         i: number = 0,
-        tableSelector: string = '#' + (oTable.table().node() as Element).id,
+        tableSelector: string = '#' + instance[0].id,
         selector: string,
         tmpParams: Record<string, any> | string;
-
-    this.extendJQuery();
 
     // In case that instance.selector will be undefined (jQuery 3).
     if ( !instance.selector ) {
@@ -742,8 +742,8 @@ class Yadcf {
     $( document ).data( instance.selector + '_filters_position', params.filters_position );
 
     if ( $( instance.selector ).length === 1 ) {
-      this.setOptions( instance.selector, options_arg, params, oTable );
-      this.initAndBindTable( instance, instance.selector, 0, oTable );
+      Yadcf.setOptions( instance.selector, options_arg, params, oTable );
+      Yadcf.initAndBindTable( instance, instance.selector, 0, oTable );
     } else {
       for ( i; i < $( instance.selector ).length; i++ ) {
         $.fn.dataTable.ext.iApiIndex = i;
@@ -763,11 +763,11 @@ class Yadcf {
   }
 
   public static initDefaults( params: DefaultOptions ): DefaultOptions {
-    return $.extend( true, this.default_options, params );
+    return $.extend( true, Yadcf.default_options, params );
   }
 
   public static getOptions( selector: any ): AllParameters {
-    return this.options[ selector ];
+    return Yadcf.options[ selector ];
   }
 
   public static eventTargetFixUp( pEvent: any ): any {
@@ -791,34 +791,34 @@ class Yadcf {
       return '';
     }
 
-    tmpStr = this.replaceAll( tmpStr, '.', '-' );
-    tmpStr = this.replaceAll( tmpStr, ' ', '' );
+    tmpStr = Yadcf.replaceAll( tmpStr, '.', '-' );
+    tmpStr = Yadcf.replaceAll( tmpStr, ' ', '' );
 
     return tmpStr.replace( ':', '-' ).replace( '(', '' ).replace( ')', '' ).replace( '#', '-' );
   }
 
   public static generateTableSelectorJQFriendlyNew( tmpStr: string ): string {
-    tmpStr = this.replaceAll( tmpStr, ':', '-' );
-    tmpStr = this.replaceAll( tmpStr, '(', '' );
-    tmpStr = this.replaceAll( tmpStr, ')', '' );
-    tmpStr = this.replaceAll( tmpStr, ',', '' );
-    tmpStr = this.replaceAll( tmpStr, '.', '-' );
-    tmpStr = this.replaceAll( tmpStr, '#', '-' );
-    tmpStr = this.replaceAll( tmpStr, ' ', '' );
+    tmpStr = Yadcf.replaceAll( tmpStr, ':', '-' );
+    tmpStr = Yadcf.replaceAll( tmpStr, '(', '' );
+    tmpStr = Yadcf.replaceAll( tmpStr, ')', '' );
+    tmpStr = Yadcf.replaceAll( tmpStr, ',', '' );
+    tmpStr = Yadcf.replaceAll( tmpStr, '.', '-' );
+    tmpStr = Yadcf.replaceAll( tmpStr, '#', '-' );
+    tmpStr = Yadcf.replaceAll( tmpStr, ' ', '' );
 
     return tmpStr;
   }
 
   public static initOnDtXhrComplete( initFunc: () => any ): void {
-    this.dTXhrComplete = initFunc;
+    Yadcf.dTXhrComplete = initFunc;
   }
 
   public static doFilterCustomDateFunc( arg: 'clear' | { value?: any }, table_selector_jq_friendly: string, column_number: ColumnIdx | string ): void {
-    let oTable    = this.oTables[ table_selector_jq_friendly ],
-        columnObj = this.getOptions( oTable.selector )[ column_number ],
+    let oTable    = Yadcf.oTables[ table_selector_jq_friendly ],
+        columnObj = Yadcf.getOptions( oTable.selector )[ column_number ],
         yadcfState;
 
-    if ( arg === 'clear' && this.exGetColumnFilterVal( oTable, column_number ) === '' ) {
+    if ( arg === 'clear' && Yadcf.exGetColumnFilterVal( oTable, column_number ) === '' ) {
       return;
     }
 
@@ -829,7 +829,7 @@ class Yadcf {
       $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ).val( '-1' ).trigger( 'focus' );
       $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ).removeClass( 'inuse' );
 
-      this.refreshSelectPlugin( columnObj, $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ), '-1' );
+      Yadcf.refreshSelectPlugin( columnObj, $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ), '-1' );
     }
 
     if ( ! oTable.fnSettings().oLoadedState ) {
@@ -854,36 +854,36 @@ class Yadcf {
   }
 
   public static doFilter( arg: ('clear' | 'exclude') | { value: any }, table_selector_jq_friendly: string, column_number: ColumnIdx, filter_match_mode?: FMM ): void {
-    $.fn.dataTable.ext.iApiIndex = this.oTablesIndex[ table_selector_jq_friendly ];
+    $.fn.dataTable.ext.iApiIndex = Yadcf.oTablesIndex[ table_selector_jq_friendly ];
 
-    let oTable          = this.oTables[ table_selector_jq_friendly ],
+    let oTable          = Yadcf.oTables[ table_selector_jq_friendly ],
         exclude_checked = false,
-        settingsDt      = this.getSettingsObjFromTable( oTable ),
+        settingsDt      = Yadcf.getSettingsObjFromTable( oTable ),
         selected_value,
         selector,
         data_value,
         column_number_filter,
         columnObj;
 
-    column_number_filter = this.calcColumnNumberFilter( settingsDt, column_number, table_selector_jq_friendly );
+    column_number_filter = Yadcf.calcColumnNumberFilter( settingsDt, column_number, table_selector_jq_friendly );
 
-    columnObj = this.getOptions( oTable.selector )[ column_number ];
+    columnObj = Yadcf.getOptions( oTable.selector )[ column_number ];
 
     if ( columnObj.exclude ) {
       exclude_checked = $( `#yadcf-filter-wrapper-${table_selector_jq_friendly}-${column_number}` ).find( '.yadcf-exclude-wrapper :checkbox' ).prop( 'checked' );
     }
 
     if ( arg === 'clear' ) {
-      this.clearStateSave( oTable, column_number, table_selector_jq_friendly );
+      Yadcf.clearStateSave( oTable, column_number, table_selector_jq_friendly );
 
       if ( exclude_checked ) {
         const elId = `#yadcf-filter-wrapper-${table_selector_jq_friendly}-${column_number}`;
 
-        this.resetExcludeRegexCheckboxes( $( `#yadcf-filter-wrapper-${table_selector_jq_friendly}-${column_number}` ) );
-        this.clearStateSave( oTable, column_number, table_selector_jq_friendly );
+        Yadcf.resetExcludeRegexCheckboxes( $( `#yadcf-filter-wrapper-${table_selector_jq_friendly}-${column_number}` ) );
+        Yadcf.clearStateSave( oTable, column_number, table_selector_jq_friendly );
       }
 
-      if ( this.exGetColumnFilterVal( oTable, column_number ) === '' ) {
+      if ( Yadcf.exGetColumnFilterVal( oTable, column_number ) === '' ) {
         return;
       }
 
@@ -893,9 +893,9 @@ class Yadcf {
 
       oTable.fnFilter( '', column_number_filter );
 
-      this.resetIApiIndex();
+      Yadcf.resetIApiIndex();
 
-      this.refreshSelectPlugin( columnObj, $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ), '-1' );
+      Yadcf.refreshSelectPlugin( columnObj, $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ), '-1' );
 
       return;
     }
@@ -917,20 +917,20 @@ class Yadcf {
         oTable.fnDraw();
       }
 
-      this.yadcfMatchFilter( oTable, selected_value, filter_match_mode, column_number_filter, exclude_checked, column_number );
+      Yadcf.yadcfMatchFilter( oTable, selected_value, filter_match_mode, column_number_filter, exclude_checked, column_number );
     } else if ( selected_value === columnObj.select_null_option ) {
       if ( oTable.fnSettings().oFeatures.bServerSide === false ) {
         oTable.fnFilter( '', column_number_filter );
 
-        this.addNullFilterCapability( table_selector_jq_friendly, column_number, true );
+        Yadcf.addNullFilterCapability( table_selector_jq_friendly, column_number, true );
 
         oTable.fnDraw();
       } else {
-        this.yadcfMatchFilter( oTable, selected_value, filter_match_mode, column_number_filter, exclude_checked, column_number );
+        Yadcf.yadcfMatchFilter( oTable, selected_value, filter_match_mode, column_number_filter, exclude_checked, column_number );
       }
 
       if ( oTable.fnSettings().oFeatures.bStateSave === true ) {
-        this.stateSaveNullSelect( oTable, columnObj, table_selector_jq_friendly, column_number, filter_match_mode, exclude_checked );
+        Yadcf.stateSaveNullSelect( oTable, columnObj, table_selector_jq_friendly, column_number, filter_match_mode, exclude_checked );
 
         oTable.fnSettings().oApi._fnSaveState( oTable.fnSettings() );
       }
@@ -940,21 +940,21 @@ class Yadcf {
       oTable.fnFilter( '', column_number_filter );
     }
 
-    this.resetIApiIndex();
+    Yadcf.resetIApiIndex();
   }
 
   public static doFilterMultiSelect( arg: Array<any>, table_selector_jq_friendly: string, column_number: ColumnIdx | string, filter_match_mode: FMM ): void {
-    $.fn.dataTable.ext.iApiIndex = this.oTablesIndex[ table_selector_jq_friendly ];
+    $.fn.dataTable.ext.iApiIndex = Yadcf.oTablesIndex[ table_selector_jq_friendly ];
 
-    let oTable = this.oTables[ table_selector_jq_friendly ],
+    let oTable = Yadcf.oTables[ table_selector_jq_friendly ],
         selected_values = $( arg ).val(),
         selected_values_trimmed = [],
         i,
         stringForSearch,
         column_number_filter,
-        settingsDt = this.getSettingsObjFromTable( oTable );
+        settingsDt = Yadcf.getSettingsObjFromTable( oTable );
 
-    column_number_filter = this.calcColumnNumberFilter( settingsDt, column_number, table_selector_jq_friendly );
+    column_number_filter = Yadcf.calcColumnNumberFilter( settingsDt, column_number, table_selector_jq_friendly );
 
     $( document ).data( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}_val`, selected_values );
 
@@ -998,20 +998,20 @@ class Yadcf {
       oTable.fnFilter( '', column_number_filter );
     }
 
-    this.resetIApiIndex();
+    Yadcf.resetIApiIndex();
   }
 
   public static doFilterAutocomplete( arg: 'clear' | { value: any }, table_selector_jq_friendly: string, column_number: ColumnIdx | string, filter_match_mode?: FMM ): void {
-    $.fn.dataTable.ext.iApiIndex = this.oTablesIndex[ table_selector_jq_friendly ];
+    $.fn.dataTable.ext.iApiIndex = Yadcf.oTablesIndex[ table_selector_jq_friendly ];
 
-    let oTable: ConfigSettings     = this.oTables[ table_selector_jq_friendly ],
-        settingsDt: ConfigSettings | SettingsDT | DTSettings = this.getSettingsObjFromTable( oTable ),
+    let oTable: ConfigSettings     = Yadcf.oTables[ table_selector_jq_friendly ],
+        settingsDt: ConfigSettings | SettingsDT | DTSettings = Yadcf.getSettingsObjFromTable( oTable ),
         column_number_filter: number | string;
 
-    column_number_filter = this.calcColumnNumberFilter( settingsDt, column_number, table_selector_jq_friendly );
+    column_number_filter = Yadcf.calcColumnNumberFilter( settingsDt, column_number, table_selector_jq_friendly );
 
     if ( arg === 'clear' ) {
-      if ( this.exGetColumnFilterVal( oTable, column_number ) === '' ) {
+      if ( Yadcf.exGetColumnFilterVal( oTable, column_number ) === '' ) {
         return;
       }
 
@@ -1022,7 +1022,7 @@ class Yadcf {
 
       oTable.fnFilter( '', column_number_filter );
 
-      this.resetIApiIndex();
+      Yadcf.resetIApiIndex();
 
       return;
     }
@@ -1031,9 +1031,9 @@ class Yadcf {
 
     $( document ).data( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}_val`, arg.value );
 
-    this.yadcfMatchFilter( oTable, arg.value, filter_match_mode, column_number_filter, false, column_number );
+    Yadcf.yadcfMatchFilter( oTable, arg.value, filter_match_mode, column_number_filter, false, column_number );
 
-    this.resetIApiIndex();
+    Yadcf.resetIApiIndex();
   }
 
   public static dateSelectSingle( pDate: any, pEvent?: JQuery.TriggeredEvent, clear?: 'clear' | 0 | 1 ): void {
@@ -1069,11 +1069,11 @@ class Yadcf {
 
     column_number = column_number.substring( dashIndex + 1 );
 
-    $.fn.dataTable.ext.iApiIndex = this.oTablesIndex[ table_selector_jq_friendly ];
+    $.fn.dataTable.ext.iApiIndex = Yadcf.oTablesIndex[ table_selector_jq_friendly ];
 
-    oTable     = this.oTables[ table_selector_jq_friendly ];
-    settingsDt = this.getSettingsObjFromTable( oTable );
-    columnObj  = this.getOptions( oTable.selector )[ column_number ];
+    oTable     = Yadcf.oTables[ table_selector_jq_friendly ];
+    settingsDt = Yadcf.getSettingsObjFromTable( oTable );
+    columnObj  = Yadcf.getOptions( oTable.selector )[ column_number ];
 
     if ( pDate.type === 'dp' ) {
       if ( moment( $( event ).val(), columnObj.date_format ).isValid() ) {
@@ -1089,19 +1089,19 @@ class Yadcf {
       }
     }
 
-    column_number_filter = this.calcColumnNumberFilter( settingsDt, column_number, table_selector_jq_friendly );
+    column_number_filter = Yadcf.calcColumnNumberFilter( settingsDt, column_number, table_selector_jq_friendly );
 
     if ( clear === undefined ) {
       if ( columnObj.filter_type !== 'date_custom_func' ) {
         oTable.fnFilter( date as string, column_number_filter );
       } else {
-        this.doFilterCustomDateFunc( { value: date }, table_selector_jq_friendly, column_number );
+        Yadcf.doFilterCustomDateFunc( { value: date }, table_selector_jq_friendly, column_number );
       }
 
       $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ).addClass( 'inuse' );
     }
     else if ( clear === 'clear' ) {
-      if ( this.exGetColumnFilterVal( oTable, column_number ) === '' ) {
+      if ( Yadcf.exGetColumnFilterVal( oTable, column_number ) === '' ) {
         return;
       }
 
@@ -1129,7 +1129,7 @@ class Yadcf {
       }
 
       if ( columnObj.datepicker_type === 'daterangepicker' && oTable.fnSettings().oFeatures.bServerSide !== true ) {
-        this.rangeClear( table_selector_jq_friendly, event, column_number );
+        Yadcf.rangeClear( table_selector_jq_friendly, event, column_number );
       }
       else {
         if ( columnObj.filter_type !== 'date_custom_func' ) {
@@ -1138,7 +1138,7 @@ class Yadcf {
         else {
           $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ).val( '' );
 
-          this.doFilterCustomDateFunc( { value: date }, table_selector_jq_friendly, column_number );
+          Yadcf.doFilterCustomDateFunc( { value: date }, table_selector_jq_friendly, column_number );
         }
       }
 
@@ -1149,11 +1149,11 @@ class Yadcf {
       }
     }
 
-    this.resetIApiIndex();
+    Yadcf.resetIApiIndex();
   }
 
   public static rangeClear( table_selector_jq_friendly: string, event: JQuery.ClickEvent, column_number: ColumnIdx | string ): void {
-    const oTable = this.oTables[ table_selector_jq_friendly ];
+    const oTable = Yadcf.oTables[ table_selector_jq_friendly ];
 
     let yadcfState,
         settingsDt,
@@ -1165,15 +1165,15 @@ class Yadcf {
         $fromInput,
         $toInput;
 
-    $.fn.dataTable.ext.iApiIndex = this.oTablesIndex[ table_selector_jq_friendly ];
+    $.fn.dataTable.ext.iApiIndex = Yadcf.oTablesIndex[ table_selector_jq_friendly ];
 
-    event      = this.eventTargetFixUp( event );
-    settingsDt = this.getSettingsObjFromTable( oTable );
-    columnObj  = this.getOptions( oTable.selector )[ column_number ];
+    event      = Yadcf.eventTargetFixUp( event );
+    settingsDt = Yadcf.getSettingsObjFromTable( oTable );
+    columnObj  = Yadcf.getOptions( oTable.selector )[ column_number ];
 
-    column_number_filter = this.calcColumnNumberFilter( settingsDt, column_number, table_selector_jq_friendly );
-    this.resetExcludeRegexCheckboxes( $( `#yadcf-filter-wrapper-${table_selector_jq_friendly}-${column_number}` ) );
-    this.clearStateSave( oTable, column_number, table_selector_jq_friendly );
+    column_number_filter = Yadcf.calcColumnNumberFilter( settingsDt, column_number, table_selector_jq_friendly );
+    Yadcf.resetExcludeRegexCheckboxes( $( `#yadcf-filter-wrapper-${table_selector_jq_friendly}-${column_number}` ) );
+    Yadcf.clearStateSave( oTable, column_number, table_selector_jq_friendly );
 
     if ( columnObj.null_check_box ) {
       $( '#' + fromId.replace( '-from-date-', '-from-' ) ).prop( 'disabled', false );
@@ -1186,7 +1186,7 @@ class Yadcf {
       }
     }
 
-    currentFilterValues = this.exGetColumnFilterVal( oTable, column_number );
+    currentFilterValues = Yadcf.exGetColumnFilterVal( oTable, column_number );
 
     if ( currentFilterValues.from === '' && currentFilterValues.to === '' ) {
       return;
@@ -1205,7 +1205,7 @@ class Yadcf {
     }
 
     if ( oTable.fnSettings().oFeatures.bServerSide !== true ) {
-      this.saveStateSave( oTable, column_number, table_selector_jq_friendly, '', '' );
+      Yadcf.saveStateSave( oTable, column_number, table_selector_jq_friendly, '', '' );
       oTable.fnDraw();
     } else {
       oTable.fnFilter( '', column_number_filter );
@@ -1236,7 +1236,7 @@ class Yadcf {
       oTable.fnSettings().oApi._fnSaveState( oTable.fnSettings() );
     }
 
-    this.resetIApiIndex();
+    Yadcf.resetIApiIndex();
 
     buttonSelector.parent().find( '.yadcf-filter-range' ).removeClass( 'inuse inuse-exclude' );
 
@@ -1254,16 +1254,16 @@ class Yadcf {
   }
 
   public static rangeNumberSliderClear( table_selector_jq_friendly: string, event: JQuery.KeyPressEvent | JQuery.MouseDownEvent | JQuery.DragOverEvent ): void {
-    const oTable = this.oTables[ table_selector_jq_friendly ];
+    const oTable = Yadcf.oTables[ table_selector_jq_friendly ];
 
     let min_val: number,
         max_val: number,
         currentFilterValues: { from: number; to: number; },
         column_number: ColumnIdx;
 
-    event = this.eventTargetFixUp( event );
+    event = Yadcf.eventTargetFixUp( event );
 
-    $.fn.dataTable.ext.iApiIndex = this.oTablesIndex[ table_selector_jq_friendly ];
+    $.fn.dataTable.ext.iApiIndex = Yadcf.oTablesIndex[ table_selector_jq_friendly ];
 
     const buttonSelector = $( event.target ).prop( 'nodeName' ) === 'BUTTON' ? $( event.target ) : $( event.target ).parent();
 
@@ -1272,7 +1272,7 @@ class Yadcf {
     min_val = +$( buttonSelector.parent().find( '.yadcf-filter-range-number-slider-min-tip-hidden' ) ).text();
     max_val = +$( buttonSelector.parent().find( '.yadcf-filter-range-number-slider-max-tip-hidden' ) ).text();
 
-    currentFilterValues = this.exGetColumnFilterVal( oTable, column_number );
+    currentFilterValues = Yadcf.exGetColumnFilterVal( oTable, column_number );
 
     if ( +currentFilterValues.from === min_val && +currentFilterValues.to === max_val ) {
       return;
@@ -1287,7 +1287,7 @@ class Yadcf {
     buttonSelector.prev().find( '.ui-slider-range' ).removeClass( 'inuse' );
 
     oTable.fnDraw();
-    this.resetIApiIndex();
+    Yadcf.resetIApiIndex();
 
     return;
   }
@@ -1299,16 +1299,16 @@ class Yadcf {
         column_number: ColumnIdx | string,
         columnObj: AllParameters;
 
-    event = this.eventTargetFixUp( event );
+    event = Yadcf.eventTargetFixUp( event );
 
     dateId = event.target.id;
     date   = (document.getElementById( dateId ) as HTMLInputElement).value;
 
-    $.fn.dataTable.ext.iApiIndex = this.oTablesIndex[ table_selector_jq_friendly ];
+    $.fn.dataTable.ext.iApiIndex = Yadcf.oTablesIndex[ table_selector_jq_friendly ];
 
-    oTable        = this.oTables[ table_selector_jq_friendly ];
+    oTable        = Yadcf.oTables[ table_selector_jq_friendly ];
     column_number = parseInt( dateId.replace( 'yadcf-filter-' + table_selector_jq_friendly + '-', '' ), 10 );
-    columnObj     = this.getOptions( oTable.selector )[ column_number ];
+    columnObj     = Yadcf.getOptions( oTable.selector )[ column_number ];
 
     try {
       if ( columnObj.datepicker_type === 'jquery-ui' ) {
@@ -1323,9 +1323,9 @@ class Yadcf {
 
       if ( columnObj.filter_type !== 'date_custom_func' ) {
         oTable.fnFilter( (document.getElementById( dateId ) as HTMLInputElement).value, column_number );
-        this.resetIApiIndex();
+        Yadcf.resetIApiIndex();
       } else {
-        this.doFilterCustomDateFunc( { value: date }, table_selector_jq_friendly, column_number );
+        Yadcf.doFilterCustomDateFunc( { value: date }, table_selector_jq_friendly, column_number );
       }
     } else if ( date === '' || trim( event.target.value ) === '' ) {
       $( '#' + dateId ).removeClass( 'inuse' );
@@ -1333,7 +1333,7 @@ class Yadcf {
 
       oTable.fnFilter( '', column_number );
 
-      this.resetIApiIndex();
+      Yadcf.resetIApiIndex();
     }
   }
 
@@ -1352,15 +1352,15 @@ class Yadcf {
         minTmp: number | string,
         maxTmp: number | string;
 
-    event = this.eventTargetFixUp( event );
-    $.fn.dataTable.ext.iApiIndex = this.oTablesIndex[ table_selector_jq_friendly ];
+    event = Yadcf.eventTargetFixUp( event );
+    $.fn.dataTable.ext.iApiIndex = Yadcf.oTablesIndex[ table_selector_jq_friendly ];
 
-    oTable = this.oTables[ table_selector_jq_friendly ];
+    oTable = Yadcf.oTables[ table_selector_jq_friendly ];
 
     column_number        = parseInt( $( event.target ).attr( 'id' ).replace( '-from-date-', '' ).replace( '-to-date-', '' ).replace( `yadcf-filter-${table_selector_jq_friendly}`, '' ), 10 );
-    columnObj            = this.getOptions( oTable.selector )[ column_number ];
-    settingsDt           = this.getSettingsObjFromTable( oTable );
-    column_number_filter = this.calcColumnNumberFilter( settingsDt, column_number, table_selector_jq_friendly );
+    columnObj            = Yadcf.getOptions( oTable.selector )[ column_number ];
+    settingsDt           = Yadcf.getSettingsObjFromTable( oTable );
+    column_number_filter = Yadcf.calcColumnNumberFilter( settingsDt, column_number, table_selector_jq_friendly );
 
     if ( columnObj.datepicker_type === 'bootstrap-datepicker' ) {
       // @ts-ignore
@@ -1460,14 +1460,14 @@ class Yadcf {
     if ( columnObj.filter_delay === undefined ) {
       keyUp();
     } else {
-      this.yadcfDelay( function() {
+      Yadcf.yadcfDelay( function() {
         keyUp();
       }, columnObj.filter_delay );
     }
   }
 
   public static rangeNumberKeyUP( table_selector_jq_friendly: string, event: JQuery.KeyUpEvent ): void {
-    const oTable = this.oTables[ table_selector_jq_friendly ];
+    const oTable = Yadcf.oTables[ table_selector_jq_friendly ];
 
     let min,
         max,
@@ -1483,17 +1483,17 @@ class Yadcf {
         null_checked = false,
         checkbox;
 
-    event    = this.eventTargetFixUp( event );
+    event    = Yadcf.eventTargetFixUp( event );
     checkbox = $( event.target ).attr( 'type' ) === 'checkbox';
 
     const target = checkbox ? $( event.target ).parent().parent().find( '.yadcf-filter-range-number' ).first() : $( event.target );
 
-    $.fn.dataTable.ext.iApiIndex = this.oTablesIndex[ table_selector_jq_friendly ];
+    $.fn.dataTable.ext.iApiIndex = Yadcf.oTablesIndex[ table_selector_jq_friendly ];
 
     column_number        = parseInt( target.attr( 'id' ).replace( '-from-', '' ).replace( '-to-', '' ).replace( 'yadcf-filter-' + table_selector_jq_friendly, '' ), 10 );
-    columnObj            = this.getOptions( oTable.selector )[ column_number ];
-    settingsDt           = this.getSettingsObjFromTable( oTable );
-    column_number_filter = this.calcColumnNumberFilter( settingsDt, column_number, table_selector_jq_friendly );
+    columnObj            = Yadcf.getOptions( oTable.selector )[ column_number ];
+    settingsDt           = Yadcf.getSettingsObjFromTable( oTable );
+    column_number_filter = Yadcf.calcColumnNumberFilter( settingsDt, column_number, table_selector_jq_friendly );
 
     if ( columnObj.exclude ) {
       exclude_checked = $( `#yadcf-filter-wrapper-${table_selector_jq_friendly}-${column_number}` ).find( '.yadcf-exclude-wrapper :checkbox' ).prop( 'checked' );
@@ -1575,30 +1575,30 @@ class Yadcf {
         }
       }
 
-      this.resetIApiIndex();
+      Yadcf.resetIApiIndex();
     };
 
     if ( columnObj.filter_delay === undefined ) {
       keyUp();
     } else {
-      this.yadcfDelay( function() {
+      Yadcf.yadcfDelay( function() {
         keyUp();
       }, columnObj.filter_delay );
     }
   }
 
   public static doFilterMultiTablesMultiSelect( tablesSelectors: string, event: any, column_number_str: string, clear?: boolean ): void {
-    const columnsObj = this.getOptions( `${tablesSelectors}_${column_number_str}` )[ column_number_str ];
+    const columnsObj = Yadcf.getOptions( `${tablesSelectors}_${column_number_str}` )[ column_number_str ];
 
     let regex     = false,
         smart     = true,
         caseInsen = true,
         tablesAsOne,
-        tablesArray = this.oTables[ tablesSelectors ],
+        tablesArray = Yadcf.oTables[ tablesSelectors ],
         selected_values = $( event.target ).val(),
         i;
 
-    event       = this.eventTargetFixUp( event );
+    event       = Yadcf.eventTargetFixUp( event );
     tablesAsOne = new $.fn.dataTable.Api( tablesArray );
 
     if ( clear !== undefined || !selected_values || (selected_values as Array<any>).length === 0 ) {
@@ -1613,7 +1613,7 @@ class Yadcf {
         tablesAsOne.search( '' ).draw();
       }
 
-      this.refreshSelectPlugin( columnsObj, $( '#' + columnsObj.filter_container_id + ' select' ), '-1' );
+      Yadcf.refreshSelectPlugin( columnsObj, $( '#' + columnsObj.filter_container_id + ' select' ), '-1' );
 
       return;
     }
@@ -1653,16 +1653,16 @@ class Yadcf {
   }
 
   public static doFilterMultiTables( tablesSelectors: string, event: any, column_number_str: string, clear?: boolean ): void {
-    const columnsObj = this.getOptions( tablesSelectors + '_' + column_number_str )[ column_number_str ];
+    const columnsObj = Yadcf.getOptions( tablesSelectors + '_' + column_number_str )[ column_number_str ];
 
     let regex       = false,
         smart       = true,
         caseInsen   = true,
-        tablesArray = this.oTables[ tablesSelectors ],
+        tablesArray = Yadcf.oTables[ tablesSelectors ],
         searchVal,
         tablesAsOne;
 
-    event       = this.eventTargetFixUp( event );
+    event       = Yadcf.eventTargetFixUp( event );
     tablesAsOne = new $.fn.dataTable.Api( tablesArray );
 
     if ( clear !== undefined || (event.target as HTMLSelectElement | HTMLInputElement).value === '-1' ) {
@@ -1677,7 +1677,7 @@ class Yadcf {
         tablesAsOne.search( '' ).draw();
       }
 
-      this.refreshSelectPlugin( columnsObj, $( '#' + columnsObj.filter_container_id + ' select' ), '-1' );
+      Yadcf.refreshSelectPlugin( columnsObj, $( '#' + columnsObj.filter_container_id + ' select' ), '-1' );
 
       return;
     }
@@ -1709,13 +1709,13 @@ class Yadcf {
     let caseInsen   = true,
         smart       = true,
         regex       = false,
-        columnsObj  = this.getOptions( `${tablesSelectors}_${column_number_str}` )[ column_number_str ],
-        tablesArray = this.oTables[ tablesSelectors ],
+        columnsObj  = Yadcf.getOptions( `${tablesSelectors}_${column_number_str}` )[ column_number_str ],
+        tablesArray = Yadcf.oTables[ tablesSelectors ],
         keyUp: ( ...args: any ) => void,
         serachVal: any,
         tablesAsOne: any;
 
-    event       = this.eventTargetFixUp( event );
+    event       = Yadcf.eventTargetFixUp( event );
     tablesAsOne = new $.fn.dataTable.Api( tablesArray );
 
     keyUp = function( tablesAsOne: DataTables.Api, event: JQuery.KeyUpEvent, clear?: boolean ): void {
@@ -1763,15 +1763,15 @@ class Yadcf {
     if ( columnsObj.filter_delay === undefined ) {
       keyUp( tablesAsOne, event, clear );
     } else {
-      this.yadcfDelay( function() {
+      Yadcf.yadcfDelay( function() {
         keyUp( tablesAsOne, event, clear );
       }, columnsObj.filter_delay );
     }
   }
 
   public static textKeyUP( ev: any, table_selector_jq_friendly: string, column_number: ColumnIdx | string, clear?: string ): void {
-    const oTable       = this.oTables[ table_selector_jq_friendly ],
-          settingsDt   = this.getSettingsObjFromTable( oTable );
+    const oTable       = Yadcf.oTables[ table_selector_jq_friendly ],
+          settingsDt   = Yadcf.getSettingsObjFromTable( oTable );
 
     let null_checked = false,
         keyCodes     = [ 37, 38, 39, 40, 17 ],
@@ -1781,13 +1781,13 @@ class Yadcf {
         column_number_filter,
         regex_check_box;
 
-    if ( keyCodes.indexOf( ev.keyCode ) !== -1 || this.ctrlPressed ) {
+    if ( keyCodes.indexOf( ev.keyCode ) !== -1 || Yadcf.ctrlPressed ) {
       return;
     }
 
-    column_number_filter = this.calcColumnNumberFilter( settingsDt, column_number, table_selector_jq_friendly );
+    column_number_filter = Yadcf.calcColumnNumberFilter( settingsDt, column_number, table_selector_jq_friendly );
 
-    columnObj = this.getOptions( oTable.selector )[ column_number ];
+    columnObj = Yadcf.getOptions( oTable.selector )[ column_number ];
 
     keyUp = function( table_selector_jq_friendly: string, column_number: ColumnIdx | string, clear?: string ): void {
       let fixedPrefix = '';
@@ -1860,7 +1860,7 @@ class Yadcf {
 
         oTable.fnFilter( '', column_number_filter );
 
-        this.resetIApiIndex();
+        Yadcf.resetIApiIndex();
 
         return;
       }
@@ -1884,16 +1884,16 @@ class Yadcf {
     if ( columnObj.filter_delay === undefined ) {
       keyUp( table_selector_jq_friendly, column_number, clear );
     } else {
-      this.yadcfDelay( function() {
+      Yadcf.yadcfDelay( function() {
         keyUp( table_selector_jq_friendly, column_number, clear );
       }, columnObj.filter_delay );
     }
   }
 
   public static nullChecked( ev: JQuery.Event, table_selector_jq_friendly: string, column_number: ColumnIdx | string ): void {
-    const oTable = this.oTables[ table_selector_jq_friendly ];
+    const oTable = Yadcf.oTables[ table_selector_jq_friendly ];
 
-    let settingsDt      = this.getSettingsObjFromTable( oTable ),
+    let settingsDt      = Yadcf.getSettingsObjFromTable( oTable ),
         exclude_checked = false,
         column_number_filter,
         click,
@@ -1901,8 +1901,8 @@ class Yadcf {
         yadcfState,
         null_checked;
 
-    column_number_filter = this.calcColumnNumberFilter( settingsDt, column_number, table_selector_jq_friendly );
-    columnObj            = this.getOptions( oTable.selector )[ column_number ];
+    column_number_filter = Yadcf.calcColumnNumberFilter( settingsDt, column_number, table_selector_jq_friendly );
+    columnObj            = Yadcf.getOptions( oTable.selector )[ column_number ];
 
     let fixedPrefix = '';
 
@@ -1997,7 +1997,7 @@ class Yadcf {
     if ( columnObj.filter_delay === undefined ) {
       click( table_selector_jq_friendly, column_number );
     } else {
-      this.yadcfDelay( function() {
+      Yadcf.yadcfDelay( function() {
         click( table_selector_jq_friendly, column_number );
       }, columnObj.filter_delay );
     }
@@ -2009,16 +2009,16 @@ class Yadcf {
     let oTable: ConfigSettings,
         column_number: ColumnIdx;
 
-    event = this.eventTargetFixUp( event );
+    event = Yadcf.eventTargetFixUp( event );
 
     if ( keyCodes.indexOf( event.keyCode ) !== -1 ) {
       return;
     }
 
     if ( (event.target as HTMLInputElement).value === '' && event.keyCode === 8 && $( event.target ).hasClass( 'inuse' ) ) {
-      $.fn.dataTable.ext.iApiIndex = this.oTablesIndex[ table_selector_jq_friendly ];
+      $.fn.dataTable.ext.iApiIndex = Yadcf.oTablesIndex[ table_selector_jq_friendly ];
 
-      oTable        = this.oTables[ table_selector_jq_friendly ];
+      oTable        = Yadcf.oTables[ table_selector_jq_friendly ];
       column_number = parseInt( $( event.target ).attr( 'id' ).replace( 'yadcf-filter-' + table_selector_jq_friendly + '-', '' ), 10 );
 
       $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ).removeClass( 'inuse' );
@@ -2026,7 +2026,7 @@ class Yadcf {
 
       oTable.fnFilter( '', column_number );
 
-      this.resetIApiIndex();
+      Yadcf.resetIApiIndex();
     }
   }
 
@@ -2065,7 +2065,7 @@ class Yadcf {
 
       columnsObj = $.extend( {}, default_options, columnsObj );
 
-      column_number_str = this.columnsArrayToString( columnsObj.column_number ).column_number_str;
+      column_number_str = Yadcf.columnsArrayToString( columnsObj.column_number ).column_number_str;
 
       columnsObj.column_number_str = column_number_str;
 
@@ -2077,18 +2077,18 @@ class Yadcf {
         if ( tablesArray[ i ].table !== undefined ) {
           tablesSelectors += (tablesArray[ i ].table().node() as HTMLElement).id + ',';
         } else {
-          tablesSelectors += this.getSettingsObjFromTable( tablesArray[ i ] ).sTableId;
+          tablesSelectors += Yadcf.getSettingsObjFromTable( tablesArray[ i ] ).sTableId;
         }
       }
 
       tablesSelectors = tablesSelectors.substring( 0, tablesSelectors.length - 1 );
 
-      this.setOptions( tablesSelectors + '_' + column_number_str, dummyArr, {});
+      Yadcf.setOptions( tablesSelectors + '_' + column_number_str, dummyArr, {});
 
       // @ts-ignore
-      this.oTables[ tablesSelectors ] = tablesArray;
+      Yadcf.oTables[ tablesSelectors ] = tablesArray;
 
-      this.appendFiltersMultipleTables( tablesArray, tablesSelectors, columnsObj );
+      Yadcf.appendFiltersMultipleTables( tablesArray, tablesSelectors, columnsObj );
     }
   }
 
@@ -2097,11 +2097,11 @@ class Yadcf {
 
     tablesArray.push( table );
 
-    this.initMultipleTables( tablesArray, filtersOptions );
+    Yadcf.initMultipleTables( tablesArray, filtersOptions );
   }
 
   public static stopPropagation( evt: any ) {
-    this.close3rdPPluginsNeededClose( evt );
+    Yadcf.close3rdPPluginsNeededClose( evt );
 
     if ( evt.stopPropagation !== undefined ) {
       evt.stopPropagation();
@@ -2111,7 +2111,7 @@ class Yadcf {
   }
 
   public static preventDefaultForEnter( evt: any ): void {
-    this.ctrlPressed = false;
+    Yadcf.ctrlPressed = false;
 
     if ( evt.keyCode === 13 ) {
       if ( evt.preventDefault ) {
@@ -2122,7 +2122,7 @@ class Yadcf {
     }
 
     if ( evt.keyCode == 65 && evt.ctrlKey ) {
-      this.ctrlPressed = true;
+      Yadcf.ctrlPressed = true;
 
       evt.target.select();
 
@@ -2130,7 +2130,7 @@ class Yadcf {
     }
 
     if ( evt.ctrlKey && ( evt.keyCode == 67 || evt.keyCode == 88 ) ) {
-      this.ctrlPressed = true;
+      Yadcf.ctrlPressed = true;
 
       return;
     }
@@ -2158,23 +2158,23 @@ class Yadcf {
 
     table_selector_jq_friendly = Yadcf.generateTableSelectorJQFriendly2( table_arg );
 
-    if ( this.isDOMSource( table_arg ) || ajaxSource === true ) {
+    if ( Yadcf.isDOMSource( table_arg ) || ajaxSource === true ) {
       for ( j = 0; j < col_filter_arr.length; j++ ) {
         column_number   = col_filter_arr[ j ][0];
         column_position = column_number;
         exclude         = false;
 
         if (
-          this.plugins[ table_selector_jq_friendly ] !== undefined &&
+          Yadcf.plugins[ table_selector_jq_friendly ] !== undefined &&
           (
-            this.plugins[ table_selector_jq_friendly ] !== undefined &&
-            this.plugins[ table_selector_jq_friendly ].ColReorder !== undefined
+            Yadcf.plugins[ table_selector_jq_friendly ] !== undefined &&
+            Yadcf.plugins[ table_selector_jq_friendly ].ColReorder !== undefined
           )
         ) {
-          column_position = this.plugins[ table_selector_jq_friendly ].ColReorder[ column_number ];
+          column_position = Yadcf.plugins[ table_selector_jq_friendly ].ColReorder[ column_number ];
         }
 
-        optionsObj = this.getOptions( table_arg.selector )[ column_number ];
+        optionsObj = Yadcf.getOptions( table_arg.selector )[ column_number ];
 
         filter_value = col_filter_arr[ j ][1];
 
@@ -2195,7 +2195,7 @@ class Yadcf {
               $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ).removeClass( 'inuse' );
             }
 
-            tmpStr = this.yadcfMatchFilterString( table_arg, column_position, filter_value, optionsObj.filter_match_mode, false, exclude );
+            tmpStr = Yadcf.yadcfMatchFilterString( table_arg, column_position, filter_value, optionsObj.filter_match_mode, false, exclude );
 
             table_arg.fnSettings().aoPreSearchCols[ column_position ].sSearch = tmpStr;
             break;
@@ -2209,24 +2209,24 @@ class Yadcf {
               $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ).removeClass( 'inuse' );
             }
 
-            tmpStr = this.yadcfMatchFilterString( table_arg, column_position, filter_value, optionsObj.filter_match_mode, false );
+            tmpStr = Yadcf.yadcfMatchFilterString( table_arg, column_position, filter_value, optionsObj.filter_match_mode, false );
 
             table_arg.fnSettings().aoPreSearchCols[ column_position ].sSearch = tmpStr;
 
             if ( optionsObj.select_type !== undefined ) {
-              this.refreshSelectPlugin( optionsObj, $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ), filter_value );
+              Yadcf.refreshSelectPlugin( optionsObj, $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ), filter_value );
             }
             break;
 
           case 'multi_select':
             $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ).val( filter_value );
 
-            tmpStr = this.yadcfMatchFilterString( table_arg, column_position, filter_value, optionsObj.filter_match_mode, true );
+            tmpStr = Yadcf.yadcfMatchFilterString( table_arg, column_position, filter_value, optionsObj.filter_match_mode, true );
 
             table_arg.fnSettings().aoPreSearchCols[ column_position ].sSearch = tmpStr;
 
             if ( optionsObj.select_type !== undefined ) {
-              this.refreshSelectPlugin( optionsObj, $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ), filter_value );
+              Yadcf.refreshSelectPlugin( optionsObj, $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ), filter_value );
             }
             break;
 
@@ -2256,7 +2256,7 @@ class Yadcf {
               table_arg.fnSettings().aoPreSearchCols[ column_position ].sSearch = min + optionsObj.custom_range_delimiter + max;
             }
 
-            this.saveStateSave( table_arg, column_number, table_selector_jq_friendly, filter_value.from, filter_value.to );
+            Yadcf.saveStateSave( table_arg, column_number, table_selector_jq_friendly, filter_value.from, filter_value.to );
             break;
 
           case 'range_number':
@@ -2283,7 +2283,7 @@ class Yadcf {
               table_arg.fnSettings().aoPreSearchCols[ column_position ].sSearch = filter_value.from + optionsObj.custom_range_delimiter + filter_value.to;
             }
 
-            this.saveStateSave( table_arg, column_number, table_selector_jq_friendly, filter_value.from, filter_value.to );
+            Yadcf.saveStateSave( table_arg, column_number, table_selector_jq_friendly, filter_value.from, filter_value.to );
             break;
 
           case 'range_number_slider':
@@ -2327,7 +2327,7 @@ class Yadcf {
               table_arg.fnSettings().aoPreSearchCols[ column_position ].sSearch = filter_value.from + optionsObj.custom_range_delimiter + filter_value.to;
             }
 
-            this.saveStateSave( table_arg, column_number, table_selector_jq_friendly, filter_value.from, filter_value.to );
+            Yadcf.saveStateSave( table_arg, column_number, table_selector_jq_friendly, filter_value.from, filter_value.to );
             break;
 
           case 'custom_func':
@@ -2346,10 +2346,10 @@ class Yadcf {
             }
 
             if ( optionsObj.select_type !== undefined ) {
-              this.refreshSelectPlugin( optionsObj, `#yadcf-filter-${table_selector_jq_friendly}-${column_number}`, filter_value );
+              Yadcf.refreshSelectPlugin( optionsObj, `#yadcf-filter-${table_selector_jq_friendly}-${column_number}`, filter_value );
             }
 
-            this.saveStateSave( table_arg, column_number, table_selector_jq_friendly, filter_value, '' );
+            Yadcf.saveStateSave( table_arg, column_number, table_selector_jq_friendly, filter_value, '' );
             break;
         }
       }
@@ -2362,7 +2362,7 @@ class Yadcf {
         }, 10 );
       }
     } else {
-      this.exFilterColumnQueue.push( this.exInternalFilterColumnAJAXQueue( table_arg, col_filter_arr ) );
+      Yadcf.exFilterColumnQueue.push( Yadcf.exInternalFilterColumnAJAXQueue( table_arg, col_filter_arr ) );
     }
   }
 
@@ -2379,12 +2379,12 @@ class Yadcf {
       table_arg = table_arg.settings()[0].oInstance;
     }
 
-    optionsObj = this.getOptions( table_arg.selector )[ column_number ];
+    optionsObj = Yadcf.getOptions( table_arg.selector )[ column_number ];
 
     table_selector_jq_friendly = Yadcf.generateTableSelectorJQFriendly2( table_arg );
 
     let selectorePrefix = '';
-    let settingsDt      = this.getSettingsObjFromTable( table_arg );
+    let settingsDt      = Yadcf.getSettingsObjFromTable( table_arg );
 
     if ( optionsObj.filters_position === 'tfoot' && settingsDt.oScroll.sX ) {
       selectorePrefix = '.dataTables_scrollFoot ';
@@ -2468,9 +2468,9 @@ class Yadcf {
       table_arg = table_arg.settings()[0].oInstance;
     }
 
-    tableOptions               = this.getOptions( table_arg.selector );
-    table_selector_jq_friendly = this.generateTableSelectorJQFriendly2( table_arg );
-    settingsDt                 = this.getSettingsObjFromTable( table_arg );
+    tableOptions               = Yadcf.getOptions( table_arg.selector );
+    table_selector_jq_friendly = Yadcf.generateTableSelectorJQFriendly2( table_arg );
+    settingsDt                 = Yadcf.getSettingsObjFromTable( table_arg );
 
     for ( columnObjKey in tableOptions ) {
       if ( tableOptions.hasOwnProperty( columnObjKey ) ) {
@@ -2494,16 +2494,16 @@ class Yadcf {
         switch ( optionsObj.filter_type ) {
           case 'select':
           case 'custom_func':
-            this.resetExcludeRegexCheckboxes( $filterElement.parent() );
+            Yadcf.resetExcludeRegexCheckboxes( $filterElement.parent() );
 
-            this.clearStateSave( table_arg, column_number, table_selector_jq_friendly );
+            Yadcf.clearStateSave( table_arg, column_number, table_selector_jq_friendly );
 
             $filterElement.val( '-1' ).removeClass( 'inuse' );
 
             table_arg.fnSettings().aoPreSearchCols[ column_number ].sSearch = '';
 
             if ( optionsObj.select_type !== undefined ) {
-              this.refreshSelectPlugin( optionsObj, $filterElement, '-1' );
+              Yadcf.refreshSelectPlugin( optionsObj, $filterElement, '-1' );
             }
             break;
           case 'auto_complete':
@@ -2514,9 +2514,9 @@ class Yadcf {
 
             table_arg.fnSettings().aoPreSearchCols[ column_number ].sSearch = '';
 
-            this.resetExcludeRegexCheckboxes( $filterElement.parent() );
+            Yadcf.resetExcludeRegexCheckboxes( $filterElement.parent() );
 
-            this.clearStateSave( table_arg, column_number, table_selector_jq_friendly );
+            Yadcf.clearStateSave( table_arg, column_number, table_selector_jq_friendly );
             break;
           case 'date':
             $filterElement.val( '' ).removeClass( 'inuse' );
@@ -2536,7 +2536,7 @@ class Yadcf {
             table_arg.fnSettings().aoPreSearchCols[ column_number ].sSearch = '';
 
             if ( optionsObj.select_type !== undefined ) {
-              this.refreshSelectPlugin( optionsObj, $filterElement, '-1' );
+              Yadcf.refreshSelectPlugin( optionsObj, $filterElement, '-1' );
             }
             break;
           case 'range_date':
@@ -2551,7 +2551,7 @@ class Yadcf {
               table_arg.fnSettings().aoPreSearchCols[ column_number ].sSearch = '';
             }
 
-            this.clearStateSave( table_arg, column_number, table_selector_jq_friendly );
+            Yadcf.clearStateSave( table_arg, column_number, table_selector_jq_friendly );
             break;
           case 'range_number':
             fromId = `yadcf-filter-${table_selector_jq_friendly}-from-${column_number}`;
@@ -2567,8 +2567,8 @@ class Yadcf {
               table_arg.fnSettings().aoPreSearchCols[ column_number ].sSearch = '';
             }
 
-            this.resetExcludeRegexCheckboxes( $( selectorePrefix + '#' + fromId ).parent().parent() );
-            this.clearStateSave( table_arg, column_number, table_selector_jq_friendly );
+            Yadcf.resetExcludeRegexCheckboxes( $( selectorePrefix + '#' + fromId ).parent().parent() );
+            Yadcf.clearStateSave( table_arg, column_number, table_selector_jq_friendly );
             break;
           case 'range_number_slider':
             sliderId = `yadcf-filter-${table_selector_jq_friendly}-slider-${column_number}`;
@@ -2586,7 +2586,7 @@ class Yadcf {
               table_arg.fnSettings().aoPreSearchCols[ column_number ].sSearch = '';
             }
 
-            this.clearStateSave( table_arg, column_number, table_selector_jq_friendly );
+            Yadcf.clearStateSave( table_arg, column_number, table_selector_jq_friendly );
             break;
         }
       }
@@ -2608,7 +2608,7 @@ class Yadcf {
   }
 
   public static exResetFilters( table_arg: ConfigSettings, columns: Array<number | string>, noRedraw: boolean ): void {
-    this.exResetAllFilters( table_arg, noRedraw, columns );
+    Yadcf.exResetAllFilters( table_arg, noRedraw, columns );
   }
 
   public static exFilterExternallyTriggered( table_arg: ConfigSettings ) {
@@ -2624,12 +2624,12 @@ class Yadcf {
       table_arg = table_arg.settings()[0].oInstance;
     }
 
-    columnsObj = this.getOptions( table_arg.selector );
+    columnsObj = Yadcf.getOptions( table_arg.selector );
 
     for ( columnObjKey in columnsObj ) {
       if ( columnsObj.hasOwnProperty( columnObjKey ) ) {
         columnObj = columnsObj[ columnObjKey ];
-        filterValue = this.exGetColumnFilterVal( table_arg, columnObj.column_number );
+        filterValue = Yadcf.exGetColumnFilterVal( table_arg, columnObj.column_number );
         filtersValuesSingleElem = [];
         filtersValuesSingleElem.push( columnObj.column_number );
         filtersValuesSingleElem.push( filterValue );
@@ -2637,7 +2637,7 @@ class Yadcf {
       }
     }
 
-    this.exFilterColumn( table_arg, filtersValuesArr, true );
+    Yadcf.exFilterColumn( table_arg, filtersValuesArr, true );
   }
 
   public static exRefreshColumnFilterWithDataProp( table_arg: ConfigSettings, col_num: ColumnIdx, updatedData: Record<string, any> ): void {
@@ -2645,14 +2645,14 @@ class Yadcf {
       table_arg = table_arg.settings()[0].oInstance;
     }
 
-    const columnsObj = this.getOptions( table_arg.selector );
+    const columnsObj = Yadcf.getOptions( table_arg.selector );
     const columnObj  = columnsObj[ col_num ];
 
     columnObj.data = updatedData;
 
-    const table_selector_jq_friendly = this.generateTableSelectorJQFriendly2( table_arg );
+    const table_selector_jq_friendly = Yadcf.generateTableSelectorJQFriendly2( table_arg );
 
-    this.refreshSelectPlugin( columnObj, $( `yadcf-filter-${table_selector_jq_friendly}-${col_num}` ) );
+    Yadcf.refreshSelectPlugin( columnObj, $( `yadcf-filter-${table_selector_jq_friendly}-${col_num}` ) );
   }
 
   protected static getProp( nestedObj: Record<string, any>, keys: Array<string> | string ) {
@@ -2729,20 +2729,20 @@ class Yadcf {
 
   private static initColReorder2( settingsDt: any, table_selector_jq_friendly: string ): void {
     if ( settingsDt.oSavedState && settingsDt.oSavedState.ColReorder !== undefined ) {
-      if ( this.plugins[ table_selector_jq_friendly ] === undefined ) {
-        this.plugins[ table_selector_jq_friendly ] = {};
-        this.plugins[ table_selector_jq_friendly ].ColReorder = this.arraySwapValueWithIndex( settingsDt.oSavedState.ColReorder );
+      if ( Yadcf.plugins[ table_selector_jq_friendly ] === undefined ) {
+        Yadcf.plugins[ table_selector_jq_friendly ] = {};
+        Yadcf.plugins[ table_selector_jq_friendly ].ColReorder = Yadcf.arraySwapValueWithIndex( settingsDt.oSavedState.ColReorder );
       }
     } else if ( settingsDt.aoColumns[0]._ColReorder_iOrigCol !== undefined ) {
-      if ( this.plugins[ table_selector_jq_friendly ] === undefined ) {
-        this.plugins[ table_selector_jq_friendly ] = {};
-        this.plugins[ table_selector_jq_friendly ].ColReorder = this.arraySwapValueWithIndex2( settingsDt.aoColumns );
+      if ( Yadcf.plugins[ table_selector_jq_friendly ] === undefined ) {
+        Yadcf.plugins[ table_selector_jq_friendly ] = {};
+        Yadcf.plugins[ table_selector_jq_friendly ].ColReorder = Yadcf.arraySwapValueWithIndex2( settingsDt.aoColumns );
       }
     }
   }
 
   private static initColReorderFromEvent( table_selector_jq_friendly: string ): void {
-    this.plugins[ table_selector_jq_friendly ] = undefined;
+    Yadcf.plugins[ table_selector_jq_friendly ] = undefined;
   }
 
   private static columnsArrayToString( column_number: ColumnIdx | Array<ColumnIdx | string> ): ColumnNumberObject {
@@ -2768,8 +2768,8 @@ class Yadcf {
     return column_number_obj;
   }
 
-  private static getAllOptions(): typeof this.options {
-    return this.options;
+  private static getAllOptions(): typeof Yadcf.options {
+    return Yadcf.options;
   }
 
   private static dot2obj( tmpObj: Record<string, any>, dot_refs: any ): Record<string, any> {
@@ -2792,10 +2792,10 @@ class Yadcf {
         col_num_as_int: number;
     //adaptContainerCssClassImpl = function (dummy) { return ''; };
 
-    this.default_options = $.extend( true, this.default_options, params );
+    Yadcf.default_options = $.extend( true, Yadcf.default_options, params );
 
     if ( options_arg.length === undefined ) {
-      this.options[ selector_arg ] = options_arg;
+      Yadcf.options[ selector_arg ] = options_arg;
       return;
     }
 
@@ -2805,13 +2805,13 @@ class Yadcf {
       }
 
       if ( options_arg[ i ].select_type === 'select2' ) {
-        this.default_options.select_type_options = {
+        Yadcf.default_options.select_type_options = {
           //adaptContainerCssClass: adaptContainerCssClassImpl
         };
       }
 
       // No individual reset button for `externally_triggered` mode.
-      if ( this.default_options.externally_triggered === true ) {
+      if ( Yadcf.default_options.externally_triggered === true ) {
         options_arg[ i ].filter_reset_button_text = false;
       }
 
@@ -2827,9 +2827,9 @@ class Yadcf {
         col_num_as_int = +options_arg[ i ].column_number;
 
         if ( isNaN( col_num_as_int ) ) {
-          tmpOptions[ options_arg[ i ].column_number_str ] = $.extend( true, {}, this.default_options, options_arg[ i ] );
+          tmpOptions[ options_arg[ i ].column_number_str ] = $.extend( true, {}, Yadcf.default_options, options_arg[ i ] );
         } else {
-          tmpOptions[ col_num_as_int ] = $.extend( true, {}, this.default_options, options_arg[ i ] );
+          tmpOptions[ col_num_as_int ] = $.extend( true, {}, Yadcf.default_options, options_arg[ i ] );
         }
       } else {
         if ( table && table.column ) {
@@ -2838,28 +2838,28 @@ class Yadcf {
 
           if ( columnNumber.index() >= 0 ) {
             options_arg[ i ].column_number = columnNumber.index();
-            tmpOptions[ options_arg[ i ].column_number ] = $.extend( true, {}, this.default_options, options_arg[ i ] );
+            tmpOptions[ options_arg[ i ].column_number ] = $.extend( true, {}, Yadcf.default_options, options_arg[ i ] );
           }
         }
       }
     }
 
-    this.options[ selector_arg ] = tmpOptions;
+    Yadcf.options[ selector_arg ] = tmpOptions;
 
-    this.check3rdPPluginsNeededClose();
+    Yadcf.check3rdPPluginsNeededClose();
   }
 
   private static check3rdPPluginsNeededClose(): void {
-    Object.entries( this.getAllOptions() ).forEach( ( tableEntry ) => {
+    Object.entries( Yadcf.getAllOptions() ).forEach( ( tableEntry ) => {
       Object.entries( tableEntry[1] ).forEach( ( columnEntry ) => {
         if ( columnEntry[1].datepicker_type === 'bootstrap-datepicker' ) {
           if ( columnEntry[1].filter_type === 'range_date' ) {
-            this.closeBootstrapDatepickerRange = true;
+            Yadcf.closeBootstrapDatepickerRange = true;
           } else {
-            this.closeBootstrapDatepicker = true;
+            Yadcf.closeBootstrapDatepicker = true;
           }
         } else if ( columnEntry[1].select_type === 'select2' ) {
-          this.closeSelect2 = true;
+          Yadcf.closeSelect2 = true;
         }
       });
     });
@@ -2909,7 +2909,7 @@ class Yadcf {
   }
 
   private static replaceAll( string: string, find: string, replace: string ): string {
-    return string.replace( new RegExp( this.escapeRegExp( find ), 'g' ), replace );
+    return string.replace( new RegExp( Yadcf.escapeRegExp( find ), 'g' ), replace );
   }
 
   private static getTableId( obj: Api<any> ): number | string {
@@ -2922,7 +2922,7 @@ class Yadcf {
         tableId = node.id;
       }
     } else {
-      tableId = this.getSettingsObjFromTable( obj ).sTableId;
+      tableId = Yadcf.getSettingsObjFromTable( obj ).sTableId;
     }
 
     return tableId;
@@ -2933,20 +2933,20 @@ class Yadcf {
 
     if ( select_type === 'chosen' && typeof $.fn.chosen === 'function' ) {
       $selectObject.chosen( select_type_options );
-      $selectObject.next().on( 'click mousedown', this.stopPropagation );
+      $selectObject.next().on( 'click mousedown', Yadcf.stopPropagation );
 
-      this.refreshSelectPlugin({ select_type: select_type, select_type_options: select_type_options }, $selectObject );
+      Yadcf.refreshSelectPlugin({ select_type: select_type, select_type_options: select_type_options }, $selectObject );
     } else if ( select_type === 'select2' ) {
       if ( !$selectObject.data( 'select2' ) ) {
         $selectObject.select2( select_type_options );
       }
 
       if ( $selectObject.next().hasClass( 'select2-container' ) ) {
-        $selectObject.next().on( 'click mousedown', this.stopPropagation );
+        $selectObject.next().on( 'click mousedown', Yadcf.stopPropagation );
       }
     } else if ( select_type === 'custom_select' ) {
-      this.selectElementCustomInitFunc( $selectObject );
-      $selectObject.next().on( 'click mousedown', this.stopPropagation );
+      Yadcf.selectElementCustomInitFunc( $selectObject );
+      $selectObject.next().on( 'click mousedown', Yadcf.stopPropagation );
     }
   }
 
@@ -2971,14 +2971,14 @@ class Yadcf {
       $selectObject.trigger( 'change' );
     }
     else if ( select_type === 'custom_select' ) {
-      this.selectElementCustomRefreshFunc( $selectObject );
+      Yadcf.selectElementCustomRefreshFunc( $selectObject );
     }
   }
 
   private static initSelectPluginCustomTriggers( initFunc: JQueryCallbackFunc, refreshFunc: JQueryCallbackFunc, destroyFunc: JQueryCallbackFunc ): void {
-    this.selectElementCustomInitFunc    = initFunc;
-    this.selectElementCustomRefreshFunc = refreshFunc;
-    this.selectElementCustomDestroyFunc = destroyFunc;
+    Yadcf.selectElementCustomInitFunc    = initFunc;
+    Yadcf.selectElementCustomRefreshFunc = refreshFunc;
+    Yadcf.selectElementCustomDestroyFunc = destroyFunc;
   }
 
   // Used by `exFilterColumn` for translating readable search value into proper search string for datatables filtering.
@@ -3015,7 +3015,7 @@ class Yadcf {
         if ( !( selected_value instanceof Array ) ) {
           selected_value = [ selected_value ];
         }
-        selected_value = this.escapeRegExpInArray( selected_value );
+        selected_value = Yadcf.escapeRegExpInArray( selected_value );
       }
 
       if ( filter_match_mode === 'contains' ) {
@@ -3033,7 +3033,7 @@ class Yadcf {
   }
 
   private static yadcfMatchFilter( oTable: DT & Config, selected_value: any, filter_match_mode: FMM, column_number: ColumnIdx | string, exclude: boolean, original_column_number: ColumnIdx | string ): void {
-    let columnObj        = this.getOptions( oTable.selector )[ original_column_number ],
+    let columnObj        = Yadcf.getOptions( oTable.selector )[ original_column_number ],
         case_insensitive = columnObj.case_insensitive;
 
     if ( exclude !== true ) {
@@ -3045,17 +3045,17 @@ class Yadcf {
         let suffix = '$';
 
         if ( columnObj.text_data_delimiter !== undefined ) {
-          let text_data_delimiter = this.escapeRegExp( columnObj.text_data_delimiter );
+          let text_data_delimiter = Yadcf.escapeRegExp( columnObj.text_data_delimiter );
           prefix = '(' + prefix + '|' + text_data_delimiter + ')';
           suffix = '(' + suffix + '|' + text_data_delimiter + ')';
         }
 
-        selected_value = this.escapeRegExp( selected_value );
+        selected_value = Yadcf.escapeRegExp( selected_value );
 
         oTable.fnFilter( prefix + selected_value + suffix, column_number, true, false, true, case_insensitive );
       }
       else if ( filter_match_mode === 'startsWith' ) {
-        selected_value = this.escapeRegExp( selected_value );
+        selected_value = Yadcf.escapeRegExp( selected_value );
         oTable.fnFilter( '^' + selected_value, column_number, true, false, true, case_insensitive );
       }
       else if ( filter_match_mode === 'regex' ) {
@@ -3070,10 +3070,10 @@ class Yadcf {
       }
     } else {
       if ( filter_match_mode === 'exact' ) {
-        selected_value = '^' + this.escapeRegExp( selected_value ) + '$';
+        selected_value = '^' + Yadcf.escapeRegExp( selected_value ) + '$';
       }
       else if ( filter_match_mode === 'startsWith' ) {
-        selected_value = '^' + this.escapeRegExp( selected_value );
+        selected_value = '^' + Yadcf.escapeRegExp( selected_value );
       }
 
       oTable.fnFilter( '^((?!' + selected_value + ').)*$', column_number, true, false, true, case_insensitive );
@@ -3105,10 +3105,10 @@ class Yadcf {
       ( settingsDt.oSavedState && settingsDt.oSavedState.ColReorder !== undefined ) ||
       // @ts-ignore
       settingsDt.colReorder ||
-      ( this.plugins[ table_selector_jq_friendly ] !== undefined && this.plugins[ table_selector_jq_friendly ].ColReorder !== undefined )
+      ( Yadcf.plugins[ table_selector_jq_friendly ] !== undefined && Yadcf.plugins[ table_selector_jq_friendly ].ColReorder !== undefined )
     ) {
-      this.initColReorder2( settingsDt, table_selector_jq_friendly );
-      column_number_filter = this.plugins[ table_selector_jq_friendly ].ColReorder[ column_number ];
+      Yadcf.initColReorder2( settingsDt, table_selector_jq_friendly );
+      column_number_filter = Yadcf.plugins[ table_selector_jq_friendly ].ColReorder[ column_number ];
     } else {
       column_number_filter = column_number;
     }
@@ -3121,10 +3121,10 @@ class Yadcf {
 
     switch ( filter_match_mode ) {
       case 'exact':
-        null_str = '^' + this.escapeRegExp( null_str ) + '$';
+        null_str = '^' + Yadcf.escapeRegExp( null_str ) + '$';
         break;
       case 'startsWith':
-        null_str = '^' + this.escapeRegExp( null_str );
+        null_str = '^' + Yadcf.escapeRegExp( null_str );
         break;
       default:
         break;
@@ -3170,14 +3170,14 @@ class Yadcf {
         col_num: ColumnIdx,
         filter_match_mode: string;
 
-    event                      = this.eventTargetFixUp( event );
+    event                      = Yadcf.eventTargetFixUp( event );
     table_column               = (event.target as Element).id.replace( 'yadcf-filter-', '' );
     dashIndex                  = table_column.lastIndexOf( '-' );
     table_selector_jq_friendly = table_column.substring( 0, dashIndex );
     col_num                    = parseInt( table_column.substring( dashIndex + 1 ), 10 );
     filter_match_mode          = $( event.target ).attr( 'filter_match_mode' );
 
-    this.doFilterAutocomplete( ui.item, table_selector_jq_friendly, col_num, filter_match_mode as FMM );
+    Yadcf.doFilterAutocomplete( ui.item, table_selector_jq_friendly, col_num, filter_match_mode as FMM );
   }
 
   private static sortNumAsc( a: number, b: number ): number {
@@ -3788,17 +3788,17 @@ class Yadcf {
       return;
     }
 
-    $.fn.dataTable.ext.iApiIndex = this.oTablesIndex[ table_selector_jq_friendly ];
+    $.fn.dataTable.ext.iApiIndex = Yadcf.oTablesIndex[ table_selector_jq_friendly ];
 
-    oTable = this.oTables[ table_selector_jq_friendly ];
+    oTable = Yadcf.oTables[ table_selector_jq_friendly ];
 
-    columnObj = this.getOptions( oTable.selector )[ column_number ];
+    columnObj = Yadcf.getOptions( oTable.selector )[ column_number ];
 
     // Add a wrapper to hold both filter and reset button.
     $( filter_selector_string ).append(
-      this.makeElement( '<div />', {
-        onmousedown: this.stopPropagation,
-        onclick: this.stopPropagation,
+      Yadcf.makeElement( '<div />', {
+        onmousedown: Yadcf.stopPropagation,
+        onclick: Yadcf.stopPropagation,
         id: filter_wrapper_id,
         class: `yadcf-filter-wrapper ${columnObj.style_class}`
       })
@@ -3808,7 +3808,7 @@ class Yadcf {
     filter_selector_string_tmp = filter_selector_string;
 
     $( filter_selector_string ).append(
-      this.makeElement( '<div>', {
+      Yadcf.makeElement( '<div>', {
         id: `yadcf-filter-wrapper-inner-${table_selector_jq_friendly}-${column_number}`,
         class: `yadcf-filter-wrapper-inner -${table_selector_jq_friendly}-${column_number}`
       })
@@ -3827,8 +3827,8 @@ class Yadcf {
     }
 
     $( filter_selector_string ).append(
-      this.makeElement( '<input>', {
-        onkeydown: this.preventDefaultForEnter,
+      Yadcf.makeElement( '<input>', {
+        onkeydown: Yadcf.preventDefaultForEnter,
         placeholder: filter_default_label[0],
         id: fromId,
         class: 'yadcf-filter-range-number yadcf-filter-range',
@@ -3837,14 +3837,14 @@ class Yadcf {
     );
 
     $( filter_selector_string ).append(
-      this.makeElement( '<span>', {
+      Yadcf.makeElement( '<span>', {
         class: 'yadcf-filter-range-number-seperator'
       })
     );
 
     $( filter_selector_string ).append(
-      this.makeElement( '<input>', {
-        onkeydown: this.preventDefaultForEnter,
+      Yadcf.makeElement( '<input>', {
+        onkeydown: Yadcf.preventDefaultForEnter,
         placeholder: filter_default_label[1],
         id: toId,
         class: 'yadcf-filter-range-number yadcf-filter-range',
@@ -3854,10 +3854,10 @@ class Yadcf {
 
     if ( filter_reset_button_text !== false ) {
       $( filter_selector_string_tmp ).append(
-        this.makeElement( '<button>', {
+        Yadcf.makeElement( '<button>', {
           type: 'button',
           id: `yadcf-filter-${table_selector_jq_friendly}-${column_number}-reset`,
-          onmousedown: this.stopPropagation,
+          onmousedown: Yadcf.stopPropagation,
           onclick: function( colNo: ColumnIdx, tableSel: string ) {
             return function( event: JQuery.ClickEvent ) {
               Yadcf.stopPropagation( event );
@@ -3873,7 +3873,7 @@ class Yadcf {
 
     if ( columnObj.externally_triggered_checkboxes_text && typeof columnObj.externally_triggered_checkboxes_function === 'function' ) {
       $( filter_selector_string_tmp ).append(
-        this.makeElement( '<button>', {
+        Yadcf.makeElement( '<button>', {
           type: 'button',
           id: `yadcf-filter-${table_selector_jq_friendly}-${column_number}-externally_triggered_checkboxes-button`,
           onmousedown: Yadcf.stopPropagation,
@@ -3890,19 +3890,19 @@ class Yadcf {
 
     if ( columnObj.exclude === true ) {
       if ( columnObj.externally_triggered !== true ) {
-        exclude_str = this.makeElement( '<span>', {
+        exclude_str = Yadcf.makeElement( '<span>', {
           class: 'yadcf-exclude-wrapper',
           onmousedown: Yadcf.stopPropagation,
           onclick: Yadcf.stopPropagation
         })
         .append(
-          this.makeElement( '<div>', {
+          Yadcf.makeElement( '<div>', {
             class: 'yadcf-label small',
             text: columnObj.exclude_label
           })
         )
         .append(
-          this.makeElement( '<input>', {
+          Yadcf.makeElement( '<input>', {
             type: 'checkbox',
             title: columnObj.exclude_label,
             onclick: function( tableSel: string ) {
@@ -3914,19 +3914,19 @@ class Yadcf {
           })
         );
       } else {
-        exclude_str = this.makeElement( '<span>', {
+        exclude_str = Yadcf.makeElement( '<span>', {
           class: 'yadcf-exclude-wrapper',
-          onmousedown: this.stopPropagation,
+          onmousedown: Yadcf.stopPropagation,
           onclick: Yadcf.stopPropagation
         })
         .append(
-          this.makeElement( '<div>', {
+          Yadcf.makeElement( '<div>', {
             class: 'yadcf-label small',
             text: columnObj.exclude_label
           })
         )
         .append(
-          this.makeElement( '<input>', {
+          Yadcf.makeElement( '<input>', {
             type: 'checkbox',
             title: columnObj.exclude_label,
             onclick: Yadcf.stopPropagation
@@ -3938,19 +3938,19 @@ class Yadcf {
     null_str = $();
 
     if ( columnObj.null_check_box === true ) {
-      null_str = this.makeElement( '<span>', {
+      null_str = Yadcf.makeElement( '<span>', {
         class: 'yadcf-null-wrapper',
         onmousedown: Yadcf.stopPropagation,
         onclick: Yadcf.stopPropagation
       })
       .append(
-        this.makeElement( '<div>', {
+        Yadcf.makeElement( '<div>', {
           class: 'yadcf-label small',
           text: columnObj.null_label
         })
       )
       .append(
-        this.makeElement( '<input>', {
+        Yadcf.makeElement( '<input>', {
           type: 'checkbox',
           title: columnObj.null_label,
           onclick: function( colNo: ColumnIdx, tableSel: string ) {
@@ -3963,7 +3963,7 @@ class Yadcf {
       );
 
       if ( oTable.fnSettings().oFeatures.bServerSide !== true ) {
-        this.addNullFilterCapability( table_selector_jq_friendly, column_number as number, false );
+        Yadcf.addNullFilterCapability( table_selector_jq_friendly, column_number as number, false );
       }
     }
 
@@ -4027,10 +4027,10 @@ class Yadcf {
       }
     }
 
-    this.resetIApiIndex();
+    Yadcf.resetIApiIndex();
 
     if ( oTable.fnSettings().oFeatures.bServerSide !== true ) {
-      this.addRangeNumberAndSliderFilterCapability( table_selector_jq_friendly, fromId, toId, column_number as number, ignore_char );
+      Yadcf.addRangeNumberAndSliderFilterCapability( table_selector_jq_friendly, fromId, toId, column_number as number, ignore_char );
     }
   }
 
@@ -4062,13 +4062,13 @@ class Yadcf {
 
     column_number = column_number.substring( dashIndex + 1 );
 
-    oTable               = this.oTables[ table_selector_jq_friendly ];
-    settingsDt           = this.getSettingsObjFromTable( oTable );
-    column_number_filter = this.calcColumnNumberFilter( settingsDt, column_number, table_selector_jq_friendly );
+    oTable               = Yadcf.oTables[ table_selector_jq_friendly ];
+    settingsDt           = Yadcf.getSettingsObjFromTable( oTable );
+    column_number_filter = Yadcf.calcColumnNumberFilter( settingsDt, column_number, table_selector_jq_friendly );
 
-    $.fn.dataTable.ext.iApiIndex = this.oTablesIndex[ table_selector_jq_friendly ];
+    $.fn.dataTable.ext.iApiIndex = Yadcf.oTablesIndex[ table_selector_jq_friendly ];
 
-    columnObj = this.getOptions( oTable.selector )[ column_number ];
+    columnObj = Yadcf.getOptions( oTable.selector )[ column_number ];
 
     if ( pDate.type === 'dp' ) {
       event = pDate.target;
@@ -4136,13 +4136,13 @@ class Yadcf {
         $( '#' + event.id ).addClass( 'inuse' );
       }
 
-      this.resetIApiIndex();
+      Yadcf.resetIApiIndex();
     };
 
     if ( columnObj.filter_delay === undefined ) {
       keyUp();
     } else {
-      this.yadcfDelay( function() {
+      Yadcf.yadcfDelay( function() {
         keyUp();
       }, columnObj.filter_delay );
     }
@@ -4167,11 +4167,11 @@ class Yadcf {
       return;
     }
 
-    $.fn.dataTable.ext.iApiIndex = this.oTablesIndex[ table_selector_jq_friendly ];
+    $.fn.dataTable.ext.iApiIndex = Yadcf.oTablesIndex[ table_selector_jq_friendly ];
 
-    oTable = this.oTables[ table_selector_jq_friendly ];
+    oTable = Yadcf.oTables[ table_selector_jq_friendly ];
 
-    columnObj = this.getOptions( oTable.selector )[ column_number ];
+    columnObj = Yadcf.getOptions( oTable.selector )[ column_number ];
 
     if ( columnObj.datepicker_type === 'bootstrap-datepicker' ) {
       innerWrapperAdditionalClass = 'input-daterange';
@@ -4179,9 +4179,9 @@ class Yadcf {
 
     // Add a wrapper to hold both filter and reset button.
     $( filter_selector_string ).append(
-      this.makeElement( '<div />', {
-        onmousedown: this.stopPropagation,
-        onclick: this.stopPropagation,
+      Yadcf.makeElement( '<div />', {
+        onmousedown: Yadcf.stopPropagation,
+        onclick: Yadcf.stopPropagation,
         id: filter_wrapper_id,
         class: 'yadcf-filter-wrapper'
       })
@@ -4191,7 +4191,7 @@ class Yadcf {
     filter_selector_string_tmp = filter_selector_string;
 
     $( filter_selector_string ).append(
-      this.makeElement( '<div>', {
+      Yadcf.makeElement( '<div>', {
         id: `yadcf-filter-wrapper-inner-${table_selector_jq_friendly}-${column_number}`,
         class: `yadcf-filter-wrapper-inner ${innerWrapperAdditionalClass}`
       })
@@ -4210,8 +4210,8 @@ class Yadcf {
     }
 
     $( filter_selector_string ).append(
-      this.makeElement( '<input>', {
-        onkeydown: this.preventDefaultForEnter,
+      Yadcf.makeElement( '<input>', {
+        onkeydown: Yadcf.preventDefaultForEnter,
         placeholder: filter_default_label[0],
         id: fromId,
         class: `yadcf-filter-range-date yadcf-filter-range yadcf-filter-range-start ${columnObj.style_class}`,
@@ -4220,14 +4220,14 @@ class Yadcf {
     );
 
     $( filter_selector_string ).append(
-      this.makeElement( '<span>', {
+      Yadcf.makeElement( '<span>', {
         class: 'yadcf-filter-range-date-seperator'
       })
     );
 
     $( filter_selector_string ).append(
-      this.makeElement( '<input>', {
-        onkeydown: this.preventDefaultForEnter,
+      Yadcf.makeElement( '<input>', {
+        onkeydown: Yadcf.preventDefaultForEnter,
         placeholder: filter_default_label[1],
         id: toId,
         class: `yadcf-filter-range-date yadcf-filter-range yadcf-filter-range-end ${columnObj.style_class}`,
@@ -4240,9 +4240,9 @@ class Yadcf {
 
     if ( filter_reset_button_text !== false ) {
       $( filter_selector_string_tmp ).append(
-        this.makeElement( '<button>', {
+        Yadcf.makeElement( '<button>', {
           type: 'button',
-          onmousedown: this.stopPropagation,
+          onmousedown: Yadcf.stopPropagation,
           onclick: function( colNo: ColumnIdx, tableSel: string ) {
             return function( event: JQuery.ClickEvent ) {
               Yadcf.stopPropagation( event );
@@ -4298,7 +4298,7 @@ class Yadcf {
       $toInput.datetimepicker( datepickerObj );
 
       if ( columnObj.externally_triggered !== true ) {
-        $fromInput.add( $toInput ).on( 'dp.hide', this.dateSelect );
+        $fromInput.add( $toInput ).on( 'dp.hide', Yadcf.dateSelect );
       }
     }
     else if ( columnObj.datepicker_type === 'bootstrap-datepicker' ) {
@@ -4340,10 +4340,10 @@ class Yadcf {
     }
 
     if ( oTable.fnSettings().oFeatures.bServerSide !== true ) {
-      this.addRangeDateFilterCapability( table_selector_jq_friendly, fromId, toId, column_number, date_format );
+      Yadcf.addRangeDateFilterCapability( table_selector_jq_friendly, fromId, toId, column_number, date_format );
     }
 
-    this.resetIApiIndex();
+    Yadcf.resetIApiIndex();
   }
 
   private static addDateFilter( filter_selector_string: string, table_selector_jq_friendly: string, column_number: ColumnIdx, filter_reset_button_text: FilterResetButtonText, filter_default_label: FDL, date_format: DateFormat ): void {
@@ -4362,13 +4362,13 @@ class Yadcf {
       return;
     }
 
-    $.fn.dataTable.ext.iApiIndex = this.oTablesIndex[ table_selector_jq_friendly ];
-    oTable = this.oTables[ table_selector_jq_friendly ];
-    columnObj = this.getOptions( oTable.selector )[ column_number ];
+    $.fn.dataTable.ext.iApiIndex = Yadcf.oTablesIndex[ table_selector_jq_friendly ];
+    oTable = Yadcf.oTables[ table_selector_jq_friendly ];
+    columnObj = Yadcf.getOptions( oTable.selector )[ column_number ];
 
     // Add a wrapper to hold both filter and reset button.
     $( filter_selector_string ).append(
-      this.makeElement( '<div>', {
+      Yadcf.makeElement( '<div>', {
         onmousedown: Yadcf.stopPropagation,
         onclick: Yadcf.stopPropagation,
         id: filter_wrapper_id,
@@ -4390,7 +4390,7 @@ class Yadcf {
     }
 
     $( filter_selector_string ).append(
-      this.makeElement( '<input>', {
+      Yadcf.makeElement( '<input>', {
         onkeydown: Yadcf.preventDefaultForEnter,
         placeholder: filter_default_label as string,
         id: dateId,
@@ -4401,7 +4401,7 @@ class Yadcf {
 
     if ( filter_reset_button_text !== false ) {
       $( filter_selector_string_tmp ).append(
-        this.makeElement( '<button>', {
+        Yadcf.makeElement( '<button>', {
           type: 'button',
           id: dateId + '-reset',
           onmousedown: Yadcf.stopPropagation,
@@ -4450,16 +4450,16 @@ class Yadcf {
 
       if ( columnObj.externally_triggered !== true ) {
         if ( datepickerObj.format.toLowerCase() !== 'hh:mm' ) {
-          $( '#' + dateId ).on( 'dp.change', this.dateSelectSingle );
+          $( '#' + dateId ).on( 'dp.change', Yadcf.dateSelectSingle );
         } else {
-          $( '#' + dateId ).on( 'dp.hide', this.dateSelectSingle );
+          $( '#' + dateId ).on( 'dp.hide', Yadcf.dateSelectSingle );
         }
       }
     }
     else if ( columnObj.datepicker_type === 'bootstrap-datepicker' ) {
       $( '#' + dateId ).datepicker( datepickerObj ).on( 'changeDate', function( e ) {
         // @ts-ignore
-        this.dateSelectSingle( e );
+        Yadcf.dateSelectSingle( e );
 
         $( this ).datepicker( 'hide' );
       });
@@ -4469,7 +4469,7 @@ class Yadcf {
       new $.fn.DataTable.Editor.DateTime(
         $( '#' + dateId ), {
           format: date_format,
-          onChange: this.dateSelectSingle
+          onChange: Yadcf.dateSelectSingle
         }
       );
     }
@@ -4486,7 +4486,7 @@ class Yadcf {
     }
 
     if ( columnObj.filter_type === 'date_custom_func' ) {
-      settingsDt = this.getSettingsObjFromTable( oTable );
+      settingsDt = Yadcf.getSettingsObjFromTable( oTable );
 
       if ( oTable.fnSettings().oFeatures.bStateSave === true && oTable.fnSettings().oLoadedState ) {
         if ( oTable.fnSettings().oLoadedState.yadcfState && oTable.fnSettings().oLoadedState.yadcfState[ table_selector_jq_friendly ] && oTable.fnSettings().oLoadedState.yadcfState[ table_selector_jq_friendly ][ column_number ] ) {
@@ -4499,15 +4499,15 @@ class Yadcf {
       }
 
       if ( settingsDt.oFeatures.bServerSide !== true ) {
-        this.addCustomFunctionFilterCapability( table_selector_jq_friendly, `yadcf-filter-${table_selector_jq_friendly}-${column_number}`, column_number );
+        Yadcf.addCustomFunctionFilterCapability( table_selector_jq_friendly, `yadcf-filter-${table_selector_jq_friendly}-${column_number}`, column_number );
       }
     }
 
     if ( columnObj.datepicker_type === 'daterangepicker' && oTable.fnSettings().oFeatures.bServerSide !== true ) {
-      this.addRangeDateFilterCapability( table_selector_jq_friendly, dateId, dateId, column_number, date_format );
+      Yadcf.addRangeDateFilterCapability( table_selector_jq_friendly, dateId, dateId, column_number, date_format );
     }
 
-    this.resetIApiIndex();
+    Yadcf.resetIApiIndex();
   }
 
   private static rangeNumberSldierDrawTips( min_tip_val: number, max_tip_val: number, min_tip_id: string, max_tip_id: string, table_selector_jq_friendly: string, column_number: ColumnIdx | string ): void {
@@ -4556,17 +4556,17 @@ class Yadcf {
         settingsDt,
         column_number_filter;
 
-    event         = this.eventTargetFixUp( event );
+    event         = Yadcf.eventTargetFixUp( event );
     column_number = $( event.target ).attr( 'id' ).replace( 'yadcf-filter-', '' ).replace( table_selector_jq_friendly, '' ).replace( '-slider-', '' );
 
-    oTable               = this.oTables[ table_selector_jq_friendly ];
-    settingsDt           = this.getSettingsObjFromTable( oTable );
-    column_number_filter = this.calcColumnNumberFilter( settingsDt, column_number, table_selector_jq_friendly );
+    oTable               = Yadcf.oTables[ table_selector_jq_friendly ];
+    settingsDt           = Yadcf.getSettingsObjFromTable( oTable );
+    column_number_filter = Yadcf.calcColumnNumberFilter( settingsDt, column_number, table_selector_jq_friendly );
 
-    columnObj = this.getOptions( oTable.selector )[ column_number ];
+    columnObj = Yadcf.getOptions( oTable.selector )[ column_number ];
 
     keyUp = function() {
-      $.fn.dataTable.ext.iApiIndex = this.oTablesIndex[ table_selector_jq_friendly ];
+      $.fn.dataTable.ext.iApiIndex = Yadcf.oTablesIndex[ table_selector_jq_friendly ];
 
       if ( oTable.fnSettings().oFeatures.bServerSide !== true ) {
         oTable.fnDraw();
@@ -4628,7 +4628,7 @@ class Yadcf {
     if ( columnObj.filter_delay === undefined ) {
       keyUp();
     } else {
-      this.yadcfDelay( function() {
+      Yadcf.yadcfDelay( function() {
         keyUp();
       }, columnObj.filter_delay );
     }
@@ -4662,9 +4662,9 @@ class Yadcf {
       return;
     }
 
-    $.fn.dataTable.ext.iApiIndex = this.oTablesIndex[ table_selector_jq_friendly ];
-    oTable     = this.oTables[ table_selector_jq_friendly ];
-    settingsDt = this.settingsMap[ this.generateTableSelectorJQFriendly2( oTable ) ];
+    $.fn.dataTable.ext.iApiIndex = Yadcf.oTablesIndex[ table_selector_jq_friendly ];
+    oTable     = Yadcf.oTables[ table_selector_jq_friendly ];
+    settingsDt = Yadcf.settingsMap[ Yadcf.generateTableSelectorJQFriendly2( oTable ) ];
 
     if ( $( '#' + filter_wrapper_id ).length > 0 ) {
       $( '#' + sliderId ).slider( 'destroy' );
@@ -4672,7 +4672,7 @@ class Yadcf {
       redrawTable = true;
     }
 
-    columnObj = this.getOptions( oTable.selector )[ column_number ];
+    columnObj = Yadcf.getOptions( oTable.selector )[ column_number ];
 
     if ( settingsDt.oFeatures.bStateSave === true && settingsDt.oLoadedState ) {
       if ( settingsDt.oLoadedState.yadcfState && settingsDt.oLoadedState.yadcfState[ table_selector_jq_friendly ] && settingsDt.oLoadedState.yadcfState[ table_selector_jq_friendly ][ column_number ] ) {
@@ -4688,9 +4688,9 @@ class Yadcf {
 
     if ( isFinite( min_val as number ) && isFinite( max_val as number ) && isFinite( min_state_val ) && isFinite( max_state_val ) ) {
       // Add a wrapper to hold both filter and reset button.
-      $( filter_selector_string ).append( this.makeElement( '<div>', {
-        onmousedown: this.stopPropagation,
-        onclick: this.stopPropagation,
+      $( filter_selector_string ).append( Yadcf.makeElement( '<div>', {
+        onmousedown: Yadcf.stopPropagation,
+        onclick: Yadcf.stopPropagation,
         id: filter_wrapper_id,
         class: `yadcf-filter-wrapper ${columnObj.style_class}`
       }) );
@@ -4698,52 +4698,52 @@ class Yadcf {
       filter_selector_string    += ' div.yadcf-filter-wrapper';
       filter_selector_string_tmp = filter_selector_string;
 
-      $( filter_selector_string ).append( this.makeElement( '<div>', {
+      $( filter_selector_string ).append( Yadcf.makeElement( '<div>', {
         id: `yadcf-filter-wrapper-inner-${table_selector_jq_friendly}-${column_number}`,
         class: `yadcf-number-slider-filter-wrapper-inner -${table_selector_jq_friendly}-${column_number}`
       }) );
 
       filter_selector_string += ' div.yadcf-number-slider-filter-wrapper-inner';
 
-      $( filter_selector_string ).append( this.makeElement( '<div>', {
+      $( filter_selector_string ).append( Yadcf.makeElement( '<div>', {
         id: sliderId,
         class: 'yadcf-filter-range-number-slider'
       }) );
 
       filter_selector_string += ' #' + sliderId;
 
-      $( filter_selector_string ).append( this.makeElement( '<span>', {
+      $( filter_selector_string ).append( Yadcf.makeElement( '<span>', {
         class: 'yadcf-filter-range-number-slider-min-tip-hidden hide',
         text: min_val as string
       }) );
 
-      $( filter_selector_string ).append( this.makeElement( '<span>', {
+      $( filter_selector_string ).append( Yadcf.makeElement( '<span>', {
         class: 'yadcf-filter-range-number-slider-max-tip-hidden hide',
         text: max_val as string
       }) );
 
       if ( columnObj.externally_triggered !== true ) {
         slideFunc = function( event: any, ui: { values: Array<any>; } ) {
-          this.rangeNumberSldierDrawTips( ui.values[0], ui.values[1], min_tip_id, max_tip_id, table_selector_jq_friendly, column_number );
-          this.rangeNumberSliderChange( table_selector_jq_friendly, event, ui );
+          Yadcf.rangeNumberSldierDrawTips( ui.values[0], ui.values[1], min_tip_id, max_tip_id, table_selector_jq_friendly, column_number );
+          Yadcf.rangeNumberSliderChange( table_selector_jq_friendly, event, ui );
         };
 
         changeFunc = function( event: any, ui: { values: Array<any>; } ) {
-          this.rangeNumberSldierDrawTips( ui.values[0], ui.values[1], min_tip_id, max_tip_id, table_selector_jq_friendly, column_number );
+          Yadcf.rangeNumberSldierDrawTips( ui.values[0], ui.values[1], min_tip_id, max_tip_id, table_selector_jq_friendly, column_number );
 
           if ( event.originalEvent || $( event.target ).slider( 'option', 'yadcf-reset' ) === true ) {
             $( event.target ).slider( 'option', 'yadcf-reset', false );
 
-            this.rangeNumberSliderChange( table_selector_jq_friendly, event, ui );
+            Yadcf.rangeNumberSliderChange( table_selector_jq_friendly, event, ui );
           }
         };
       } else {
         slideFunc = function( event: any, ui: { values: Array<any>; } ) {
-          this.rangeNumberSldierDrawTips( ui.values[0], ui.values[1], min_tip_id, max_tip_id, table_selector_jq_friendly, column_number );
+          Yadcf.rangeNumberSldierDrawTips( ui.values[0], ui.values[1], min_tip_id, max_tip_id, table_selector_jq_friendly, column_number );
         };
 
         changeFunc = function( event: any, ui: { values: Array<any>; } ) {
-          this.rangeNumberSldierDrawTips( ui.values[0], ui.values[1], min_tip_id, max_tip_id, table_selector_jq_friendly, column_number );
+          Yadcf.rangeNumberSldierDrawTips( ui.values[0], ui.values[1], min_tip_id, max_tip_id, table_selector_jq_friendly, column_number );
         };
       }
 
@@ -4766,9 +4766,9 @@ class Yadcf {
       $( '#' + sliderId ).slider( sliderObj );
 
       if ( filter_reset_button_text !== false ) {
-        $( filter_selector_string_tmp ).append( this.makeElement( '<button>', {
+        $( filter_selector_string_tmp ).append( Yadcf.makeElement( '<button>', {
           type: 'button',
-          onmousedown: this.stopPropagation,
+          onmousedown: Yadcf.stopPropagation,
           onclick: function( tableSel: string ) {
             return function( event: any ) {
               Yadcf.stopPropagation( event );
@@ -4782,9 +4782,9 @@ class Yadcf {
       }
     }
 
-    $.fn.dataTable.ext.iApiIndex = this.oTablesIndex[ table_selector_jq_friendly ];
+    $.fn.dataTable.ext.iApiIndex = Yadcf.oTablesIndex[ table_selector_jq_friendly ];
 
-    oTable = this.oTables[ table_selector_jq_friendly ];
+    oTable = Yadcf.oTables[ table_selector_jq_friendly ];
 
     if ( settingsDt.oFeatures.bStateSave === true && settingsDt.oLoadedState ) {
       if ( settingsDt.oLoadedState.yadcfState && settingsDt.oLoadedState.yadcfState[ table_selector_jq_friendly ] && settingsDt.oLoadedState.yadcfState[ table_selector_jq_friendly ][ column_number ] ) {
@@ -4802,10 +4802,10 @@ class Yadcf {
       }
     }
 
-    this.resetIApiIndex();
+    Yadcf.resetIApiIndex();
 
     if ( settingsDt.oFeatures.bServerSide !== true ) {
-      this.addRangeNumberAndSliderFilterCapability( table_selector_jq_friendly, min_tip_id, max_tip_id, column_number, ignore_char, sliderMaxMin );
+      Yadcf.addRangeNumberAndSliderFilterCapability( table_selector_jq_friendly, min_tip_id, max_tip_id, column_number, ignore_char, sliderMaxMin );
     }
 
     if ( redrawTable === true ) {
@@ -4827,8 +4827,8 @@ class Yadcf {
       table_arg = table_arg.settings()[0].oInstance;
     }
 
-    tableOptions = this.getOptions( table_arg.selector );
-    table_selector_jq_friendly = this.generateTableSelectorJQFriendly2( table_arg );
+    tableOptions = Yadcf.getOptions( table_arg.selector );
+    table_selector_jq_friendly = Yadcf.generateTableSelectorJQFriendly2( table_arg );
 
     for ( columnObjKey in tableOptions ) {
       if ( tableOptions.hasOwnProperty( columnObjKey ) ) {
@@ -4848,8 +4848,8 @@ class Yadcf {
                 $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ).select2( 'destroy' );
                 break;
               case 'custom_select':
-                if ( this.selectElementCustomDestroyFunc !== undefined ) {
-                  this.selectElementCustomDestroyFunc( $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ) );
+                if ( Yadcf.selectElementCustomDestroyFunc !== undefined ) {
+                  Yadcf.selectElementCustomDestroyFunc( $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ) );
                 }
                 break;
             }
@@ -4893,11 +4893,11 @@ class Yadcf {
   }
 
   private static removeFilters( oTable: ConfigSettings ): void {
-    const tableId = this.getTableId( oTable );
+    const tableId = Yadcf.getTableId( oTable );
 
     $( '#' + tableId + ' .yadcf-filter-wrapper' ).remove();
 
-    if ( this.yadcfVersionCheck( '1.13' ) ) {
+    if ( Yadcf.yadcfVersionCheck( '1.13' ) ) {
       $( document ).off( 'draw.dt', oTable.selector );
       $( document ).off( 'xhr.dt', oTable.selector );
       $( document ).off( 'column-visibility.dt', oTable.selector );
@@ -4912,7 +4912,7 @@ class Yadcf {
       $.fn.dataTable.ext.afnFiltering.splice( 0, $.fn.dataTable.ext.afnFiltering.length );
     }
 
-    this.destroyThirdPartyPlugins( oTable );
+    Yadcf.destroyThirdPartyPlugins( oTable );
   }
 
   /**
@@ -4984,18 +4984,18 @@ class Yadcf {
       }
       else if ( columnObj.sort_as === 'num' ) {
         if ( columnObj.sort_order === 'asc' ) {
-          column_data.sort( this.sortNumAsc );
+          column_data.sort( Yadcf.sortNumAsc );
         }
         else if ( columnObj.sort_order === 'desc' ) {
-          column_data.sort( this.sortNumDesc );
+          column_data.sort( Yadcf.sortNumDesc );
         }
       }
       else if ( columnObj.sort_as === 'alphaNum' ) {
         if ( columnObj.sort_order === 'asc' ) {
-          column_data.sort( this.sortAlphaNum );
+          column_data.sort( Yadcf.sortAlphaNum );
         }
         else if ( columnObj.sort_order === 'desc' ) {
-          column_data.sort( this.sortAlphaNum );
+          column_data.sort( Yadcf.sortAlphaNum );
           column_data.reverse();
         }
       }
@@ -5013,7 +5013,7 @@ class Yadcf {
         i: number;
 
     if ( table.rows || table._ ) {
-      if ( this.yadcfVersionCheck( '1.10' ) ) {
+      if ( Yadcf.yadcfVersionCheck( '1.10' ) ) {
         dataTmp = table.rows({ search: 'applied' }).data().toArray();
       } else { // v 1.9 and below
         dataTmp = table._( 'tr', { search: 'applied' });
@@ -5043,14 +5043,14 @@ class Yadcf {
     if ( pSettings !== undefined ) {
       settingsDt = pSettings;
     } else {
-      settingsDt = this.getSettingsObjFromTable( pTable );
+      settingsDt = Yadcf.getSettingsObjFromTable( pTable );
     }
 
     if ( columnObj.cumulative_filtering !== true ) {
       data        = settingsDt.aoData;
       data_length = data.length;
     } else {
-      data        = this.getFilteredRows( pTable );
+      data        = Yadcf.getFilteredRows( pTable );
       data_length = data.length;
     }
 
@@ -5058,7 +5058,7 @@ class Yadcf {
       col_filter_array = columnObj.col_filter_array;
     }
 
-    column_number_filter = this.calcColumnNumberFilter( settingsDt, columnObj.column_number, table_selector_jq_friendly );
+    column_number_filter = Yadcf.calcColumnNumberFilter( settingsDt, columnObj.column_number, table_selector_jq_friendly );
 
     if ( isNaN( settingsDt.aoColumns[ column_number_filter ].mData ) && typeof settingsDt.aoColumns[ column_number_filter ].mData !== 'object' ) {
       columnObj.column_number_data = settingsDt.aoColumns[ column_number_filter ].mData;
@@ -5075,7 +5075,7 @@ class Yadcf {
           col_inner_elements = $( data[ j ]._aData[ column_number_filter ] );
         }
         else {
-          col_inner_elements = this.dot2obj( data[ j ]._aData, columnObj.column_number_data );
+          col_inner_elements = Yadcf.dot2obj( data[ j ]._aData, columnObj.column_number_data );
           col_inner_elements = $( col_inner_elements );
         }
 
@@ -5153,7 +5153,7 @@ class Yadcf {
             col_inner_elements = data[ j ]._aData[ column_number_filter ].split( columnObj.text_data_delimiter );
           }
           else {
-            col_inner_elements = this.dot2obj( data[ j ]._aData, columnObj.column_number_data );
+            col_inner_elements = Yadcf.dot2obj( data[ j ]._aData, columnObj.column_number_data );
             col_inner_elements = ( col_inner_elements + '' ).split( columnObj.text_data_delimiter );
           }
 
@@ -5188,7 +5188,7 @@ class Yadcf {
             col_inner_data = data[ j ]._aFilterData[ column_number_filter ];
           }
           else {
-            col_inner_data = this.dot2obj( data[ j ]._aData, columnObj.column_number_data );
+            col_inner_data = Yadcf.dot2obj( data[ j ]._aData, columnObj.column_number_data );
           }
 
           if ( trim( col_inner_data ) !== '' && !( col_filter_array.hasOwnProperty( col_inner_data ) ) ) {
@@ -5339,16 +5339,16 @@ class Yadcf {
         externally_triggered_checkboxes_function: APFT['externally_triggered_checkboxes_function'];
 
     if ( pSettings === undefined ) {
-      settingsDt = this.getSettingsObjFromTable( oTable );
+      settingsDt = Yadcf.getSettingsObjFromTable( oTable );
     } else {
       settingsDt = pSettings;
     }
 
-    this.settingsMap[ this.generateTableSelectorJQFriendly2( oTable ) ] = settingsDt;
+    Yadcf.settingsMap[ Yadcf.generateTableSelectorJQFriendly2( oTable ) ] = settingsDt;
 
-    table_selector_jq_friendly = this.generateTableSelectorJQFriendly2( oTable );
+    table_selector_jq_friendly = Yadcf.generateTableSelectorJQFriendly2( oTable );
 
-    this.initColReorder2( settingsDt, table_selector_jq_friendly );
+    Yadcf.initColReorder2( settingsDt, table_selector_jq_friendly );
 
     filters_position = $( document ).data( `${table_selector}_filters_position` ) as string;
 
@@ -5356,7 +5356,7 @@ class Yadcf {
       table_selector = `.yadcf-datatables-table-${table_selector_jq_friendly}`;
 
       if ( $( table_selector ).length === 0 ) {
-        this.scrollXYHandler( oTable, '#' + this.getTableId( oTable ) );
+        Yadcf.scrollXYHandler( oTable, '#' + Yadcf.getTableId( oTable ) );
       }
     }
 
@@ -5378,13 +5378,13 @@ class Yadcf {
         column_position     = column_number;
 
         if (
-          this.plugins[ table_selector_jq_friendly ] !== undefined &&
+          Yadcf.plugins[ table_selector_jq_friendly ] !== undefined &&
           (
-            this.plugins[ table_selector_jq_friendly ] !== undefined &&
-            this.plugins[ table_selector_jq_friendly ].ColReorder !== undefined
+            Yadcf.plugins[ table_selector_jq_friendly ] !== undefined &&
+            Yadcf.plugins[ table_selector_jq_friendly ].ColReorder !== undefined
           )
         ) {
-          column_position = this.plugins[ table_selector_jq_friendly ].ColReorder[ column_number ];
+          column_position = Yadcf.plugins[ table_selector_jq_friendly ].ColReorder[ column_number ];
         }
 
         columnObj.column_number = column_number;
@@ -5450,15 +5450,15 @@ class Yadcf {
 
         if ( filter_default_label === undefined ) {
           if ( columnObj.filter_type === 'select' || columnObj.filter_type === 'custom_func' ) {
-            filter_default_label = this.default_options.language.select;
+            filter_default_label = Yadcf.default_options.language.select;
           } else if ( columnObj.filter_type === 'multi_select' || columnObj.filter_type === 'multi_select_custom_func' ) {
-            filter_default_label = this.default_options.language.select_multi;
+            filter_default_label = Yadcf.default_options.language.select_multi;
           } else if ( columnObj.filter_type === 'auto_complete' || columnObj.filter_type === 'text' ) {
-            filter_default_label = this.default_options.language.filter;
+            filter_default_label = Yadcf.default_options.language.filter;
           } else if ( columnObj.filter_type === 'range_number' || columnObj.filter_type === 'range_date' ) {
-            filter_default_label = this.default_options.language.range;
+            filter_default_label = Yadcf.default_options.language.range;
           } else if ( columnObj.filter_type === 'date' || columnObj.filter_type === 'date_custom_func' ) {
-            filter_default_label = this.default_options.language.date;
+            filter_default_label = Yadcf.default_options.language.date;
           }
           columnObj.filter_default_label = filter_default_label;
         }
@@ -5475,18 +5475,18 @@ class Yadcf {
 
         if ( data === undefined || columnObj.append_data_to_table_data !== undefined ) {
           columnObj.col_filter_array = undefined;
-          column_data_temp           = this.parseTableColumn( oTable, columnObj, table_selector_jq_friendly, settingsDt );
+          column_data_temp           = Yadcf.parseTableColumn( oTable, columnObj, table_selector_jq_friendly, settingsDt );
 
           if ( columnObj.append_data_to_table_data !== 'before' ) {
             column_data = column_data.concat( column_data_temp );
           } else {
-            column_data_temp = this.sortColumnData( column_data_temp, columnObj );
+            column_data_temp = Yadcf.sortColumnData( column_data_temp, columnObj );
             column_data = column_data.concat( column_data_temp );
           }
         }
 
         if ( columnObj.append_data_to_table_data === undefined || columnObj.append_data_to_table_data === 'sorted' ) {
-          column_data = this.sortColumnData( column_data, columnObj );
+          column_data = Yadcf.sortColumnData( column_data, columnObj );
         }
 
         if ( columnObj.filter_type === 'range_number_slider' ) {
@@ -5514,8 +5514,8 @@ class Yadcf {
             });
           }
 
-          min_val = this.findMinInArray( column_data_render ? column_data_render : column_data, columnObj );
-          max_val = this.findMaxInArray( column_data_render ? column_data_render : column_data, columnObj );
+          min_val = Yadcf.findMinInArray( column_data_render ? column_data_render : column_data, columnObj );
+          max_val = Yadcf.findMaxInArray( column_data_render ? column_data_render : column_data, columnObj );
         }
 
         if ( filter_container_id === undefined && columnObj.filter_container_selector === undefined ) {
@@ -5656,7 +5656,7 @@ class Yadcf {
                 tmpStr = settingsDt.aoPreSearchCols[ column_position ].sSearch;
 
                 if ( columnObj.filter_type === 'select' ) {
-                  tmpStr = this.yadcfParseMatchFilter( tmpStr, this.getOptions( oTable.selector )[ column_number ].filter_match_mode );
+                  tmpStr = Yadcf.yadcfParseMatchFilter( tmpStr, Yadcf.getOptions( oTable.selector )[ column_number ].filter_match_mode );
 
                   let foundEntry = $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` + ' option' ).filter( function() {
                     return $( this ).val() === tmpStr;
@@ -5666,7 +5666,7 @@ class Yadcf {
                     $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ).addClass( 'inuse' );
                   }
                 } else if ( columnObj.filter_type === 'multi_select' ) {
-                  tmpStr = this.yadcfParseMatchFilterMultiSelect( tmpStr, this.getOptions( oTable.selector )[ column_number ].filter_match_mode );
+                  tmpStr = Yadcf.yadcfParseMatchFilterMultiSelect( tmpStr, Yadcf.getOptions( oTable.selector )[ column_number ].filter_match_mode );
                   tmpStr = (tmpStr as string).replace( /\\/g, '' );
                   tmpStr = (tmpStr as string).split( '|' );
 
@@ -5685,10 +5685,10 @@ class Yadcf {
               }
             }
 
-            this.initializeSelectPlugin( columnObj.select_type, $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ), columnObj.select_type_options );
+            Yadcf.initializeSelectPlugin( columnObj.select_type, $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ), columnObj.select_type_options );
 
             if ( columnObj.cumulative_filtering === true && columnObj.select_type === 'chosen' ) {
-              this.refreshSelectPlugin( columnObj, $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ) );
+              Yadcf.refreshSelectPlugin( columnObj, $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ) );
             }
           } else if ( columnObj.filter_type === 'auto_complete' ) {
             $( document ).data( `yadcf-filter-${table_selector_jq_friendly}-${column_number}`, column_data );
@@ -5703,19 +5703,19 @@ class Yadcf {
               columnObj.filter_container_selector = '#' + filter_container_id;
             }
 
-            if ( $( '#yadcf-filter-wrapper-' + this.generateTableSelectorJQFriendlyNew( columnObj.filter_container_selector ) ).length === 0 ) {
-              $( columnObj.filter_container_selector ).append( this.makeElement( '<div>', {
-                id: 'yadcf-filter-wrapper-' + this.generateTableSelectorJQFriendlyNew( columnObj.filter_container_selector )
+            if ( $( '#yadcf-filter-wrapper-' + Yadcf.generateTableSelectorJQFriendlyNew( columnObj.filter_container_selector ) ).length === 0 ) {
+              $( columnObj.filter_container_selector ).append( Yadcf.makeElement( '<div>', {
+                id: 'yadcf-filter-wrapper-' + Yadcf.generateTableSelectorJQFriendlyNew( columnObj.filter_container_selector )
               }) );
             }
 
-            filter_selector_string = '#yadcf-filter-wrapper-' + this.generateTableSelectorJQFriendlyNew( columnObj.filter_container_selector );
+            filter_selector_string = '#yadcf-filter-wrapper-' + Yadcf.generateTableSelectorJQFriendlyNew( columnObj.filter_container_selector );
           }
 
           if ( columnObj.filter_type === 'select' || columnObj.filter_type === 'custom_func' ) {
             // Add a wrapper to hold both filter and reset button.
             $( filter_selector_string ).append(
-              this.makeElement( '<div>', {
+              Yadcf.makeElement( '<div>', {
                 id: `yadcf-filter-wrapper-${table_selector_jq_friendly}-${column_number}`,
                 class: 'yadcf-filter-wrapper'
               })
@@ -5735,23 +5735,23 @@ class Yadcf {
               }
 
               $( filter_selector_string ).append(
-                this.makeElement( '<select>', {
+                Yadcf.makeElement( '<select>', {
                   id: `yadcf-filter-${table_selector_jq_friendly}-${column_number}`,
                   class: `yadcf-filter ${columnObj.style_class}`,
                   onchange: filterActionFn,
-                  onkeydown: this.preventDefaultForEnter,
-                  onmousedown: this.stopPropagation,
-                  onclick: this.stopPropagation,
+                  onkeydown: Yadcf.preventDefaultForEnter,
+                  onmousedown: Yadcf.stopPropagation,
+                  onclick: Yadcf.stopPropagation,
                   html: column_data
                 })
               );
 
               if ( filter_reset_button_text !== false ) {
                 $( filter_selector_string ).find( '.yadcf-filter' ).after(
-                  this.makeElement( '<button>', {
+                  Yadcf.makeElement( '<button>', {
                     type: 'button',
                     id: `yadcf-filter-${table_selector_jq_friendly}-${column_number}` + '-reset',
-                    onmousedown: this.stopPropagation,
+                    onmousedown: Yadcf.stopPropagation,
                     onclick: function( colNo, tableSel ) {
                       return function( event ) {
                         Yadcf.doFilter( 'clear', tableSel, colNo );
@@ -5769,11 +5769,11 @@ class Yadcf {
                 typeof columnObj.externally_triggered_checkboxes_function === 'function'
               ) {
                 $( filter_selector_string ).append(
-                  this.makeElement( '<button>', {
+                  Yadcf.makeElement( '<button>', {
                     type: 'button',
                     id: `yadcf-filter-${table_selector_jq_friendly}-${column_number}` + '-externally_triggered_checkboxes-button',
-                    onmousedown: this.stopPropagation,
-                    onclick: this.stopPropagation,
+                    onmousedown: Yadcf.stopPropagation,
+                    onclick: Yadcf.stopPropagation,
                     class: `yadcf-filter-externally_triggered_checkboxes-button ${columnObj.externally_triggered_checkboxes_button_style_class}`,
                     text: columnObj.externally_triggered_checkboxes_text
                   })
@@ -5785,19 +5785,19 @@ class Yadcf {
               exclude_str = $();
 
               if ( columnObj.exclude === true ) {
-                exclude_str = this.makeElement( '<span>', {
+                exclude_str = Yadcf.makeElement( '<span>', {
                   class: 'yadcf-exclude-wrapper',
-                  onmousedown: this.stopPropagation,
-                  onclick: this.stopPropagation
+                  onmousedown: Yadcf.stopPropagation,
+                  onclick: Yadcf.stopPropagation
                 })
                 .append(
-                  this.makeElement( '<div>', {
+                  Yadcf.makeElement( '<div>', {
                     class: 'yadcf-label small',
                     text: columnObj.exclude_label
                   })
                 )
                 .append(
-                  this.makeElement( '<input>', {
+                  Yadcf.makeElement( '<input>', {
                     type: 'checkbox',
                     title: columnObj.exclude_label,
                     onclick: function( colNo, tableSel ) {
@@ -5839,22 +5839,22 @@ class Yadcf {
               }
 
               $( filter_selector_string ).append(
-                this.makeElement( '<select>', {
+                Yadcf.makeElement( '<select>', {
                   id: `yadcf-filter-${table_selector_jq_friendly}-${column_number}`,
                   class: `yadcf-filter ${columnObj.style_class}`,
                   onchange: filterActionFn,
-                  onkeydown: this.preventDefaultForEnter,
-                  onmousedown: this.stopPropagation,
-                  onclick: this.stopPropagation,
+                  onkeydown: Yadcf.preventDefaultForEnter,
+                  onmousedown: Yadcf.stopPropagation,
+                  onclick: Yadcf.stopPropagation,
                   html: column_data
                 })
               );
 
               if ( filter_reset_button_text !== false ) {
                 $( filter_selector_string ).find( '.yadcf-filter' ).after(
-                  this.makeElement( '<button>', {
+                  Yadcf.makeElement( '<button>', {
                     type: 'button',
-                    onmousedown: this.stopPropagation,
+                    onmousedown: Yadcf.stopPropagation,
                     onclick: function( colNo: ColumnIdx, tableSel: string ) {
                       return function( event: JQuery.Event ) {
                         Yadcf.stopPropagation( event );
@@ -5888,15 +5888,15 @@ class Yadcf {
               }
 
               if ( settingsDt.oFeatures.bServerSide !== true ) {
-                this.addCustomFunctionFilterCapability( table_selector_jq_friendly, `yadcf-filter-${table_selector_jq_friendly}-${column_number}`, column_number );
+                Yadcf.addCustomFunctionFilterCapability( table_selector_jq_friendly, `yadcf-filter-${table_selector_jq_friendly}-${column_number}`, column_number );
               }
             }
 
             if ( settingsDt.aoPreSearchCols[ column_position ].sSearch !== '' ) {
               tmpStr = settingsDt.aoPreSearchCols[ column_position ].sSearch;
-              tmpStr = this.yadcfParseMatchFilter( tmpStr, this.getOptions( oTable.selector )[ column_number ].filter_match_mode );
+              tmpStr = Yadcf.yadcfParseMatchFilter( tmpStr, Yadcf.getOptions( oTable.selector )[ column_number ].filter_match_mode );
 
-              const match_mode = this.getOptions( oTable.selector )[ column_number ].filter_match_mode;
+              const match_mode = Yadcf.getOptions( oTable.selector )[ column_number ].filter_match_mode;
 
               let null_str        = columnObj.select_null_option;
               let excludeStrStart = '^((?!';
@@ -5904,12 +5904,12 @@ class Yadcf {
 
               switch ( match_mode ) {
                 case 'exact':
-                  null_str        = '^' + this.escapeRegExp( null_str ) + '$';
+                  null_str        = '^' + Yadcf.escapeRegExp( null_str ) + '$';
                   excludeStrStart = '((?!^';
                   excludeStrEnd   = '$).)*';
                   break;
                 case 'startsWith':
-                  null_str        = '^' + this.escapeRegExp( null_str );
+                  null_str        = '^' + Yadcf.escapeRegExp( null_str );
                   excludeStrStart = '((?!^';
                   excludeStrEnd   = ').)*$';
                   break;
@@ -5918,7 +5918,7 @@ class Yadcf {
               }
 
               null_str = '^((?!' + null_str + ').)*$';
-              null_str = this.yadcfParseMatchFilter( null_str, this.getOptions( oTable.selector )[ column_number ].filter_match_mode );
+              null_str = Yadcf.yadcfParseMatchFilter( null_str, Yadcf.getOptions( oTable.selector )[ column_number ].filter_match_mode );
 
               let exclude = false;
 
@@ -5934,7 +5934,7 @@ class Yadcf {
 
               let filter = $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` );
 
-              tmpStr = this.escapeRegExp( tmpStr );
+              tmpStr = Yadcf.escapeRegExp( tmpStr );
 
               let optionExists = filter.find( `option[value="${tmpStr}"]` ).length === 1;
 
@@ -5945,7 +5945,7 @@ class Yadcf {
                 if ( exclude ) {
                   $( `#yadcf-filter-wrapper-${table_selector_jq_friendly}-${column_number}` ).find( '.yadcf-exclude-wrapper' ).find( ':checkbox' ).prop( 'checked', true );
                   $( document ).data( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}_val`, tmpStr );
-                  this.refreshSelectPlugin( columnObj, $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ), tmpStr );
+                  Yadcf.refreshSelectPlugin( columnObj, $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ), tmpStr );
                 }
 
                 if (
@@ -5954,28 +5954,28 @@ class Yadcf {
                 ) {
                   oTable.fnFilter( '', column_number );
 
-                  this.addNullFilterCapability( table_selector_jq_friendly, column_number, true );
+                  Yadcf.addNullFilterCapability( table_selector_jq_friendly, column_number, true );
 
                   oTable.fnDraw();
 
                   $( document ).data( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}_val`, tmpStr );
 
-                  this.refreshSelectPlugin( columnObj, $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ), tmpStr );
+                  Yadcf.refreshSelectPlugin( columnObj, $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ), tmpStr );
                 }
               }
             }
 
             if ( columnObj.select_type !== undefined ) {
-              this.initializeSelectPlugin( columnObj.select_type, $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ), columnObj.select_type_options );
+              Yadcf.initializeSelectPlugin( columnObj.select_type, $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ), columnObj.select_type_options );
 
               if ( columnObj.cumulative_filtering === true && columnObj.select_type === 'chosen' ) {
-                this.refreshSelectPlugin( columnObj, $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ) );
+                Yadcf.refreshSelectPlugin( columnObj, $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ) );
               }
             }
           } else if ( columnObj.filter_type === 'multi_select' || columnObj.filter_type === 'multi_select_custom_func' ) {
             // Add a wrapper to hold both filter and reset button.
             $( filter_selector_string ).append(
-              this.makeElement( '<div>', {
+              Yadcf.makeElement( '<div>', {
                 id: `yadcf-filter-wrapper-${table_selector_jq_friendly}-${column_number}`,
                 class: 'yadcf-filter-wrapper'
               })
@@ -5995,24 +5995,24 @@ class Yadcf {
               }
 
               $( filter_selector_string ).append(
-                this.makeElement( '<select>', {
+                Yadcf.makeElement( '<select>', {
                   multiple: true,
                   'data-placeholder': filter_default_label,
                   id: `yadcf-filter-${table_selector_jq_friendly}-${column_number}`,
                   class: `yadcf-filter ${columnObj.style_class}`,
                   onchange: filterActionFn,
-                  onkeydown: this.preventDefaultForEnter,
-                  onmousedown: this.stopPropagation,
-                  onclick: this.stopPropagation,
+                  onkeydown: Yadcf.preventDefaultForEnter,
+                  onmousedown: Yadcf.stopPropagation,
+                  onclick: Yadcf.stopPropagation,
                   html: column_data
                 })
               );
 
               if ( filter_reset_button_text !== false ) {
                 $( filter_selector_string ).find( '.yadcf-filter' ).after(
-                  this.makeElement( '<button>', {
+                  Yadcf.makeElement( '<button>', {
                     type: 'button',
-                    onmousedown: this.stopPropagation,
+                    onmousedown: Yadcf.stopPropagation,
                     onclick: function( colNo: ColumnIdx, tableSel: string ) {
                       return function( event: JQuery.Event ): boolean {
                         Yadcf.stopPropagation( event );
@@ -6028,7 +6028,7 @@ class Yadcf {
 
               if ( settingsDt.aoPreSearchCols[ column_position ].sSearch !== '' ) {
                 tmpStr = settingsDt.aoPreSearchCols[ column_position ].sSearch;
-                tmpStr = this.yadcfParseMatchFilterMultiSelect( tmpStr, this.getOptions( oTable.selector )[ column_number ].filter_match_mode );
+                tmpStr = Yadcf.yadcfParseMatchFilterMultiSelect( tmpStr, Yadcf.getOptions( oTable.selector )[ column_number ].filter_match_mode );
                 tmpStr = tmpStr.replace( /\\/g, '' );
                 tmpStr = tmpStr.split( '|' );
 
@@ -6046,24 +6046,24 @@ class Yadcf {
               }
 
               $( filter_selector_string ).append(
-                this.makeElement( '<select>', {
+                Yadcf.makeElement( '<select>', {
                   multiple: true,
                   'data-placeholder': filter_default_label,
                   id: `yadcf-filter-${table_selector_jq_friendly}-${column_number}`,
                   class: `yadcf-filter ${columnObj.style_class}`,
                   onchange: filterActionFn,
-                  onkeydown: this.preventDefaultForEnter,
-                  onmousedown: this.stopPropagation,
-                  onclick: this.stopPropagation,
+                  onkeydown: Yadcf.preventDefaultForEnter,
+                  onmousedown: Yadcf.stopPropagation,
+                  onclick: Yadcf.stopPropagation,
                   html: column_data
                 })
               );
 
               if ( filter_reset_button_text !== false ) {
                 $( filter_selector_string ).find( '.yadcf-filter' ).after(
-                  this.makeElement( '<button>', {
+                  Yadcf.makeElement( '<button>', {
                     type: 'button',
-                    onmousedown: this.stopPropagation,
+                    onmousedown: Yadcf.stopPropagation,
                     onclick: function( colNo: ColumnIdx, tableSel: string ) {
                       return function( event: JQuery.Event ): boolean {
                         Yadcf.stopPropagation( event );
@@ -6094,7 +6094,7 @@ class Yadcf {
               }
 
               if ( settingsDt.oFeatures.bServerSide !== true ) {
-                this.addCustomFunctionFilterCapability( table_selector_jq_friendly, `yadcf-filter-${table_selector_jq_friendly}-${column_number}`, column_number );
+                Yadcf.addCustomFunctionFilterCapability( table_selector_jq_friendly, `yadcf-filter-${table_selector_jq_friendly}-${column_number}`, column_number );
               }
             }
 
@@ -6107,16 +6107,16 @@ class Yadcf {
             }
 
             if ( columnObj.select_type !== undefined ) {
-              this.initializeSelectPlugin( columnObj.select_type, $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ), columnObj.select_type_options );
+              Yadcf.initializeSelectPlugin( columnObj.select_type, $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ), columnObj.select_type_options );
 
               if ( columnObj.cumulative_filtering === true && columnObj.select_type === 'chosen' ) {
-                this.refreshSelectPlugin( columnObj, $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ) );
+                Yadcf.refreshSelectPlugin( columnObj, $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ) );
               }
             }
           } else if ( columnObj.filter_type === 'auto_complete' ) {
             // Add a wrapper to hold both filter and reset button.
             $( filter_selector_string ).append(
-              this.makeElement( '<div>', {
+              Yadcf.makeElement( '<div>', {
                 id: `yadcf-filter-wrapper-${table_selector_jq_friendly}-${column_number}`,
                 class: 'yadcf-filter-wrapper'
               })
@@ -6135,12 +6135,12 @@ class Yadcf {
             }
 
             $( filter_selector_string ).append(
-              this.makeElement( '<input>', {
-                onkeydown: this.preventDefaultForEnter,
+              Yadcf.makeElement( '<input>', {
+                onkeydown: Yadcf.preventDefaultForEnter,
                 id: `yadcf-filter-${table_selector_jq_friendly}-${column_number}`,
                 class: 'yadcf-filter',
-                onmousedown: this.stopPropagation,
-                onclick: this.stopPropagation,
+                onmousedown: Yadcf.stopPropagation,
+                onclick: Yadcf.stopPropagation,
                 placeholder: filter_default_label,
                 filter_match_mode: filter_match_mode,
                 onkeyup: filterActionFn
@@ -6151,7 +6151,7 @@ class Yadcf {
 
             if ( filter_reset_button_text !== false ) {
               $( filter_selector_string ).find( '.yadcf-filter' ).after(
-                this.makeElement( '<button>', {
+                Yadcf.makeElement( '<button>', {
                   type: 'button',
                   onmousedown: Yadcf.stopPropagation,
                   onclick: function( colNo, tableSel ) {
@@ -6169,7 +6169,7 @@ class Yadcf {
           } else if ( columnObj.filter_type === 'text' ) {
             // Add a wrapper to hold both filter and reset button.
             $( filter_selector_string ).append(
-              this.makeElement( '<div>', {
+              Yadcf.makeElement( '<div>', {
                 id: `yadcf-filter-wrapper-${table_selector_jq_friendly}-${column_number}`,
                 class: 'yadcf-filter-wrapper'
               })
@@ -6192,19 +6192,19 @@ class Yadcf {
 
             if ( columnObj.exclude === true ) {
               if ( columnObj.externally_triggered !== true ) {
-                exclude_str = this.makeElement( '<span>', {
+                exclude_str = Yadcf.makeElement( '<span>', {
                   class: 'yadcf-exclude-wrapper',
-                  onmousedown: this.stopPropagation,
-                  onclick: this.stopPropagation
+                  onmousedown: Yadcf.stopPropagation,
+                  onclick: Yadcf.stopPropagation
                 })
                 .append(
-                  this.makeElement( '<div>', {
+                  Yadcf.makeElement( '<div>', {
                     class: 'yadcf-label small',
                     text: columnObj.exclude_label
                   })
                 )
                 .append(
-                  this.makeElement( '<input>', {
+                  Yadcf.makeElement( '<input>', {
                     type: 'checkbox',
                     title: columnObj.exclude_label,
                     onclick: function( colNo: ColumnIdx, tableSel: string ) {
@@ -6216,22 +6216,22 @@ class Yadcf {
                   })
                 );
               } else {
-                exclude_str = this.makeElement( '<span>', {
+                exclude_str = Yadcf.makeElement( '<span>', {
                   class: 'yadcf-exclude-wrapper',
-                  onmousedown: this.stopPropagation,
-                  onclick: this.stopPropagation
+                  onmousedown: Yadcf.stopPropagation,
+                  onclick: Yadcf.stopPropagation
                 })
                 .append(
-                  this.makeElement( '<div>', {
+                  Yadcf.makeElement( '<div>', {
                     class: 'yadcf-label small',
                     text: columnObj.exclude_label
                   })
                 )
                 .append(
-                  this.makeElement( '<input>', {
+                  Yadcf.makeElement( '<input>', {
                     type: 'checkbox',
                     title: columnObj.exclude_label,
-                    onclick: this.stopPropagation
+                    onclick: Yadcf.stopPropagation
                   })
                 );
               }
@@ -6241,19 +6241,19 @@ class Yadcf {
 
             if ( columnObj.regex_check_box === true ) {
               if ( columnObj.externally_triggered !== true ) {
-                regex_str = this.makeElement( '<span>', {
+                regex_str = Yadcf.makeElement( '<span>', {
                   class: 'yadcf-regex-wrapper',
-                  onmousedown: this.stopPropagation,
-                  onclick: this.stopPropagation
+                  onmousedown: Yadcf.stopPropagation,
+                  onclick: Yadcf.stopPropagation
                 })
                 .append(
-                  this.makeElement( '<div>', {
+                  Yadcf.makeElement( '<div>', {
                     class: 'yadcf-label small',
                     text: columnObj.regex_label
                   })
                 )
                 .append(
-                  this.makeElement( '<input>', {
+                  Yadcf.makeElement( '<input>', {
                     type: 'checkbox',
                     title: columnObj.regex_label,
                     onclick: function( colNo: ColumnIdx, tableSel: string ) {
@@ -6265,19 +6265,19 @@ class Yadcf {
                   })
                 );
               } else {
-                regex_str = this.makeElement( '<span>', {
+                regex_str = Yadcf.makeElement( '<span>', {
                   class: 'yadcf-regex-wrapper',
-                  onmousedown: this.stopPropagation,
-                  onclick: this.stopPropagation
+                  onmousedown: Yadcf.stopPropagation,
+                  onclick: Yadcf.stopPropagation
                 })
                 .append(
-                  this.makeElement( '<div>', {
+                  Yadcf.makeElement( '<div>', {
                     class: 'yadcf-label small',
                     text: columnObj.regex_label
                   })
                 )
                 .append(
-                  this.makeElement( '<input>', {
+                  Yadcf.makeElement( '<input>', {
                     type: 'checkbox',
                     title: columnObj.regex_label,
                     onclick: Yadcf.stopPropagation
@@ -6289,19 +6289,19 @@ class Yadcf {
             null_str = $();
 
             if ( columnObj.null_check_box === true ) {
-              null_str = this.makeElement( '<span>', {
+              null_str = Yadcf.makeElement( '<span>', {
                 class: 'yadcf-null-wrapper',
-                onmousedown: this.stopPropagation,
-                onclick: this.stopPropagation
+                onmousedown: Yadcf.stopPropagation,
+                onclick: Yadcf.stopPropagation
               })
               .append(
-                this.makeElement( '<div>', {
+                Yadcf.makeElement( '<div>', {
                   class: 'yadcf-label small',
                   text: columnObj.null_label
                 })
               )
               .append(
-                this.makeElement( '<input>', {
+                Yadcf.makeElement( '<input>', {
                   type: 'checkbox',
                   title: columnObj.null_label,
                   onclick: function( colNo: ColumnIdx, tableSel: string ) {
@@ -6314,17 +6314,17 @@ class Yadcf {
               );
 
               if ( oTable.fnSettings().oFeatures.bServerSide !== true ) {
-                this.addNullFilterCapability( table_selector_jq_friendly, column_number, false );
+                Yadcf.addNullFilterCapability( table_selector_jq_friendly, column_number, false );
               }
             }
 
-            let append_input = this.makeElement( '<input>', {
+            let append_input = Yadcf.makeElement( '<input>', {
               type: 'text',
-              onkeydown: this.preventDefaultForEnter,
+              onkeydown: Yadcf.preventDefaultForEnter,
               id: `yadcf-filter-${table_selector_jq_friendly}-${column_number}`,
               class: `yadcf-filter ${columnObj.style_class}`,
-              onmousedown: this.stopPropagation,
-              onclick: this.stopPropagation,
+              onmousedown: Yadcf.stopPropagation,
+              onclick: Yadcf.stopPropagation,
               placeholder: filter_default_label,
               filter_match_mode: filter_match_mode,
               onkeyup: filterActionFn
@@ -6349,11 +6349,11 @@ class Yadcf {
               sel.find( '.yadcf-null-wrapper' ).hide();
 
               $( filter_selector_string ).find( '.yadcf-filter' ).after(
-                this.makeElement( '<button>', {
+                Yadcf.makeElement( '<button>', {
                   type: 'button',
                   id: `yadcf-filter-${table_selector_jq_friendly}-${column_number}-externally_triggered_checkboxes-button`,
-                  onmousedown: this.stopPropagation,
-                  onclick: this.stopPropagation,
+                  onmousedown: Yadcf.stopPropagation,
+                  onclick: Yadcf.stopPropagation,
                   class: `yadcf-filter-externally_triggered_checkboxes-button ${columnObj.externally_triggered_checkboxes_button_style_class}`,
                   text: externally_triggered_checkboxes_text
                 })
@@ -6364,10 +6364,10 @@ class Yadcf {
 
             if ( filter_reset_button_text !== false ) {
               $( filter_selector_string ).find( '.yadcf-filter' ).after(
-                this.makeElement( '<button>', {
+                Yadcf.makeElement( '<button>', {
                   type: 'button',
                   id: `yadcf-filter-${table_selector_jq_friendly}-${column_number}` + '-reset',
-                  onmousedown: this.stopPropagation,
+                  onmousedown: Yadcf.stopPropagation,
                   onclick: function( colNo: ColumnIdx, tableSel: string ) {
                     /* IIFE closure to preserve column_number */
                     return function( event: JQuery.Event ): boolean {
@@ -6382,23 +6382,23 @@ class Yadcf {
               );
             }
 
-            this.loadFromStateSaveTextFilter( oTable, settingsDt, columnObj, table_selector_jq_friendly, column_position, column_number );
+            Yadcf.loadFromStateSaveTextFilter( oTable, settingsDt, columnObj, table_selector_jq_friendly, column_position, column_number );
 
           } else if ( columnObj.filter_type === 'date' || columnObj.filter_type === 'date_custom_func' ) {
 
-            this.addDateFilter( filter_selector_string, table_selector_jq_friendly, column_number, filter_reset_button_text, filter_default_label, date_format );
+            Yadcf.addDateFilter( filter_selector_string, table_selector_jq_friendly, column_number, filter_reset_button_text, filter_default_label, date_format );
 
           } else if ( columnObj.filter_type === 'range_number' ) {
 
-            this.addRangeNumberFilter( filter_selector_string, table_selector_jq_friendly, column_number, filter_reset_button_text, filter_default_label, ignore_char );
+            Yadcf.addRangeNumberFilter( filter_selector_string, table_selector_jq_friendly, column_number, filter_reset_button_text, filter_default_label, ignore_char );
 
           } else if ( columnObj.filter_type === 'range_number_slider' ) {
 
-            this.addRangeNumberSliderFilter( filter_selector_string, table_selector_jq_friendly, column_number, filter_reset_button_text, min_val, max_val, ignore_char );
+            Yadcf.addRangeNumberSliderFilter( filter_selector_string, table_selector_jq_friendly, column_number, filter_reset_button_text, min_val, max_val, ignore_char );
 
           } else if ( columnObj.filter_type === 'range_date' ) {
 
-            this.addRangeDateFilter( filter_selector_string, table_selector_jq_friendly, column_number, filter_reset_button_text, filter_default_label, date_format );
+            Yadcf.addRangeDateFilter( filter_selector_string, table_selector_jq_friendly, column_number, filter_reset_button_text, filter_default_label, date_format );
           }
         }
 
@@ -6412,7 +6412,7 @@ class Yadcf {
         if ( columnObj.filter_type === 'auto_complete' ) {
           let autocompleteObj: JQueryUI.AutocompleteOptions = {
             source: $( document ).data( `yadcf-filter-${table_selector_jq_friendly}-${column_number}` ),
-            select: this.autocompleteSelect
+            select: Yadcf.autocompleteSelect
           };
 
           if ( columnObj.externally_triggered === true ) {
@@ -6427,15 +6427,15 @@ class Yadcf {
 
           if ( settingsDt.aoPreSearchCols[ column_position ].sSearch !== '' ) {
             tmpStr = settingsDt.aoPreSearchCols[ column_position ].sSearch;
-            tmpStr = this.yadcfParseMatchFilter( tmpStr, this.getOptions( oTable.selector )[ column_number ].filter_match_mode );
+            tmpStr = Yadcf.yadcfParseMatchFilter( tmpStr, Yadcf.getOptions( oTable.selector )[ column_number ].filter_match_mode );
             $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ).val( tmpStr ).addClass( 'inuse' );
           }
         }
       }
     }
 
-    if ( this.exFilterColumnQueue.length > 0 ) {
-      ( this.exFilterColumnQueue.shift() )();
+    if ( Yadcf.exFilterColumnQueue.length > 0 ) {
+      ( Yadcf.exFilterColumnQueue.shift() )();
     }
   }
 
@@ -6493,7 +6493,7 @@ class Yadcf {
         }
       }
 
-      tmpStr = this.yadcfParseMatchFilter( tmpStr, this.getOptions( oTable.selector )[ column_number ].filter_match_mode );
+      tmpStr = Yadcf.yadcfParseMatchFilter( tmpStr, Yadcf.getOptions( oTable.selector )[ column_number ].filter_match_mode );
 
       $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ).val( tmpStr ).addClass( 'inuse' );
     }
@@ -6532,7 +6532,7 @@ class Yadcf {
   private static isDOMSource( tableVar: ConfigSettings | globalThis.DataTables.JQueryDataTables ): boolean {
     let settingsDt: ConfigSettings;
 
-    settingsDt = this.getSettingsObjFromTable( tableVar );
+    settingsDt = Yadcf.getSettingsObjFromTable( tableVar );
 
     if ( !settingsDt.sAjaxSource && !settingsDt.ajax && settingsDt.oFeatures.bServerSide !== true ) {
       return true;
@@ -6544,7 +6544,7 @@ class Yadcf {
   private static scrollXYHandler( oTable: ConfigSettings, table_selector: string ): void {
     let $tmpSelector: JQuery,
         filters_position = $( document ).data( `${table_selector}_filters_position` ),
-        table_selector_jq_friendly = this.generateTableSelectorJQFriendly2( oTable );
+        table_selector_jq_friendly = Yadcf.generateTableSelectorJQFriendly2( oTable );
 
     if ( filters_position === 'thead' ) {
       filters_position = '.dataTables_scrollHead';
@@ -6567,17 +6567,17 @@ class Yadcf {
   }
 
   private static initAndBindTable( oTable: ConfigSettings, table_selector: string, index: number, pTableDT?: ConfigSettings ): void {
-    const table_selector_jq_friendly = this.generateTableSelectorJQFriendly2( oTable );
+    const table_selector_jq_friendly = Yadcf.generateTableSelectorJQFriendly2( oTable );
 
     let table_selector_tmp: string;
 
-    this.oTables[ table_selector_jq_friendly ] = oTable;
-    this.tablesDT[ table_selector_jq_friendly ] = pTableDT;
-    this.oTablesIndex[ table_selector_jq_friendly ] = index;
+    Yadcf.oTables[ table_selector_jq_friendly ] = oTable;
+    Yadcf.tablesDT[ table_selector_jq_friendly ] = pTableDT;
+    Yadcf.oTablesIndex[ table_selector_jq_friendly ] = index;
 
-    this.scrollXYHandler( oTable, table_selector );
+    Yadcf.scrollXYHandler( oTable, table_selector );
 
-    if ( this.isDOMSource( oTable ) )
+    if ( Yadcf.isDOMSource( oTable ) )
     {
       table_selector_tmp = table_selector;
 
@@ -6585,9 +6585,9 @@ class Yadcf {
         table_selector_tmp = table_selector.substring( 0, table_selector.lastIndexOf( ':eq' ) );
       }
 
-      this.appendFilters( oTable, this.getOptions( table_selector_tmp ), table_selector );
+      Yadcf.appendFilters( oTable, Yadcf.getOptions( table_selector_tmp ), table_selector );
 
-      if ( this.getOptions( table_selector_tmp )[ this.firstFromObject( this.getOptions( table_selector_tmp ) ) ].cumulative_filtering === true ) {
+      if ( Yadcf.getOptions( table_selector_tmp )[ Yadcf.firstFromObject( Yadcf.getOptions( table_selector_tmp ) ) ].cumulative_filtering === true ) {
         // When filters should be populated only from visible rows (non filtered).
         // @ts-ignore
         $( document ).off( 'search.dt', oTable.selector ).on( 'search.dt', oTable.selector, ( e: Event, settings: ConfigSettings, json: Record<string, any> ) => {
@@ -6597,19 +6597,19 @@ class Yadcf {
             table_selector_tmp = table_selector.substring( 0, table_selector.lastIndexOf( ':eq' ) );
           }
 
-          this.appendFilters( oTable, Yadcf.getOptions( table_selector_tmp ), oTable.selector, settings );
+          Yadcf.appendFilters( oTable, Yadcf.getOptions( table_selector_tmp ), oTable.selector, settings );
         });
       }
     }
     else
     {
-      this.appendFilters( oTable, this.getOptions( table_selector ), table_selector );
+      Yadcf.appendFilters( oTable, Yadcf.getOptions( table_selector ), table_selector );
 
-      if ( this.yadcfVersionCheck( '1.10' ) ) {
+      if ( Yadcf.yadcfVersionCheck( '1.10' ) ) {
         $( document ).off( 'xhr.dt', oTable.selector ).on( 'xhr.dt', oTable.selector, ( e: any, settings: ConfigSettings, json: Record<string, any> ) => {
           let col_num: string,
               column_number_filter: any,
-              table_selector_jq_friendly: string = this.generateTableSelectorJQFriendly2( oTable );
+              table_selector_jq_friendly: string = Yadcf.generateTableSelectorJQFriendly2( oTable );
 
           if ( !json ) {
             console.log( 'datatables `xhr.dt` event came back with null as data (nothing for yadcf to do with it).' );
@@ -6617,27 +6617,27 @@ class Yadcf {
           }
 
           if ( settings.oSavedState !== null ) {
-            this.initColReorder2( settings, table_selector_jq_friendly );
+            Yadcf.initColReorder2( settings, table_selector_jq_friendly );
           }
 
-          for ( col_num in this.getOptions( settings.oInstance.selector ) ) {
-            if ( this.getOptions( settings.oInstance.selector ).hasOwnProperty( col_num ) ) {
+          for ( col_num in Yadcf.getOptions( settings.oInstance.selector ) ) {
+            if ( Yadcf.getOptions( settings.oInstance.selector ).hasOwnProperty( col_num ) ) {
               if ( json[`yadcf_data_${col_num}`] !== undefined ) {
                 column_number_filter = col_num;
 
-                if ( settings.oSavedState !== null && this.plugins[ table_selector_jq_friendly ] !== undefined ) {
-                  column_number_filter = this.plugins[ table_selector_jq_friendly ].ColReorder[ col_num ];
+                if ( settings.oSavedState !== null && Yadcf.plugins[ table_selector_jq_friendly ] !== undefined ) {
+                  column_number_filter = Yadcf.plugins[ table_selector_jq_friendly ].ColReorder[ col_num ];
                 }
 
-                this.getOptions( settings.oInstance.selector )[ col_num ].data = json[`yadcf_data_${column_number_filter}`];
+                Yadcf.getOptions( settings.oInstance.selector )[ col_num ].data = json[`yadcf_data_${column_number_filter}`];
               }
             }
           }
 
-          if ( this.dTXhrComplete !== undefined ) {
-            this.yadcfDelay( () => {
-              this.dTXhrComplete();
-              this.dTXhrComplete = undefined;
+          if ( Yadcf.dTXhrComplete !== undefined ) {
+            Yadcf.yadcfDelay( () => {
+              Yadcf.dTXhrComplete();
+              Yadcf.dTXhrComplete = undefined;
             }, 100 );
           }
         });
@@ -6645,7 +6645,7 @@ class Yadcf {
     }
 
     // Events that affects both DOM and Ajax.
-    if ( this.yadcfVersionCheck( '1.10' ) )
+    if ( Yadcf.yadcfVersionCheck( '1.10' ) )
     {
       $( document ).off( 'stateLoaded.dt', oTable.selector ).on( 'stateLoaded.dt', oTable.selector, ( event: any, settings: ConfigSettings ) => {
         let args = Yadcf.getOptions( settings.oInstance.selector );
@@ -6659,44 +6659,44 @@ class Yadcf {
             column_number = +column_number;
 
             let column_position            = column_number;
-            let table_selector_jq_friendly = this.generateTableSelectorJQFriendly2( oTable );
+            let table_selector_jq_friendly = Yadcf.generateTableSelectorJQFriendly2( oTable );
 
-            this.loadFromStateSaveTextFilter( oTable, settings, columnObj, table_selector_jq_friendly, column_position, column_number );
+            Yadcf.loadFromStateSaveTextFilter( oTable, settings, columnObj, table_selector_jq_friendly, column_position, column_number );
           }
         }
       });
 
       $( document ).off( 'draw.dt', oTable.selector ).on( 'draw.dt', oTable.selector, ( event: any, settings: ConfigSettings ) => {
-        this.appendFilters( oTable, this.getOptions( settings.oInstance.selector ), settings.oInstance.selector, settings );
+        Yadcf.appendFilters( oTable, Yadcf.getOptions( settings.oInstance.selector ), settings.oInstance.selector, settings );
       });
 
       $( document ).off( 'column-visibility.dt', oTable.selector ).on( 'column-visibility.dt', oTable.selector, ( e: any, settings: ConfigSettings, col_num: ColumnIdx, state: any ) => {
         const obj: Partial<APFT> = {},
-              columnsObj = this.getOptions( settings.oInstance.selector );
+              columnsObj = Yadcf.getOptions( settings.oInstance.selector );
 
         if ( state === true && settings._oFixedColumns === undefined ) {
           if (
-            this.plugins[ table_selector_jq_friendly ] !== undefined &&
-            this.plugins[ table_selector_jq_friendly ].ColReorder !== undefined
+            Yadcf.plugins[ table_selector_jq_friendly ] !== undefined &&
+            Yadcf.plugins[ table_selector_jq_friendly ].ColReorder !== undefined
           ) {
-            col_num = this.plugins[ table_selector_jq_friendly ].ColReorder[ col_num ];
+            col_num = Yadcf.plugins[ table_selector_jq_friendly ].ColReorder[ col_num ];
           } else if ( settings.oSavedState && settings.oSavedState.ColReorder !== undefined ) {
             col_num = settings.oSavedState.ColReorder[ col_num ];
           }
 
-          obj[ col_num ] = this.getOptions( settings.oInstance.selector )[ col_num ];
+          obj[ col_num ] = Yadcf.getOptions( settings.oInstance.selector )[ col_num ];
 
           if ( obj[ col_num ] !== undefined ) {
             obj[ col_num ].column_number = col_num;
 
             if ( obj[ col_num ] !== undefined ) {
-              this.appendFilters( this.oTables[ this.generateTableSelectorJQFriendly2( settings ) ], obj, settings.oInstance.selector, settings );
+              Yadcf.appendFilters( Yadcf.oTables[ Yadcf.generateTableSelectorJQFriendly2( settings ) ], obj, settings.oInstance.selector, settings );
             }
           }
         }
         else if ( settings._oFixedColumns !== undefined ) {
-          this.appendFilters(
-            this.oTables[ this.generateTableSelectorJQFriendly2( settings ) ],
+          Yadcf.appendFilters(
+            Yadcf.oTables[ Yadcf.generateTableSelectorJQFriendly2( settings ) ],
             columnsObj,
             settings.oInstance.selector,
             settings
@@ -6705,30 +6705,30 @@ class Yadcf {
       });
 
       $( document ).off( 'column-reorder.dt', oTable.selector ).on( 'column-reorder.dt', oTable.selector, ( e: any, settings: ConfigSettings, json: Record<string, any> ) => {
-        const table_selector_jq_friendly = this.generateTableSelectorJQFriendly2( oTable );
-        this.initColReorderFromEvent( table_selector_jq_friendly );
+        const table_selector_jq_friendly = Yadcf.generateTableSelectorJQFriendly2( oTable );
+        Yadcf.initColReorderFromEvent( table_selector_jq_friendly );
       });
 
       $( document ).off( 'destroy.dt', oTable.selector ).on( 'destroy.dt', oTable.selector, ( e: any, ui: Record<string, any> ) => {
-        this.removeFilters( oTable );
-        this.removeFilters( ui.oInstance )
+        Yadcf.removeFilters( oTable );
+        Yadcf.removeFilters( ui.oInstance )
       });
     }
     else
     {
       $( document ).off( 'draw', oTable.selector ).on( 'draw', oTable.selector, ( e: any, settings: ConfigSettings ) => {
-        this.appendFilters( oTable, this.getOptions( settings.oInstance.selector ), settings.oInstance.selector, settings );
+        Yadcf.appendFilters( oTable, Yadcf.getOptions( settings.oInstance.selector ), settings.oInstance.selector, settings );
       });
 
       $( document ).off( 'destroy', oTable.selector ).on( 'destroy', oTable.selector, ( e: any, ui: Record<string, any> ) => {
-        this.removeFilters( oTable );
-        this.removeFilters( ui.oInstance.selector );
+        Yadcf.removeFilters( oTable );
+        Yadcf.removeFilters( ui.oInstance.selector );
       });
     }
 
     if ( oTable.fnSettings().oFeatures.bStateSave === true )
     {
-      if ( this.yadcfVersionCheck( '1.10' ) )
+      if ( Yadcf.yadcfVersionCheck( '1.10' ) )
       {
         $( oTable.selector as string ).off( 'stateSaveParams.dt' ).on( 'stateSaveParams.dt', ( e: any, settings: ConfigSettings, data: Record<string, any> ) => {
           if ( settings.oLoadedState && settings.oLoadedState.yadcfState !== undefined ) {
@@ -6750,7 +6750,7 @@ class Yadcf {
       }
 
       // When using DOM source.
-      if ( this.isDOMSource( oTable ) ) {
+      if ( Yadcf.isDOMSource( oTable ) ) {
         // We need to make sure that the yadcf state will be saved after page reload.
         oTable.fnSettings().oApi._fnSaveState( oTable.fnSettings() );
         // Redraw the table in order to apply the filters.
@@ -6759,68 +6759,11 @@ class Yadcf {
     }
   }
 
-  private static extendJQuery() {
-    $.extend( $.fn, {
-      yadcf: function( options_arg: ArrayObjects, params: any ) {
-        const tableSelector: string = '#' + this.fnSettings().sTableId;
-
-        let i: number = 0,
-            tmpParams: any,
-            selector: string;
-
-        // In case that instance.selector will be undefined (jQuery 3).
-        if ( this.selector === undefined ) {
-          this.selector = tableSelector;
-        }
-
-        if ( params === undefined ) {
-          params = {};
-        }
-
-        if ( typeof params === 'string' ) {
-          tmpParams               = params;
-          params                  = {};
-          params.filters_position = tmpParams;
-        }
-
-        if ( params.filters_position === undefined || params.filters_position === 'header' ) {
-          params.filters_position = 'thead';
-        } else {
-          params.filters_position = 'tfoot';
-        }
-
-        $( document ).data( `${this.selector}_filters_position`, params.filters_position );
-
-        if ( $( this.selector ).length === 1 ) {
-          Yadcf.setOptions( this.selector, options_arg, params );
-          Yadcf.initAndBindTable( this, this.selector, 0 );
-        } else {
-          for ( i; i < $( this.selector ).length; i++ ) {
-            $.fn.dataTable.ext.iApiIndex = i;
-
-            selector = `${this.selector}:eq(${i})`;
-
-            Yadcf.setOptions( this.selector, options_arg, params );
-            Yadcf.initAndBindTable( this, selector, i );
-          }
-
-          $.fn.dataTable.ext.iApiIndex = 0;
-        }
-
-        if ( params.onInitComplete !== undefined ) {
-          params.onInitComplete();
-        }
-
-        return this;
-      }
-    });
-  }
-
   private static appendFiltersMultipleTables( tablesArray: Array<ConfigSettings>, tablesSelectors: string, colObjDummy: APFT ): void {
     let filter_selector_string: string = '#' + colObjDummy.filter_container_id,
-        table_selector_jq_friendly: string = this.generateTableSelectorJQFriendlyNew( tablesSelectors ),
-        column_number_str: string = this.columnsArrayToString( colObjDummy.column_number ).column_number_str.toString(),
-        filterOptions: APFT = this.getOptions( tablesSelectors + '_' + column_number_str )[ column_number_str ],
+        table_selector_jq_friendly: string = Yadcf.generateTableSelectorJQFriendlyNew( tablesSelectors ),
+        column_number_str: string = Yadcf.columnsArrayToString( colObjDummy.column_number ).column_number_str.toString(),
+        filterOptions: APFT = Yadcf.getOptions( tablesSelectors + '_' + column_number_str )[ column_number_str ],
         options_tmp: JQuery<HTMLOptionElement>,
         ii: number,
         tableTmp: any,
@@ -6834,7 +6777,7 @@ class Yadcf {
 
     //add a wrapper to hold both filter and reset button
     $( filter_selector_string ).append(
-      this.makeElement( '<div>', {
+      Yadcf.makeElement( '<div>', {
         id: `yadcf-filter-wrapper-${table_selector_jq_friendly}-${column_number_str}`,
         class: 'yadcf-filter-wrapper'
       })
@@ -6851,7 +6794,7 @@ class Yadcf {
     switch ( filterOptions.filter_type ) {
       case 'text':
         $( filter_selector_string ).append(
-          this.makeElement( '<input>', {
+          Yadcf.makeElement( '<input>', {
             type: 'text',
             id: `yadcf-filter-${table_selector_jq_friendly}-${column_number_str}`,
             class: 'yadcf-filter',
@@ -6870,7 +6813,7 @@ class Yadcf {
 
         if ( filterOptions.filter_reset_button_text !== false ) {
           $( filter_selector_string ).find( '.yadcf-filter' ).after(
-            this.makeElement( '<button>', {
+            Yadcf.makeElement( '<button>', {
               type: 'button',
               id: `yadcf-filter-${table_selector_jq_friendly}-${column_number_str}-reset`,
               onmousedown: Yadcf.stopPropagation,
@@ -6893,14 +6836,14 @@ class Yadcf {
           tableTmp = tablesArray[0];
         }
 
-        settingsDt = this.getSettingsObjFromTable( tableTmp );
+        settingsDt = Yadcf.getSettingsObjFromTable( tableTmp );
 
         if (
           settingsDt.aoPreSearchCols[ columnForStateSaving ] &&
           settingsDt.aoPreSearchCols[ columnForStateSaving ].sSearch !== ''
         ) {
           tmpStr = settingsDt.aoPreSearchCols[ columnForStateSaving ].sSearch;
-          tmpStr = this.yadcfParseMatchFilter( tmpStr as string, filterOptions.filter_match_mode );
+          tmpStr = Yadcf.yadcfParseMatchFilter( tmpStr as string, filterOptions.filter_match_mode );
 
           $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number_str}` ).val( tmpStr ).addClass( 'inuse' );
         }
@@ -6936,13 +6879,13 @@ class Yadcf {
               tableTmp = tablesArray[ tableTmpArrIndex ];
             }
 
-            if ( this.isDOMSource( tableTmp ) ) {
+            if ( Yadcf.isDOMSource( tableTmp ) ) {
               // Check if ajax source, if so, listen for dt.draw.
               columnsTmpArr = filterOptions.column_number;
 
               for ( column_number_index = 0; column_number_index < [ columnsTmpArr ].length; column_number_index++ ) {
                 filterOptions.column_number = columnsTmpArr[ column_number_index ];
-                filterOptions.data          = filterOptions.data.concat( this.parseTableColumn( tableTmp, filterOptions, table_selector_jq_friendly ) );
+                filterOptions.data          = filterOptions.data.concat( Yadcf.parseTableColumn( tableTmp, filterOptions, table_selector_jq_friendly ) );
               }
 
               filterOptions.column_number = columnsTmpArr;
@@ -6955,11 +6898,11 @@ class Yadcf {
 
                 for ( column_number_index = 0; column_number_index < [ columnsTmpArr ].length; column_number_index++ ) {
                   filterOptions.column_number = columnsTmpArr[ column_number_index ];
-                  filterOptions.data          = filterOptions.data.concat( this.parseTableColumn( tableTmp, filterOptions, table_selector_jq_friendly, ui ) );
+                  filterOptions.data          = filterOptions.data.concat( Yadcf.parseTableColumn( tableTmp, filterOptions, table_selector_jq_friendly, ui ) );
                 }
 
                 filterOptions.column_number = columnsTmpArr;
-                filterOptions.data          = this.sortColumnData( filterOptions.data, filterOptions );
+                filterOptions.data          = Yadcf.sortColumnData( filterOptions.data, filterOptions );
 
                 for ( ii = 0; ii < filterOptions.data.length; ii++ ) {
                   options_tmp = options_tmp.add(
@@ -6973,10 +6916,10 @@ class Yadcf {
                 $( '#' + filterOptions.filter_container_id + ' select' ).empty().append( options_tmp );
 
                 if ( filterOptions.select_type !== undefined ) {
-                  this.initializeSelectPlugin( filterOptions.select_type, $( '#' + filterOptions.filter_container_id + ' select' ), filterOptions.select_type_options );
+                  Yadcf.initializeSelectPlugin( filterOptions.select_type, $( '#' + filterOptions.filter_container_id + ' select' ), filterOptions.select_type_options );
 
                   if ( filterOptions.cumulative_filtering === true && filterOptions.select_type === 'chosen' ) {
-                    this.refreshSelectPlugin( filterOptions, $( '#' + filterOptions.filter_container_id + ' select' ) );
+                    Yadcf.refreshSelectPlugin( filterOptions, $( '#' + filterOptions.filter_container_id + ' select' ) );
                   }
                 }
               });
@@ -6984,7 +6927,7 @@ class Yadcf {
           }
         }
 
-        filterOptions.data = this.sortColumnData( filterOptions.data, filterOptions );
+        filterOptions.data = Yadcf.sortColumnData( filterOptions.data, filterOptions );
 
         if ( tablesArray[0].table !== undefined ) {
           tableTmp = $( '#' + (tablesArray[0].table().node() as HTMLElement).id ).dataTable();
@@ -6992,7 +6935,7 @@ class Yadcf {
           tableTmp = tablesArray[0];
         }
 
-        settingsDt = this.getSettingsObjFromTable( tableTmp );
+        settingsDt = Yadcf.getSettingsObjFromTable( tableTmp );
 
         if ( typeof filterOptions.data[0] === 'object' ) {
           for ( ii = 0; ii < filterOptions.data.length; ii++ ) {
@@ -7016,7 +6959,7 @@ class Yadcf {
 
         if ( filterOptions.filter_type === 'select' ) {
           $( filter_selector_string ).append(
-            this.makeElement( '<select>', {
+            Yadcf.makeElement( '<select>', {
               id: `yadcf-filter-${table_selector_jq_friendly}-${column_number_str}`,
               class: 'yadcf-filter',
               onchange: function( colNo: string ) {
@@ -7033,12 +6976,12 @@ class Yadcf {
 
           if ( settingsDt.aoPreSearchCols[ columnForStateSaving ].sSearch !== '' ) {
             tmpStr = settingsDt.aoPreSearchCols[ columnForStateSaving ].sSearch;
-            tmpStr = this.yadcfParseMatchFilter( tmpStr as string, filterOptions.filter_match_mode );
+            tmpStr = Yadcf.yadcfParseMatchFilter( tmpStr as string, filterOptions.filter_match_mode );
             $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number_str}` ).val( tmpStr ).addClass( 'inuse' );
           }
         } else if ( filterOptions.filter_type === 'multi_select' ) {
           $( filter_selector_string ).append(
-            this.makeElement( '<select>', {
+            Yadcf.makeElement( '<select>', {
               multiple: true,
               'data-placeholder': filterOptions.filter_default_label,
               id: `yadcf-filter-${table_selector_jq_friendly}-${column_number_str}`,
@@ -7049,15 +6992,15 @@ class Yadcf {
                   Yadcf.doFilterMultiTablesMultiSelect( tablesSelectors, event, colNo );
                 };
               }( column_number_str ),
-              onmousedown: this.stopPropagation,
-              onclick: this.stopPropagation,
+              onmousedown: Yadcf.stopPropagation,
+              onclick: Yadcf.stopPropagation,
               html: options_tmp
             })
           );
 
           if ( settingsDt.aoPreSearchCols[ columnForStateSaving ].sSearch !== '' ) {
             tmpStr = settingsDt.aoPreSearchCols[ columnForStateSaving ].sSearch;
-            tmpStr = this.yadcfParseMatchFilterMultiSelect( tmpStr as string, filterOptions.filter_match_mode );
+            tmpStr = Yadcf.yadcfParseMatchFilterMultiSelect( tmpStr as string, filterOptions.filter_match_mode );
             tmpStr = tmpStr.replace( /\\/g, '' );
             tmpStr = tmpStr.split( '|' );
 
@@ -7068,10 +7011,10 @@ class Yadcf {
         if ( filterOptions.filter_type === 'select' ) {
           if ( filterOptions.filter_reset_button_text !== false ) {
             $( filter_selector_string ).find( '.yadcf-filter' ).after(
-              this.makeElement( '<button>', {
+              Yadcf.makeElement( '<button>', {
                 type: 'button',
                 id: `yadcf-filter-${table_selector_jq_friendly}-${column_number_str}-reset`,
-                onmousedown: this.stopPropagation,
+                onmousedown: Yadcf.stopPropagation,
                 onclick: function( colNo ) {
                   return function( event ) {
                     Yadcf.stopPropagation( event );
@@ -7087,7 +7030,7 @@ class Yadcf {
         } else if ( filterOptions.filter_type === 'multi_select' ) {
           if ( filterOptions.filter_reset_button_text !== false ) {
             $( filter_selector_string ).find( '.yadcf-filter' ).after(
-              this.makeElement( '<button>', {
+              Yadcf.makeElement( '<button>', {
                 type: 'button',
                 id: `yadcf-filter-${table_selector_jq_friendly}-${column_number_str}-reset`,
                 onmousedown: Yadcf.stopPropagation,
@@ -7106,10 +7049,10 @@ class Yadcf {
         }
 
         if ( filterOptions.select_type !== undefined ) {
-          this.initializeSelectPlugin( filterOptions.select_type, $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number_str}` ), filterOptions.select_type_options );
+          Yadcf.initializeSelectPlugin( filterOptions.select_type, $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number_str}` ), filterOptions.select_type_options );
 
           if ( filterOptions.cumulative_filtering === true && filterOptions.select_type === 'chosen' ) {
-            this.refreshSelectPlugin( filterOptions, $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number_str}` ) );
+            Yadcf.refreshSelectPlugin( filterOptions, $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number_str}` ) );
           }
         }
         break;
@@ -7119,15 +7062,15 @@ class Yadcf {
   }
 
   private static close3rdPPluginsNeededClose( evt: any ) {
-    if ( this.closeBootstrapDatepickerRange ) {
+    if ( Yadcf.closeBootstrapDatepickerRange ) {
       $( '.yadcf-filter-range-date' ).not( $( evt.target ) ).datepicker( 'hide' );
     }
 
-    if ( this.closeBootstrapDatepicker ) {
+    if ( Yadcf.closeBootstrapDatepicker ) {
       $( '.yadcf-filter-date' ).not( $( evt.target ) ).datepicker( 'hide' );
     }
 
-    if ( this.closeSelect2 ) {
+    if ( Yadcf.closeSelect2 ) {
       let currentSelect2;
 
       if ( evt.target.className.indexOf( 'yadcf-filter-reset-button' ) !== -1 ) {
@@ -7215,6 +7158,59 @@ class Yadcf {
     $selector.find( '.yadcf-null-wrapper :checkbox' ).prop( 'checked', false );
   }
 }
+
+$.fn.yadcf = function( options_arg: ArrayObjects, params: any ) {
+  const tableSelector: string = '#' + this.fnSettings().sTableId;
+
+  let i: number = 0,
+      tmpParams: any,
+      selector: string;
+
+  // In case that instance.selector will be undefined (jQuery 3).
+  if ( this.selector === undefined ) {
+    this.selector = tableSelector;
+  }
+
+  if ( params === undefined ) {
+    params = {};
+  }
+
+  if ( typeof params === 'string' ) {
+    tmpParams               = params;
+    params                  = {};
+    params.filters_position = tmpParams;
+  }
+
+  if ( params.filters_position === undefined || params.filters_position === 'header' ) {
+    params.filters_position = 'thead';
+  } else {
+    params.filters_position = 'tfoot';
+  }
+
+  $( document ).data( `${this.selector}_filters_position`, params.filters_position );
+
+  if ( $( this.selector ).length === 1 ) {
+    Yadcf.setOptions( this.selector, options_arg, params );
+    Yadcf.initAndBindTable( this, this.selector, 0 );
+  } else {
+    for ( i; i < $( this.selector ).length; i++ ) {
+      $.fn.dataTable.ext.iApiIndex = i;
+
+      selector = `${this.selector}:eq(${i})`;
+
+      Yadcf.setOptions( this.selector, options_arg, params );
+      Yadcf.initAndBindTable( this, selector, i );
+    }
+
+    $.fn.dataTable.ext.iApiIndex = 0;
+  }
+
+  if ( params.onInitComplete !== undefined ) {
+    params.onInitComplete();
+  }
+
+  return this;
+};
 
 const yadcf = Yadcf.instance();
 export default yadcf;
