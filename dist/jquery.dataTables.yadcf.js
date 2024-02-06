@@ -2,7 +2,6 @@ import $ from 'jquery';
 import 'chosen-js';
 import includes from 'lodash/includes';
 import trim from 'lodash/trim';
-// @ts-ignore
 import moment from 'moment';
 class Yadcf {
     static _instance = null;
@@ -2233,7 +2232,6 @@ class Yadcf {
                     val = val.split(columnObj.range_data_type_delim);
                     valFrom = (val[0] !== '') ? (+val[0]) : val[0];
                     valTo = (val[1] !== '') ? (+val[1]) : val[1];
-                    // @ts-ignore
                     if (!columnObj.range_data_operator) {
                         if (min === '' && max === '') {
                             retVal = true;

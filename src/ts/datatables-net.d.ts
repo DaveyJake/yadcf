@@ -8,11 +8,13 @@
 //   Armin Sander <https://github.com/pragmatrix>
 //   Craig Boland <https://github.com/CNBoland>
 
+// @ts-ignore
 import DataTable, { type Api, type ApiStatic, type Config as Config2, type DataTablesStaticExt as DTStaticExt, type DomSelector } from 'datatables.net';
 
 declare type JQueryDataTableJq = DataTables.JQueryDataTableJq;
 declare type JQueryDataTables  = DataTables.JQueryDataTables;
 
+// @ts-ignore
 declare type DT = (Api<any> | JQueryDataTableApi | DataTable<any> | JQueryDataTableJq) &
     { fnSettings(): DTSettings } &
     { fnDraw( settings?: DTSettings | SettingsDT | boolean ): void } &
@@ -20,6 +22,7 @@ declare type DT = (Api<any> | JQueryDataTableApi | DataTable<any> | JQueryDataTa
 
 declare type DTSettings = (DataTables.Settings & DataTables.SettingsLegacy & DataTables.ExtSettings & Config) &
     { fnSettings(): DataTables.SettingsLegacy } &
+    // @ts-ignore
     { oLoadedState: Config['stateLoaded'] } &
     { oSavedState: { ColReorder: InstanceType<ApiStatic> } } &
     { aoPreSearchCols: DataTables.SettingsLegacy['aoPreSearchCols'] };

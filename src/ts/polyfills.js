@@ -4,8 +4,8 @@
  *
  * @since 0.9.5beta
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.entries = exports.forEach = void 0;
+Object.defineProperty(export, "__esModule", { value: true });
+export.entries = export.forEach = void 0;
 // NodeList.prototype.forEach
 var forEach = function (callback, thisArg) {
     thisArg = thisArg || window;
@@ -13,7 +13,7 @@ var forEach = function (callback, thisArg) {
         callback.call(thisArg, this[i], i, this);
     }
 };
-exports.forEach = forEach;
+export.forEach = forEach;
 // Object.entries
 var entries = function (obj) {
     var ownProps = Object.keys(obj);
@@ -23,4 +23,4 @@ var entries = function (obj) {
     }
     return resArray;
 };
-exports.entries = entries;
+export.entries = entries;

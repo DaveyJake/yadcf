@@ -2,7 +2,8 @@
 // Project: yadcf
 // Definitions by: Davey Jacobson <https://daveyjake.dev>
 
-import DataTable, { type Api, type ColumnIdx as ColumnNumber, type ColumnSelector as ColSelector, type Config } from 'datatables.net';
+// @ts-ignore
+import DataTable, { type Api, type ColumnIdx as ColumnNumber, type ColumnSelector as ColSelector, type Config, type DomSelector } from 'datatables.net';
 import { DataTables, type DT } from './datatables-net.d';
 
 //
@@ -911,9 +912,9 @@ interface ColumnNumberObject {
   column_number: ColumnIdx | Array<ColumnIdx | string>;
 }
 
-type ArrayObjects   = Array<{ [ key: string ]: any }>;
-type ColumnObj      = Partial<APFT>;
-declare type ConfigSettings = Api<any> & Config & DataTables.JQueryDataTables & DataTables.SettingsLegacy & DT;
+declare type ArrayObjects   = Array<{ [ key: string ]: any }>;
+declare type ColumnObj      = Partial<APFT>;
+declare type ConfigSettings = Api<any> & Config & DataTables.JQueryDataTables & DataTables.SettingsLegacy & DT & { selector: DomSelector };
 
 declare interface YADCF {
   /**

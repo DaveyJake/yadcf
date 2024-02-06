@@ -539,6 +539,7 @@
                          filter_container_id: '' (required),
      Note:               All the usual properties of yadcf should be supported in initMultipleColumns too!
  */
+// @ts-ignore
 import type { Api, DomSelector, RowIdx } from 'datatables.net';
 import type { DT, Config, DataTables, DTSettings, SettingsDT } from './datatables-net';
 import type {
@@ -547,10 +548,13 @@ import type {
   FDL,
   FMM,
   YADCF,
+  ArrayObjects,
   AllParameters,
   ColumnDataRender,
   ColumnDataType,
   ColumnIdx,
+  ColumnNumberObject,
+  ColumnObj,
   ColumnParameters,
   ConfigSettings,
   CustomFunc,
@@ -567,12 +571,12 @@ import type {
   SelectTypeOptions,
   TableParameters,
   HTMLDataType,
-} from '.';
+} from './index';
 import $ from 'jquery';
 import 'chosen-js';
-import './polyfills';
 import includes from 'lodash/includes';
 import trim from 'lodash/trim';
+// @ts-ignore
 import moment, { type Moment } from 'moment';
 
 class Yadcf {
@@ -3099,6 +3103,7 @@ class Yadcf {
 
     if (
       ( settingsDt.oSavedState && settingsDt.oSavedState.ColReorder !== undefined ) ||
+      // @ts-ignore
       settingsDt.colReorder ||
       ( this.plugins[ table_selector_jq_friendly ] !== undefined && this.plugins[ table_selector_jq_friendly ].ColReorder !== undefined )
     ) {
@@ -3409,8 +3414,7 @@ class Yadcf {
             val     = val.split( columnObj.range_data_type_delim );
             valFrom = ( val[0] !== '' ) ? ( +val[0] ) : val[0];
             valTo   = ( val[1] !== '' ) ? ( +val[1] ) : val[1];
-
-            // @ts-expect-error
+            // @ts-ignore
             if ( !columnObj.range_data_operator ) {
               if ( min === '' && max === '' ) {
                 retVal = true;
@@ -3542,7 +3546,7 @@ class Yadcf {
         }
 
         if ( columnObj.datepicker_type === 'bootstrap-datepicker' && typeof $.fn.datepicker !== 'undefined' ) {
-          // @ts-expect-error
+          // @ts-ignore
           dpg = $.fn.datepicker.DPGlobal;
         }
 
@@ -4454,6 +4458,7 @@ class Yadcf {
     }
     else if ( columnObj.datepicker_type === 'bootstrap-datepicker' ) {
       $( '#' + dateId ).datepicker( datepickerObj ).on( 'changeDate', function( e ) {
+        // @ts-ignore
         this.dateSelectSingle( e );
 
         $( this ).datepicker( 'hide' );
@@ -5007,12 +5012,10 @@ class Yadcf {
         dataTmp: Array<any>,
         i: number;
 
-    // @ts-expect-error
     if ( table.rows || table._ ) {
       if ( this.yadcfVersionCheck( '1.10' ) ) {
         dataTmp = table.rows({ search: 'applied' }).data().toArray();
       } else { // v 1.9 and below
-        // @ts-expect-error
         dataTmp = table._( 'tr', { search: 'applied' });
       }
     }
@@ -6586,6 +6589,7 @@ class Yadcf {
 
       if ( this.getOptions( table_selector_tmp )[ this.firstFromObject( this.getOptions( table_selector_tmp ) ) ].cumulative_filtering === true ) {
         // When filters should be populated only from visible rows (non filtered).
+        // @ts-ignore
         $( document ).off( 'search.dt', oTable.selector ).on( 'search.dt', oTable.selector, ( e: Event, settings: ConfigSettings, json: Record<string, any> ) => {
           let table_selector_tmp = oTable.selector;
 
@@ -6670,7 +6674,6 @@ class Yadcf {
         const obj: Partial<APFT> = {},
               columnsObj = this.getOptions( settings.oInstance.selector );
 
-        // @ts-expect-error
         if ( state === true && settings._oFixedColumns === undefined ) {
           if (
             this.plugins[ table_selector_jq_friendly ] !== undefined &&
@@ -6691,7 +6694,6 @@ class Yadcf {
             }
           }
         }
-        // @ts-expect-error
         else if ( settings._oFixedColumns !== undefined ) {
           this.appendFilters(
             this.oTables[ this.generateTableSelectorJQFriendly2( settings ) ],
