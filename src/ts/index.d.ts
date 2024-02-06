@@ -927,7 +927,7 @@ declare interface YADCF {
    * @param options_arg Array of objects found in {@link ColumnParameters}.
    * @param params      Optional. Global {@link TableParameters}.
    */
-  init( oTable: Api<any> & Config & DataTables.SettingsLegacy & DT, options_arg: Array<APFT | APMT>, params: any ): void;
+  init( oTable: ConfigSettings, options_arg: Array<APFT | APMT>, params: any ): void;
 
   autocompleteKeyUP( table_selector_jq_friendly: string, event: Event ): void;
 
