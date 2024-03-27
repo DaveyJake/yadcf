@@ -534,44 +534,1067 @@
                 Note:               All the usual properties of yadcf should be supported in initMultipleColumns too!
 */
 // @ts-ignore
-import DataTable, { type Api, type Config, type DomSelector, type RowIdx } from 'datatables.net';
-import type {
-  APFT,
-  APMT,
-  YADCF,
-  ArrayObjects,
-  AllParameters,
-  ColumnDataRender,
-  ColumnDataType,
-  ColumnNumberObject,
-  ColumnObj,
-  ColumnParameters,
-  CustomFunc,
-  DataTableInstance,
-  DataTableSettings,
-  DateFormat,
-  DefaultOptions,
-  ExFilterColArgs,
-  FilterDefaultLabel,
-  FilterMatchMode,
-  FilterResetButtonText,
-  FilterType,
-  FilterTypeMulti,
-  HTMLDataType,
-  IgnoreChar,
-  JQueryCallbackFunc,
-  MakeElementAttrs,
-  MultiParams,
-  SelectType,
-  SelectTypeOptions,
-  TableParameters,
-} from './index';
-import $ from 'jquery';
-import 'chosen-js';
-import includes from 'lodash/includes';
-import trim from 'lodash/trim';
-// @ts-ignore
-import moment, { type Moment } from 'moment';
+import DataTable, { Api, DomSelector, InstSelector, RowIdx } from "https://esm.sh/datatables.net";
+import $ from 'https://esm.sh/jquery@3.7.1';
+import * as jQueryUI from 'https://esm.sh/jqueryui';
+import 'https://esm.sh/chosen-js';
+import moment, { Moment } from 'https://esm.sh/moment';
+import includes from 'https://esm.sh/lodash/includes';
+import trim from 'https://esm.sh/lodash/trim';
+
+// Type definitions for Yet Another DataTable Column Filter 0.94.beta.46
+// Project: yadcf
+// Definitions by: Davey Jacobson <https://daveyjake.dev>
+
+//
+// Column Parameters
+//
+
+/**
+ * Append data `before` or along with the value retrieved from the table.
+ *
+ * @since 0.0.1
+ *
+ * @remarks `sorted` only works on array of primitives.
+ */
+type AppendDataToTableData = 'before' | 'sorted';
+
+/**
+ * Enable case-insensitive filtering.
+ *
+ * @since 0.0.1
+ *
+ * @remarks Use with `select`, `auto_complete`, `text`.
+ *
+ * @typeParam `T` Generic type placeholder.
+ */
+type CaseInsensitive<T> = T extends FilterTypeMatchMode ? boolean : never;
+
+/**
+ * Add checkboxes `exclude` and `regex` after input text column.
+ *
+ * @since 0.0.1
+ *
+ * @remarks Use with `text` filter.
+ *
+ * @typeParam `T` Generic type placeholder.
+ */
+type CheckboxPositionAfter<T> = T extends 'text' ? boolean : never;
+
+/**
+ * Helper function to identify `text` present in any cell.
+ *
+ * @since 0.0.1
+ */
+type ColumnDataRender = ( data: Record<string, any> ) => any;
+
+/**
+ * Helper function to parse data found in a column.
+ *
+ * @since 0.0.1
+ */
+type ColumnNumberRender = ( dataObject: Record<string, any>, action: string, data: Array<any>, meta: { row: number, col: number, settings: any } ) => any;
+
+/**
+ * Type of data in column.
+ *
+ * @since 0.0.1
+ *
+ * @remarks Use `rendered_html` when using `render()` on `columnDefs` or similar.
+ */
+type ColumnDataType = 'text' | 'html' | 'rendered_html' | 'html5_data_complex';
+
+/**
+ * Custom filter function applied to the columns.
+ *
+ * @since 0.0.1
+ *
+ * @remarks Required when **filter_type** is set to a value in {@link FilterTypeCustomFunc}.
+ *
+ * @privateremarks When using **multi_select_custom_func** as {@link FilterType},
+ * **filterVal** will hold an array of selected values from the multi select element.
+ *
+ * @typeParam `T` Generic type placeholder.
+ *
+ * @param filterVal Value from a select drop-down.
+ * @param columnVal Value from the relevant row column.
+ * @param rowValues Array of values from the entire row.
+ * @param stateVal  Holds the current state of the table row DOM.
+ */
+type CustomFunc<T> = T extends FilterTypeCustomFunc ? (( filterVal: string, columnVal: unknown, rowValues: Array<any>, stateVal: Node ) => boolean) : never;
+
+/**
+ * Delimiter that separates min and max values for number range filter type.
+ *
+ * @since 0.0.1
+ */
+type CustomRangeDelimeter = string;
+
+/**
+ * The {@link https://datatables.net/reference/type/column-selector `column-selector`}
+ * of the column to which the filter will be applied.
+ *
+ * @since 0.0.1
+ */
+
+/**
+ * Predefined data for filter.
+ *
+ * @since 0.0.1
+ *
+ * @remarks When **filter_type** is set to `custom_func` or `multi_select_custom_func`, this will populate the custom
+ * select filter element.
+ */
+type Data = any;
+
+/**
+ * Feed data to filter as is. Use when you want to define your own `<option></option>` for the filter.
+ *
+ * @since 0.0.1
+ *
+ * @remarks Only use when **filter_type** is set to `select` or `multi_select`.
+ *
+ * @typeParam `T` Generic type placeholder.
+ */
+type DataAsIs<T> = T extends FilterTypeDataAsIs ? boolean : never;
+
+/**
+ * Delimiter that separates text in table column.
+ *
+ * @since 0.0.1
+ */
+type DataTextDelimeter = string;
+
+/**
+ * Defines the format in which the date values are parsed in `Date` object.
+ *
+ * @since 0.0.1
+ */
+type DateFormat = 'mm/dd/yyyy' | 'mm-dd-yyyy' | 'dd/mm/yyyy' | 'dd-mm-yyyy' | 'mm/dd/yy' | 'mm-dd-yy' | 'dd/mm/yy' | 'dd-mm-yy' | 'yyyy-mm-dd' | 'hh:mm';
+
+/**
+ * Defines the format in which the date values are being parsed in Date object by `moment.js` library.
+ *
+ * @since 0.0.1
+ * @link https://momentjs.com/docs/#/displaying/
+ */
+type DateFormatMoment = 'MMMM Do YYYY' | 'MMM D YYYY' | 'MM/DD/YYYY' | 'DD/MM/YYYY' | 'YYYY-MM-DD' | 'HH:mm';
+
+/**
+ * Specify the `datepicker` library to use.
+ *
+ * @since 0.0.1
+ *
+ * @remarks This feature depends on `moment.js` library.
+ */
+type DatepickerType = 'jquery-ui' | 'bootstrap-datetimepicker' | 'bootstrap-datepicker' | 'daterangepicker' | 'dt-datetime';
+
+/**
+ * Add checkbox next to filter to enable `not/exclude` filtering.
+ *
+ * @since 0.0.1
+ *
+ * @remarks Use with `text`, `select`, and `number_range`.
+ *
+ * @typeParam `T` Generic type placeholder.
+ */
+type ExcludeCheckbox<T> = T extends FilterTypeExclude ? boolean : never;
+
+/**
+ * Label above the exclude checkbox.
+ *
+ * @since 0.0.1
+ */
+type ExcludeLabel = string;
+
+/**
+ * Adds external checkboxes button and hides `exclude`, `null`, `regex` checkboxes.
+ *
+ * @since 0.0.1
+ */
+type ExtTriggeredCheckboxesText = boolean | string;
+
+/**
+ * Add `onclick` function to external checkboxes button using `event` parameter.
+ *
+ * @since 0.0.1
+ */
+type ExtTriggeredCheckboxesFunction = ( event: Event ) => any;
+
+/**
+ * Add additional classes to external checkboxes filter button.
+ *
+ * @since 0.0.1
+ */
+type ExtTriggeredCheckboxesButtonStyleClass = string;
+
+/**
+ * Use in lieu of placing filter in column header.
+ *
+ * @since 0.0.1
+ *
+ * @remarks Pass the ID of the desired container for the column filter.
+ */
+type FilterContainerID = string;
+
+/**
+ * Use in lieu of placing filter in column header.
+ *
+ * @since 0.0.1
+ *
+ * @remarks Pass the jQuery selector of the desired container for the column filter.
+ */
+type FilterContainerSelector = string;
+
+/**
+ * Label that will appear in the select menu filter when no value is selected.
+ *
+ * @since 0.0.1
+ *
+ * @typeParam `T` Generic type placeholder.
+ */
+type FilterDefaultLabel<T> = T extends 'range_number' ? Array<string> : string;
+
+/**
+ * Delay filter execution for this many milliseconds.
+ *
+ * @since 0.0.1
+ *
+ * @remarks Use with `text`, `range_number`, `range_date`, `range_number_slider`.
+ */
+type FilterDelay<T> = T extends FilterTypeFilterDelay ? number : never;
+
+/**
+ * Allows to control the matching mode of the filter.
+ *
+ * @since 0.0.1
+ *
+ * @remarks Only use with `select`, `auto_complete`, `text`.
+ *
+ * @typeParam `T` Generic type placeholder.
+ */
+type FilterMatchMode<T = 'select'> = T extends FilterTypeMatchMode ? 'contains' | 'exact' | 'startsWith' | 'regex' : never;
+
+/**
+ * Parameter to pass to jQuery Autocomplete, jQuery Slider and/or Bootstrap Datetimepicker.
+ *
+ * @since 0.0.1
+ */
+type FilterPluginOptions = Record<string, any>;
+
+/**
+ * The text that will appear inside the reset button next to the select drop down.
+ *
+ * @since 0.0.1
+ *
+ * @remarks Set to `false` to hide from that specific column filter.
+ */
+type FilterResetButtonText = false | string;
+
+/**
+ * The `custom_func` setting is required when `filter_type` is one of these.
+ *
+ * @since 0.0.1
+ */
+type FilterTypeCustomFunc = 'custom_func' | 'multi_select_custom_func' | 'date_custom_func';
+
+/**
+ * When using `data_as_is`, it is only supported with **filter_type** is set to the following:
+ *
+ * - `select`
+ * - `multi_select`
+ *
+ * @since 0.0.1
+ */
+type FilterTypeDataAsIs = 'select' | 'multi_select';
+
+/**
+ * The `exclude` option is only supported by...
+ *
+ * - `range_number`
+ * - `select`
+ * - `text`
+ *
+ * @since 0.0.1
+ */
+type FilterTypeExclude = Exclude<FilterTypeRemaining, 'date' | 'range_date'> | Extract<FilterTypeDataAsIs, 'select'>;
+
+/**
+ * The `filter_delay` setting is only supported by...
+ *
+ * - `text`
+ * - `range_date`
+ * - `range_number`
+ * - `range_number_slider`
+ *
+ * @since 0.0.1
+ */
+type FilterTypeFilterDelay = Exclude<FilterTypeRemaining, 'date'> | Extract<FilterTypeHTMLDataSelector, 'range_number_slider'>;
+
+/**
+ * The `html_data_selector` setting is only supported when `filter_type` is...
+ *
+ * - `auto_complete`
+ * - `range_number_slider`
+ * - `select`
+ *
+ * @since 0.0.1
+ */
+type FilterTypeHTMLDataSelector = 'auto_complete' | 'range_number_slider' | Exclude<FilterTypeDataAsIs, 'multi_select'>;
+
+/**
+ * The `filter_match_mode` option only works when `filter_type` is set to...
+ *
+ * - `auto_complete`
+ * - `select`
+ * - `text`
+ *
+ * @since 0.0.1
+ *
+ * @typeParam `T` Generic type placeholder.
+ */
+type FilterTypeMatchMode = Exclude<FilterTypeHTMLDataSelector, 'range_number_slider'> | Extract<FilterTypeRemaining, 'text'>;
+
+/**
+ * The `filter_type` property values for use with the `initMultipleTables` method:
+ *
+ * - `text`
+ * - `select`
+ * - `multi_select`
+ *
+ * @since 0.0.1
+ */
+type FilterTypeMulti = Exclude<FilterTypeMatchMode, 'auto_complete'> | Extract<FilterTypeDataAsIs, 'multi_select'>;
+
+/**
+ * The `omit_default_label` depends on the following `filter_type` values:
+ *
+ * - `select`
+ * - `multi_select`
+ * - `custom_func`
+ * - `multi_select_custom_func`
+ *
+ * @since 0.0.1
+ */
+type FilterTypeOmitDefaultLabel = FilterTypeDataAsIs | Exclude<FilterTypeCustomFunc, 'date_custom_func'>;
+
+/**
+ * Range filters:
+ *
+ * - `range_date`
+ * - `range_number`
+ * - `range_number_slider`
+ *
+ * @since 0.0.1
+ */
+type FilterTypeRange = Exclude<FilterTypeFilterDelay, 'text'>;
+
+/**
+ * The type of the filter to be used in the column.
+ *
+ * @since 0.0.1
+ */
+type FilterTypeRemaining = 'text' | 'date' | 'range_number' | 'range_date';
+
+/**
+ * The `style_class` option is only supported by...
+ *
+ * - `select`
+ * - `multi_select`
+ * - `text`
+ * - `custom_func`
+ * - `multi_select_custom_func`
+ * - `range_number`
+ * - `range_number_slider`
+ * - `range_date`
+ *
+ * @since 0.0.1
+ */
+type FilterTypeStyleClass = FilterTypeOmitDefaultLabel | Exclude<FilterTypeRemaining, 'date'> | Extract<FilterTypeHTMLDataSelector, 'range_number_slider'>;
+
+/**
+ * The complete filter types.
+ *
+ * @since 0.0.1
+ */
+type FilterType = FilterTypeCustomFunc | FilterTypeDataAsIs | FilterTypeHTMLDataSelector | FilterTypeRemaining;
+
+/**
+ * Allows for advanced text value selection within HTML inside table cell (ex: `li:eq(1)`).
+ *
+ * @since 0.0.1
+ *
+ * @remarks Selector string is searched from the first element inside the table cell.
+ * Only use with `range_number_slider`, `select`, `auto_complete`.
+ *
+ * @typeParam `T` Generic type placeholder.
+ */
+type HTMLDataSelector<T> = T extends FilterTypeHTMLDataSelector ? string : never;
+
+/**
+ * How your data is parsed.
+ *
+ * @since 0.0.1
+ */
+type HTMLDataType = 'text' | 'value' | 'id' | 'selector';
+
+/**
+ * Allows to filter based on HTML5 `data-{(sort | order) | (filter | search)}` attributes.
+ *
+ * @since 0.0.1
+ * @link https://www.datatables.net/examples/advanced_init/html5-data-attributes.html
+ */
+type HTML5Data = 'data-filter' | 'data-search' | 'data-sort' | 'data-order';
+
+/**
+ * Tells the `range_number` and `range_number_slider` to ignore specific characters while filtering.
+ *
+ * @since 0.0.1
+ */
+type IgnoreChar = string | RegExp;
+
+/**
+ * Labels that will appear in the select menu filter when no value is selected.
+ *
+ * @since 0.0.1
+ *
+ * @property `select`
+ * @property `select_multi`
+ * @property `filter`
+ * @property `range`
+ * @property `date`
+ */
+type Language = {
+  select: string;
+  select_multi: string;
+  filter: string;
+  range: [ string, string ];
+  date: string;
+};
+
+/**
+ * Add checkbox next to filter to search for null values.
+ *
+ * @since 0.0.1
+ *
+ * @remarks Use with `text` and `range_number` filters.
+ */
+type NullCheckBox<T> = T extends Exclude<FilterTypeRemaining, 'date' | 'range_date'> ? boolean : never;
+
+/**
+ * Label above the null checkbox.
+ *
+ * @since 0.0.1
+ */
+type NullLabel = string;
+
+/**
+ * Prevent yadcf from adding 'default_label'.
+ *
+ * @since 0.0.1
+ *
+ * @remarks Only use with 'select', 'multi_select', 'custom_func', 'multi_select_custom_func'.
+ *
+ * @typeParam `T` Generic type placeholder.
+ */
+type OmitDefaultLabel<T> = T extends FilterTypeOmitDefaultLabel ? boolean : never;
+
+/**
+ * Add checkbox next to filter to switch `regex`, `filter_match_mode` on the fly.
+ *
+ * @since 0.0.1
+ *
+ * @remarks Only use with `text` filter.
+ *
+ * @typeParam `T` Generic type placeholder.
+ */
+type RegexCheckBox<T> = T extends 'text' ? boolean : never;
+
+/**
+ * Label above the regex checkbox.
+ *
+ * @since 0.0.1
+ */
+type RegexLabel = string;
+
+/**
+ * String value which internally represents `null` option in select filters.
+ *
+ * @since 0.0.1
+ *
+ * @remarks Use with `exclude`.
+ */
+type SelectNullOption = string;
+
+/**
+ * Turn basic `select` element into `Chose` or `Select2` drop down.
+ *
+ * @since 0.0.1
+ *
+ * @remarks When using `custom_select`, call `initSelectPluginCustomTriggers` before calling yadcf constructor / init.
+ */
+type SelectType = 'chosen' | 'select2' | 'custom_select' | 'jquery-ui' | 'bootstrap-datetimepicker';
+
+/**
+ * Parameter to pass as is to `Chosen/Select` plugin.
+ *
+ * @since 0.0.1
+ */
+type SelectTypeOptions<T extends SelectType> = T extends 'chosen' ?
+  Chosen.Options :
+  T extends 'select2' ?
+    Select2.Options :
+    T extends 'jquery-ui' ?
+      DateTimePickerOptions :
+      T extends 'bootstrap-datetimepicker' ? EonasdanBootstrapDatetimepicker.SetOptions : any;
+
+/**
+ * Defines how the values in the filter will be sorted.
+ *
+ * @since 0.0.1
+ *
+ * @remarks Use `none` to preserve the order of the data attribute as is.
+ */
+type SortAs = 'alpha' | 'num' | 'alphaNum' | 'custom' | 'none';
+
+/**
+ * Allows user to provide a custom sorting function for the filtered elements.
+ *
+ * @since 0.0.1
+ */
+type SortAsCustomFunc = ( a: any, b: any ) => number;
+
+/**
+ * Defines the order in which the filtered values are sorted.
+ *
+ * @since 0.0.1
+ */
+type SortOrder = 'asc' | 'desc';
+
+/**
+ * Range data type.
+ *
+ * @since 0.0.1
+ *
+ * @remarks Only use with `range_number`, `range_number_slider`, or `range_date`.
+ *
+ * @typeParam `T` Generic type placeholder.
+ */
+type RangeDataType<T> = T extends Exclude<FilterTypeFilterDelay, 'text'> ? 'single' | 'range' | 'delimeter' : never;
+
+/**
+ * Range data type delimeter.
+ *
+ * @since 0.0.1
+ *
+ * @remarks Only use with `range_number`, `range_number_slider`, or `range_date`.
+ */
+type RangeDataTypeDelimeter<T> = T extends Exclude<FilterTypeFilterDelay, 'text'> ? string : never;
+
+/**
+ * Add additional classes to filter reset button.
+ *
+ * @since 0.0.1
+ */
+type ResetButtonStyleClass = string;
+
+/**
+ * Add additional classes to filter.
+ *
+ * @since 0.0.1
+ *
+ * @remarks Use with `select`, `multi_select`, `text`, `custom_func`, `multi_select_custom_func`, `range_number`,
+ * `range_number_slider`, `range_date`.
+ *
+ * @typeParam `T` Generic type placeholder.
+ */
+type StyleClass<T> = T extends FilterTypeStyleClass ? string : never;
+
+
+//
+// Table Parameters
+//
+
+
+/**
+ * Only filter when yadcf.exFilterExternallyTriggered(table_arg) is called.
+ *
+ * @since 0.0.1
+ *
+ * @remarks Useful when you want to trigger a filter when clicking on or selecting from an input.
+ */
+type ExternallyTriggered = boolean;
+
+/**
+ * Populate options from filtered rows (aka only use the data that remains after filtering).
+ *
+ * @since 0.0.1
+ */
+type CumulativeFiltering = boolean;
+
+/**
+ * Filters placed in the header `thead` or footer `tfoot`.
+ *
+ * @since 0.0.1
+ */
+type FiltersPosition = 'thead' | 'header' | 'tfoot' | 'footer';
+
+/**
+ * Enable control of the `tr` index inside the table header `thead`.
+ *
+ * @since 0.0.1
+ *
+ * @remarks Useful when one `tr` is used for headers/sort and another is used for filters.
+ */
+type FiltersTrIdx = number;
+
+/**
+ * Calls the provided callback function in the end of the `yadcf.init()` method.
+ *
+ * @since 0.0.1
+ *
+ * @remarks This callback function will run before datatables fires its event (i.e. draw/xhr/etc).
+ * Useful for initializing third parties and/or loading code.
+ */
+type OnInitComplete = ( args?: any ) => any;
+
+/**
+ * ISO-2 locale countries.
+ *
+ * @since 0.0.1
+ */
+type ISO2Locales = (
+  'af' | 'ar-DZ' | 'ar'    | 'az'    | 'be'    | 'bg'    | 'bs' | 'ca' | 'cs' | 'cy-GB' |
+  'da' | 'de'    | 'el'    | 'en-AU' | 'en-GB' | 'en-NZ' | 'eo' | 'es' | 'et' | 'eu'    |
+  'fa' | 'fi'    | 'fo'    | 'fr-CA' | 'fr-CH' | 'fr'    | 'gl' | 'he' | 'hi' | 'hr'    |
+  'hu' | 'hy'    | 'id'    | 'is'    | 'it-CH' | 'it'    | 'ja' | 'ka' | 'kk' | 'km'    |
+  'ko' | 'ky'    | 'lb'    | 'lt'    | 'lv'    | 'mk'    | 'ml' | 'ms' | 'nb' | 'nl-BE' |
+  'nl' | 'nn'    | 'no'    | 'pl'    | 'pt-BR' | 'pt'    | 'rm' | 'ro' | 'ru' | 'sk'    |
+  'sl' | 'sq'    | 'sr-SR' | 'sr'    | 'sv'    | 'ta'    | 'th' | 'tj' | 'tr' | 'uk'    |
+  'vi' | 'zh-CN' | 'zh-HK' | 'zh-TW'
+);
+
+/**
+ * Load localized jQuery UI `datepicker`.
+ *
+ * @since 0.0.1
+ *
+ * @remarks Requires `jquery-ui-i18n` library.
+ */
+type JQueryUIDatepickerLocale = '' | ISO2Locales;
+
+/**
+ * Value represents ***null***, used as argument for `fnFilter` and sent to server.
+ *
+ * @since 0.0.1
+ *
+ * @remarks Use when `null_check_box` is true.
+ */
+type NullApiCallValue = string;
+
+/**
+ * Value represents ***not null***, used as argument for `fnFilter` and sent to server.
+ *
+ * @since 0.0.1
+ *
+ * @remarks Use when `null_check_box` is true.
+ */
+type NotNullApiCallValue = string;
+
+/**
+ * Default options.
+ *
+ * @since 0.0.1
+ *
+ * @typeParam `F` Generic placeholder for {@link FilterType} and {@link FilterTypeMulti}.
+ *
+ * @property `case_insensitive`                                   — See {@link CaseInsensitive}.
+ * @property `checkbox_position_after`                            — See {@link CheckboxPositionAfter}.
+ * @property `column_data_type`                                   — See {@link ColumnDataType}.
+ * @property `custom_range_delimiter`                             — See {@link CustomRangeDelimeter}.
+ * @property `date_format`                                        — See {@link DateFormat}.
+ * @property `datepicker_type`                                    — See {@link DatepickerType}.
+ * @property `exclude_label`                                      — See {@link ExcludeLabel}.
+ * @property `externally_triggered_checkboxes_button_style_class` — See {@link ExtTriggeredCheckboxesButtonStyleClass}.
+ * @property `externally_triggered_checkboxes_function`           — See {@link ExtTriggeredCheckboxesFunction}.
+ * @property `externally_triggered_checkboxes_text`               — See {@link ExtTriggeredCheckboxesText}.
+ * @property `filter_match_mode`                                  — See {@link FilterMatchMode}.
+ * @property `filter_type`                                        — See {@link FilterType}.
+ * @property `html_data_type`                                     — See {@link HTMLDataType}.
+ * @property `ignore_char`                                        — See {@link IgnoreChar}.
+ * @property `language`                                           — See {@link Language}.
+ * @property `null_label`                                         — See {@link NullLabel}.
+ * @property `omit_default_label`                                 — See {@link OmitDefaultLabel}.
+ * @property `range_data_type`                                    — See {@link RangeDataType}.
+ * @property `range_data_type_delim`                              — See {@link RangeDataTypeDelimeter}.
+ * @property `regex_label`                                        — See {@link RegexLabel}.
+ * @property `reset_button_style_class`                           — See {@link ResetButtonStyleClass}.
+ * @property `select_null_option`                                 — See {@link SelectNullOption}.
+ * @property `select_type`                                        — See {@link SelectType}.
+ * @property `select_type_options`                                — See {@link SelectTypeOptions}.
+ * @property `sort_as`                                            — See {@link SortAs}.
+ * @property `sort_order`                                         — See {@link SortOrder}.
+ * @property `style_class`                                        — See {@link StyleClass}.
+ */
+interface DefaultOptions<F = FilterType | FilterTypeMulti> {
+  case_insensitive: CaseInsensitive<F>;
+  checkbox_position_after: CheckboxPositionAfter<F>;
+  column_data_type: ColumnDataType;
+  custom_range_delimiter: CustomRangeDelimeter;
+  date_format: DateFormat;
+  datepicker_type: DatepickerType;
+  enable_auto_complete: boolean;
+  exclude_label: ExcludeLabel;
+  externally_triggered: boolean;
+  externally_triggered_checkboxes_button_style_class: ExtTriggeredCheckboxesButtonStyleClass;
+  externally_triggered_checkboxes_function?: ExtTriggeredCheckboxesFunction;
+  externally_triggered_checkboxes_text: ExtTriggeredCheckboxesText;
+  filter_match_mode: FilterMatchMode<F>;
+  filter_type: F;
+  html_data_type: HTMLDataType;
+  ignore_char?: IgnoreChar;
+  language: Language;
+  null_label: NullLabel;
+  omit_default_label: OmitDefaultLabel<F>;
+  range_data_type: RangeDataType<F>;
+  range_data_type_delim: RangeDataTypeDelimeter<F>;
+  regex_label: RegexLabel;
+  reset_button_style_class: ResetButtonStyleClass | false;
+  select_null_option: SelectNullOption;
+  select_type?: SelectType;
+  select_type_options: SelectTypeOptions<SelectType>;
+  sort_as: SortAs;
+  sort_order: SortOrder;
+  style_class: StyleClass<F>;
+}
+
+/**
+ * The remaining missing default options.
+ *
+ * @since 0.0.1
+ * @extends DefaultOptions
+ *
+ * @property `append_data_to_table_data`
+ * @property `column_data_render`
+ * @property `custom_func`
+ * @property `data`
+ * @property `data_as_is`
+ * @property `exclude`
+ * @property `filter_container_id`
+ * @property `filter_container_selector`
+ * @property `filter_default_label`
+ * @property `filter_delay`
+ * @property `filter_plugin_options`
+ * @property `filter_reset_button_text`
+ * @property `html_data_selector`
+ * @property `html5_data`
+ * @property `moment_date_format`
+ * @property `null_check_box`
+ * @property `regex_check_box`
+ * @property `sort_as_custom_func`
+ * @property `text_data_delimiter`
+ */
+interface MissingDefaults<F = FilterType | FilterTypeMulti> extends DefaultOptions<F> {
+  append_data_to_table_data?: AppendDataToTableData;
+  col_filter_array?: Record<string, any>;
+  column_data_render?: ColumnDataRender;
+  column_number_render?: ColumnNumberRender;
+  column_number_str?: string;
+  column_number_data?: number;
+  custom_func?: CustomFunc<F>;
+  data?: Data;
+  data_as_is?: DataAsIs<F>;
+  exclude?: ExcludeCheckbox<F>;
+  filter_container_id?: FilterContainerID;
+  filter_container_selector?: FilterContainerSelector;
+  filter_default_label?: FilterDefaultLabel<F>;
+  filter_delay?: FilterDelay<F>;
+  filter_plugin_options?: FilterPluginOptions;
+  filter_reset_button_text?: FilterResetButtonText;
+  html_data_selector?: HTMLDataSelector<F>;
+  html5_data?: HTML5Data;
+  moment_date_format?: DateFormatMoment;
+  null_check_box?: NullCheckBox<F>;
+  regex_check_box?: RegexCheckBox<F>;
+  sort_as_custom_func?: SortAsCustomFunc;
+  text_data_delimiter?: DataTextDelimeter;
+}
+
+/**
+ * All column parameters together.
+ *
+ * @since 0.0.1
+ */
+type ColNum = { column_number: number };
+type ColSel = { column_selector: string };
+type ColumnParameters<T extends number | string> = T extends number ? ColNum : ColSel;
+
+/**
+ * Table parameters.
+ *
+ * @since 0.0.1
+ *
+ * @see MissingDefaults
+ *
+ * @property `externally_triggered`        — See {@link ExternallyTriggered} for details.
+ * @property `cumulative_filtering`        — See {@link CumulativeFiltering} for details.
+ * @property `filters_position`            — See {@link FiltersPosition} for details.
+ * @property `filters_tr_index`            — See {@link FiltersTrIdx} for details.
+ * @property `onInitComplete`              — See {@link OnInitComplete} for details.
+ * @property `jquery_ui_datepicker_locale` — See {@link JQueryUIDatepickerLocale} for details.
+ * @property `null_api_call_value`         — See {@link NullApiCallValue} for details.
+ * @property `not_null_api_call_value`     — See {@link NotNullApiCallValue} for details.
+ */
+interface TableParameters<F = FilterType | FilterTypeMulti> extends Partial<MissingDefaults<F>> {
+  externally_triggered?: ExternallyTriggered;
+  cumulative_filtering?: CumulativeFiltering;
+  filters_position?: FiltersPosition;
+  filters_tr_index?: FiltersTrIdx;
+  onInitComplete?: OnInitComplete;
+  jquery_ui_datepicker_locale?: JQueryUIDatepickerLocale;
+  null_api_call_value?: NullApiCallValue;
+  not_null_api_call_value?: NotNullApiCallValue;
+}
+
+/**
+ * Multiple table filter parameters.
+ *
+ * @since 0.0.1
+ *
+ * @see TableParameters
+ * @see ColumnParameters
+ * @see MissingDefaults
+ * @see DefaultOptions
+ *
+ * @property `filter_container_id`
+ */
+interface MultiParams<F = FilterType | FilterTypeMulti> extends Partial<TableParameters<F>> {
+  filter_container_id: string;
+}
+
+/**
+ * All parameters in one type.
+ *
+ * @since 0.0.1
+ */
+type AllParameters<F = FilterType | FilterTypeMulti> = ColumnParameters<number> & MultiParams<F>;
+
+/**
+ * Essentials for the `makeElement` method.
+ *
+ * @since 0.0.1
+ */
+interface MakeElementAttrs {
+  onchange?: ( evt: GlobalEventHandlersEventMap['change'] ) => void;
+  onclick?: ( evt: GlobalEventHandlersEventMap['click'] ) => void;
+  onkeydown?: ( evt: GlobalEventHandlersEventMap['keydown'] ) => void;
+  onkeyup?: ( evt: GlobalEventHandlersEventMap['keyup'] ) => void;
+  onmousedown?: ( evt: GlobalEventHandlersEventMap['mousedown'] ) => void;
+  id?: string;
+  class?: string;
+  multiple?: boolean;
+  placeholder?: string | Array<string>;
+  text?: boolean | string;
+  title?: string;
+  type?: string;
+  html?: any;
+  filter_match_mode?: AllParameters['filter_match_mode'];
+  'data-placeholder'?: string | Array<string>;
+}
+
+/**
+ * The `exFilterColumn` function accepts an array of tuples for arguments.
+ *
+ * @since 0.0.1
+ */
+type ExFilterColRange<T = number | string> = { from: T; to: T; }
+type ExFilterColArgs = [ number, (string | ExFilterColRange | string[]) ];
+
+/**
+ * jQuery-based callback function.
+ *
+ * @since 0.0.1
+ */
+type JQueryCallbackFunc = ( $filterSelector: JQuery<HTMLElement> ) => any;
+
+/**
+ * Primary DataTables instance.
+ *
+ * @since 0.0.1
+ */
+export type DataTableInstance = InstanceType<DataTable<any>>;
+
+/**
+ * DataTables instance settings.
+ *
+ * @since 0.0.1
+ */
+export type DataTableSettings = ReturnType<DataTableInstance['settings']>;
+
+export interface YADCF {
+  /**
+   * Primary initialization method.
+   *
+   * @since 0.0.1
+   * @static
+   *
+   * @param oTable      DataTable instance.
+   * @param options_arg Array of objects found in {@link ColumnParameters}.
+   * @param params      Optional. Global {@link TableParameters}.
+   */
+  init( oTable: DataTableInstance, options_arg: Array<AllParameters>, params?: any ): void;
+
+  autocompleteKeyUP( table_selector_jq_friendly: string, event: Event ): void;
+
+  dateKeyUP( table_selector_jq_friendly: string, date_format: DateFormat, event: Event ): void;
+
+  dateSelectSingle( pDate: JQuery.TriggeredEvent & Date, pEvent?: JQuery.TriggeredEvent, clear?: 'clear' | 0 | 1 ): void;
+  doFilter( arg: ('clear' | 'exclude') | { value: any }, table_selector_jq_friendly: string, column_number: number | string, filter_match_mode?: FilterMatchMode<DefaultOptions['filter_type']> ): void;
+  doFilterAutocomplete( arg: 'clear' | Record<string, any>, table_selector_jq_friendly: string, column_number: number, filter_match_mode: FilterMatchMode<DefaultOptions['filter_type']> ): void;
+  doFilterCustomDateFunc( arg: 'clear' | Record<string, any>, table_selector_jq_friendly: string , column_number: number ): void;
+  doFilterMultiSelect( arg: string, table_selector_jq_friendly: string, column_number: number, filter_match_mode: FilterMatchMode<DefaultOptions['filter_type']> ): void;
+  doFilterMultiTables( tablesSelectors: string, event: JQuery.Event, column_number_str: string, clear?: boolean ): void;
+  doFilterMultiTablesMultiSelect( tablesSelectors: string, event: Event, column_number_str: string, clear?: 'clear' ): void;
+  eventTargetFixUp( pEvent: Event ): void;
+
+  /**
+   * Trigger filters externally and/or programmatically.
+   *
+   * @since 0.0.1
+   *
+   * @remarks Use to show table with pre-filtered columns.
+   *
+   * @param table_arg      DataTable variable instance.
+   * @param col_filter_arr Array of tuples contain column index and what to filter by.
+   * @param ajaxSource     True if using AJAX-sourced data. False if not.
+   */
+  exFilterColumn( table_arg: DataTableInstance, col_filter_arr: Array<ExFilterColArgs>, ajaxSource: boolean ): void;
+
+  /**
+   * Trigger all available filters.
+   *
+   * @since 0.0.1
+   *
+   * @remarks Use only when `externally_triggered` is set to true.
+   *
+   * @param table_arg DataTable variable instance.
+   */
+  exFilterExternallyTriggered( table_arg: DataTable<any> ): void;
+
+  /**
+   * Retrieve current column's filtered value.
+   *
+   * @since 0.0.1
+   *
+   * @param table_arg     DataTable variable instance.
+   * @param column_number Column index number.
+   */
+  exGetColumnFilterVal<T = FilterTypeRange | 'multi_select'>( table_arg: DataTable<any>, column_number: number ): T extends FilterTypeRange ? object : T extends 'multi_select' ? Array<string> : string;
+
+  /**
+   * Update column filter with new data.
+   *
+   * @since 0.0.1
+   *
+   * @param table_arg   DataTable variable instance.
+   * @param column_num  Column index number.
+   * @param updatedData Same-structured data to use as update.
+   */
+  exRefreshColumnFilterWithDataProp( table_arg: DataTableInstance, col_num: number, updatedData: Record<string, any> ): void;
+
+  /**
+   * Reset all filters.
+   *
+   * @since 0.0.1
+   *
+   * @param table_arg DataTable variable instance.
+   * @param noRedraw  True if you don't your table reloaded after resetting filter. Otherwise false.
+   * @param columns   Array of column numbers starting at 1.
+   */
+  exResetAllFilters( table_arg: DataTableInstance, noRedraw: boolean, columns: Array<number> ): void;
+
+  /**
+   * Reset specific filters.
+   *
+   * @since 0.0.1
+   *
+   * @param table_arg DataTable variable instance.
+   * @param columns   Column index numbers to target.
+   * @param noRedraw  True if you don't your table reloaded after resetting filter. Otherwise false.
+   */
+  exResetFilters( table_arg: DataTableInstance, columns: Array<number | string>, noRedraw: boolean ): void;
+
+  generateTableSelectorJQFriendlyNew( tmpStr: string ): string;
+  generateTableSelectorJQFriendly2( obj: DataTableInstance ): void;
+  getOptions<T = AllParameters>( selector: any ): Record<keyof T, T[ keyof T ]>;
+  initAndBindTable( oTable: DataTableInstance, table_selector: string, index: number, pTableDT?: DataTableInstance ): void;
+
+  /**
+   * Initialize global defaults for all `yadcf` instances.
+   *
+   * @since 0.0.1
+   *
+   * @param params See {@link DefaultOptions} for details.
+   */
+  initDefaults<T = DefaultOptions>( params: T ): Record<keyof T, T[ keyof T ]>;
+
+  /**
+   * Creates a filter that will affect multiple tables and/or multiple columns in multiple tables.
+   *
+   * @since 0.0.1
+   *
+   * @remarks Each array **_must_** have the same length of items.
+   *
+   * @example
+   *    // Notice there are 2 tables in the first array AND 2 filter objects in the second.
+   *    yadcf.initMultipleTables( [ oTable1, oTable2 ], [ { ...filter1ArgsForTable1 }, { ...filter2ArgsForTable2 } ] );
+   *
+   * @param tablesArray
+   * @param filtersOptions
+   */
+  initMultipleTables( tablesArray: Array<DataTable<any>>, filtersOptions: Array<AllParameters<FilterTypeMulti>> ): void;
+
+  /**
+   * Creates a filter that will affect multiple tables and/or multiple columns in multiple tables.
+   *
+   * @since 0.0.1
+   *
+   * @param table          DataTable instance.
+   * @param filtersOptions Array of {@link AllParameters}.
+   */
+  initMultipleColumns( table: DataTable<any>, filtersOptions: Array<AllParameters<FilterTypeMulti>> ): void;
+
+  /**
+   * Callback function to be fired after `dt.xhr` event finishes.
+   *
+   * @since 0.0.1
+   */
+  initOnDtXhrComplete(): any;
+
+  /**
+   * Set, initialize and refresh any jQuery select plugin with functions.
+   *
+   * @since 0.0.1
+   *
+   * @remarks jQuery selector will be passed to the user defined function to initialize and refresh the plugin.
+   *
+   * @param initFunc    Function to initialize plugin.
+   * @param refreshFunc Function to refresh plugin.
+   * @param destroyFunc Function to destroy plugin instance.
+   */
+  initSelectPluginCustomTriggers( initFunc: JQueryCallbackFunc, refreshFunc: JQueryCallbackFunc, destroyFunc: JQueryCallbackFunc ): void;
+
+  nullChecked( ev: Event, table_selector_jq_friendly: string, column_number: number ): void;
+  preventDefaultForEnter( evt: Event ): void;
+  rangeClear( table_selector_jq_friendly: string, event: Event, column_number: number ): void;
+  rangeDateKeyUP( table_selector_jq_friendly: string, date_format: DateFormat, event: Event ): void;
+  rangeNumberKeyUP( table_selector_jq_friendly: string, event: JQuery.Event ): void;
+  rangeNumberSliderClear( table_selector_jq_friendly: string, event: Event ): void;
+  setOptions( selector_arg: string, options_arg: Array<Record<string, any>>, params: any, table?: DataTableInstance ): void;
+  stopPropagation( evt: Event ): void;
+  textKeyUP( ev: Event, table_selector_jq_friendly: string, column_number: number, clear?: 'clear' ): void;
+  textKeyUpMultiTables( tablesSelectors: string, event: JQuery.Event, column_number_str: string, clear?: string ): void;
+}
 
 class Yadcf {
   private static _instance: Record<keyof YADCF, YADCF[ keyof YADCF ]> | null = null;
@@ -641,14 +1664,14 @@ class Yadcf {
    *
    * @since 0.0.1
    */
-  private static settingsMap: Record<string, ReturnType<DataTableSettings>> = {};
+  private static settingsMap: Record<string, ReturnType<DataTableInstance['settings']>> = {};
 
   /**
    * Callback function that fires when jqXHR is finished.
    *
    * @since 0.0.1
    */
-  private static dTXhrComplete: () => any;
+  private static dTXhrComplete: (() => any) | undefined;
 
   private static ctrlPressed                   = false;
   private static closeBootstrapDatepicker      = false;
@@ -713,7 +1736,7 @@ class Yadcf {
    * @param options_arg
    * @param params
    */
-  public static init( oTable: DataTableInstance, options_arg: Array<AllParameters<FilterType>>, params?: any ): void {
+  private static init( oTable: DataTableInstance, options_arg: Array<AllParameters>, params?: any ): void {
     const instance = oTable.settings()[0].oInstance;
 
     let i: number = 0,
@@ -726,7 +1749,7 @@ class Yadcf {
       instance.selector = tableSelector;
     }
 
-    if ( typeof params === 'undefined' ) {
+    if ( params === undefined ) {
       params = {};
     }
     else if ( typeof params === 'string' ) {
@@ -741,16 +1764,16 @@ class Yadcf {
       params.filters_position = 'tfoot';
     }
 
-    document.documentElement.dataset[`${instance.selector}_filters_position`] = params.filters_position;
+    $( document ).data( `${instance.selector}_filters_position`, params.filters_position );
 
-    if ( document.querySelector( instance.selector ).length === 1 ) {
+    if ( $( instance.selector ).length === 1 ) {
       Yadcf.setOptions( instance.selector, options_arg, params, oTable );
       Yadcf.initAndBindTable( instance, instance.selector, 0, oTable );
     } else {
-      for ( i; i < document.querySelectorAll( instance.selector ).length; i++ ) {
+      for ( i; i < $( instance.selector ).length; i++ ) {
         $.fn.dataTable.ext.iApiIndex = i;
 
-        selector = instance.selector + `:eq(${i})`;
+        selector = instance.selector + `:eq( ${i} )`;
 
         Yadcf.setOptions( instance.selector, options_arg, params, oTable );
         Yadcf.initAndBindTable( instance, selector, i, oTable );
@@ -774,7 +1797,7 @@ class Yadcf {
    * @param params
    * @returns Options object.
    */
-  public static initDefaults( params: AllParameters ): AllParameters {
+  private static initDefaults( params: AllParameters ): AllParameters {
     return $.extend( true, Yadcf.default_options, params );
   }
 
@@ -783,7 +1806,7 @@ class Yadcf {
    *
    * @param initFunc
    */
-  public static initOnDtXhrComplete( initFunc: () => any ): void {
+  private static initOnDtXhrComplete( initFunc: () => any ): void {
     Yadcf.dTXhrComplete = initFunc;
   }
 
@@ -797,7 +1820,7 @@ class Yadcf {
    * @param selector
    * @returns Value set in options.
    */
-  public static getOptions( selector: any ): AllParameters {
+  private static getOptions( selector: any ): AllParameters[ keyof AllParameters ] {
     return Yadcf.options[ selector ];
   }
 
@@ -810,7 +1833,7 @@ class Yadcf {
    * @param pEvent
    * @returns Plugin event.
    */
-  public static eventTargetFixUp( pEvent: any ): any {
+  private static eventTargetFixUp( pEvent: any ): any {
     if ( pEvent.target === undefined ) {
       $.extend( pEvent, { target: pEvent.srcElement });
     }
@@ -825,7 +1848,7 @@ class Yadcf {
    *
    * @returns
    */
-  public static generateTableSelectorJQFriendly2( obj: any ): string {
+  private static generateTableSelectorJQFriendly2( obj: any ): string {
     let tmpStr: Element['id'];
 
     if ( obj.oInstance !== undefined && obj.oInstance.selector !== undefined ) {
@@ -851,7 +1874,7 @@ class Yadcf {
    *
    * @returns
    */
-  public static generateTableSelectorJQFriendlyNew( tmpStr: string ): string {
+  private static generateTableSelectorJQFriendlyNew( tmpStr: string ): string {
     tmpStr = Yadcf.replaceAll( tmpStr, ':', '-' );
     tmpStr = Yadcf.replaceAll( tmpStr, '(', '' );
     tmpStr = Yadcf.replaceAll( tmpStr, ')', '' );
@@ -874,9 +1897,9 @@ class Yadcf {
    * @param column_number
    * @returns
    */
-  public static doFilterCustomDateFunc( arg: 'clear' | { value?: any }, table_selector_jq_friendly: string, column_number: number | string ): void {
+  private static doFilterCustomDateFunc( arg: 'clear' | { value?: any }, table_selector_jq_friendly: string, column_number: number | string ): void {
     let oTable    = Yadcf.oTables[ table_selector_jq_friendly ],
-        columnObj = Yadcf.getOptions( oTable.context[0].oInstance.selector )[ column_number ],
+        columnObj = Yadcf.getOptions( oTable.selector )[ column_number ],
         yadcfState;
 
     if ( arg === 'clear' && Yadcf.exGetColumnFilterVal( oTable, column_number ) === '' ) {
@@ -934,7 +1957,7 @@ class Yadcf {
    *
    * @returns
    */
-  public static doFilter( arg: ('clear' | 'exclude') | { value: any }, table_selector_jq_friendly: string, column_number: number, filter_match_mode?: FilterMatchMode<FilterType> ): void {
+  private static doFilter( arg: ('clear' | 'exclude') | { value: any }, table_selector_jq_friendly: string, column_number: number, filter_match_mode?: FilterMatchMode ): void {
     $.fn.dataTable.ext.iApiIndex = Yadcf.oTablesIndex[ table_selector_jq_friendly ];
 
     let oTable          = Yadcf.oTables[ table_selector_jq_friendly ],
@@ -948,7 +1971,7 @@ class Yadcf {
 
     column_number_filter = Yadcf.calcColumnNumberFilter( settingsDt, column_number, table_selector_jq_friendly );
 
-    columnObj = Yadcf.getOptions( oTable.context[0].oInstance.selector )[ column_number ];
+    columnObj = Yadcf.getOptions( oTable.selector )[ column_number ];
 
     if ( columnObj.exclude ) {
       exclude_checked = $( `#yadcf-filter-wrapper-${table_selector_jq_friendly}-${column_number}` ).find( '.yadcf-exclude-wrapper :checkbox' ).prop( 'checked' );
@@ -998,7 +2021,7 @@ class Yadcf {
         oTable.fnDraw();
       }
 
-      Yadcf.yadcfMatchFilter( oTable, selected_value, filter_match_mode, column_number_filter, exclude_checked, column_number );
+      Yadcf.yadcfMatchFilter( oTable, selected_value, (filter_match_mode as FilterMatchMode), column_number_filter, exclude_checked, column_number );
     } else if ( selected_value === columnObj.select_null_option ) {
       if ( oTable.settings()[0].oFeatures.bServerSide === false ) {
         oTable.fnFilter( '', column_number_filter );
@@ -1007,11 +2030,11 @@ class Yadcf {
 
         oTable.fnDraw();
       } else {
-        Yadcf.yadcfMatchFilter( oTable, selected_value, filter_match_mode, column_number_filter, exclude_checked, column_number );
+        Yadcf.yadcfMatchFilter( oTable, selected_value, (filter_match_mode as FilterMatchMode), column_number_filter, exclude_checked, column_number );
       }
 
       if ( oTable.settings()[0].oFeatures.bStateSave === true ) {
-        Yadcf.stateSaveNullSelect( oTable, columnObj, table_selector_jq_friendly, column_number, filter_match_mode, exclude_checked );
+        Yadcf.stateSaveNullSelect( oTable, columnObj, table_selector_jq_friendly, column_number, (filter_match_mode as FilterMatchMode), exclude_checked );
 
         oTable.settings()[0].oApi._fnSaveState( oTable.settings()[0] );
       }
@@ -1034,15 +2057,15 @@ class Yadcf {
    * @param column_number
    * @param filter_match_mode
    */
-  public static doFilterMultiSelect( arg: Array<any>, table_selector_jq_friendly: string, column_number: number | string, filter_match_mode: FilterMatchMode ): void {
+  private static doFilterMultiSelect( arg: Array<any>, table_selector_jq_friendly: string, column_number: number | string, filter_match_mode: FilterMatchMode ): void {
     $.fn.dataTable.ext.iApiIndex = Yadcf.oTablesIndex[ table_selector_jq_friendly ];
 
     let oTable = Yadcf.oTables[ table_selector_jq_friendly ],
         selected_values = $( arg ).val(),
         selected_values_trimmed = [],
-        i,
-        stringForSearch,
-        column_number_filter,
+        i: number,
+        stringForSearch: string,
+        column_number_filter: any,
         settingsDt = Yadcf.getSettingsObjFromTable( oTable );
 
     column_number_filter = Yadcf.calcColumnNumberFilter( settingsDt, column_number, table_selector_jq_friendly );
@@ -1106,11 +2129,11 @@ class Yadcf {
    *
    * @returns
    */
-  public static doFilterAutocomplete( arg: 'clear' | { value: any }, table_selector_jq_friendly: string, column_number: number | string, filter_match_mode?: FilterMatchMode ): void {
+  private static doFilterAutocomplete( arg: 'clear' | { value: any }, table_selector_jq_friendly: string, column_number: number | string, filter_match_mode: FilterMatchMode ): void {
     $.fn.dataTable.ext.iApiIndex = Yadcf.oTablesIndex[ table_selector_jq_friendly ];
 
-    let oTable: DataTablesStaticExt     = Yadcf.oTables[ table_selector_jq_friendly ],
-        settingsDt: Config = Yadcf.getSettingsObjFromTable( oTable ),
+    let oTable: DataTableInstance     = Yadcf.oTables[ table_selector_jq_friendly ],
+        settingsDt: DataTableSettings = Yadcf.getSettingsObjFromTable( oTable ),
         column_number_filter: number | string;
 
     column_number_filter = Yadcf.calcColumnNumberFilter( settingsDt, column_number, table_selector_jq_friendly );
@@ -1153,7 +2176,7 @@ class Yadcf {
    *
    * @returns
    */
-  public static doFilterMultiTablesMultiSelect( tablesSelectors: string, event: any, column_number_str: string, clear?: boolean ): void {
+  private static doFilterMultiTablesMultiSelect( tablesSelectors: string, event: any, column_number_str: string, clear?: boolean ): void {
     const columnsObj = Yadcf.getOptions( `${tablesSelectors}_${column_number_str}` )[ column_number_str ];
 
     let regex     = false,
@@ -1229,7 +2252,7 @@ class Yadcf {
    * @param clear
    * @returns
    */
-  public static doFilterMultiTables( tablesSelectors: string, event: any, column_number_str: string, clear?: boolean ): void {
+  private static doFilterMultiTables( tablesSelectors: string, event: any, column_number_str: string, clear?: boolean ): void {
     const columnsObj = Yadcf.getOptions( tablesSelectors + '_' + column_number_str )[ column_number_str ];
 
     let regex       = false,
@@ -1296,16 +2319,16 @@ class Yadcf {
    * @param clear
    * @returns
    */
-  public static dateSelectSingle( pDate: any, pEvent?: JQuery.TriggeredEvent, clear?: 'clear' | 0 | 1 ): void {
-    let oTable: DataTablesStaticExt,
-        date: string | (JQuery.TriggeredEvent & Date),
+  private static dateSelectSingle( pDate: any, pEvent?: JQuery.TriggeredEvent, clear?: 'clear' | 0 | 1 ): void {
+    let oTable: DataTableInstance,
+        date: string | (JQuery.TriggeredEvent | Date),
         event: any,
         column_number: number | string,
         dashIndex: number,
         table_selector_jq_friendly: string,
         column_number_filter: any,
-        settingsDt: Config,
-        columnObj: APFT,
+        settingsDt: DataTableSettings,
+        columnObj: AllParameters<FilterType>,
         yadcfState;
 
     if ( pDate ) {
@@ -1324,16 +2347,16 @@ class Yadcf {
     }
 
     column_number              = $( event as Element ).attr( 'id' ).replace( 'yadcf-filter-', '' ).replace( '-date', '' ).replace( '-reset', '' );
-    dashIndex                  = column_number.lastIndexOf( '-' );
-    table_selector_jq_friendly = column_number.substring( 0, dashIndex );
+    dashIndex                  = (column_number as string).lastIndexOf( '-' );
+    table_selector_jq_friendly = (column_number as string).substring( 0, dashIndex );
 
-    column_number = column_number.substring( dashIndex + 1 );
+    column_number = (column_number as string).substring( dashIndex + 1 );
 
     $.fn.dataTable.ext.iApiIndex = Yadcf.oTablesIndex[ table_selector_jq_friendly ];
 
     oTable     = Yadcf.oTables[ table_selector_jq_friendly ];
     settingsDt = Yadcf.getSettingsObjFromTable( oTable );
-    columnObj  = Yadcf.getOptions( oTable.context[0].oInstance.selector )[ column_number ];
+    columnObj  = Yadcf.getOptions( oTable.selector )[ column_number ];
 
     if ( pDate.type === 'dp' ) {
       if ( moment( $( event ).val(), columnObj.date_format ).isValid() ) {
@@ -1398,7 +2421,7 @@ class Yadcf {
         else {
           $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ).val( '' );
 
-          Yadcf.doFilterCustomDateFunc( { value: date }, table_selector_jq_friendly, column_number );
+          Yadcf.doFilterCustomDateFunc({ value: date }, table_selector_jq_friendly, column_number );
         }
       }
 
@@ -1428,7 +2451,7 @@ class Yadcf {
    * @param column_number
    * @returns
    */
-  public static rangeClear( table_selector_jq_friendly: string, event: JQuery.ClickEvent, column_number: number | string ): void {
+  private static rangeClear( table_selector_jq_friendly: string, event: JQuery.ClickEvent, column_number: number | string ): void {
     const oTable = Yadcf.oTables[ table_selector_jq_friendly ];
 
     let yadcfState,
@@ -1445,15 +2468,15 @@ class Yadcf {
 
     event      = Yadcf.eventTargetFixUp( event );
     settingsDt = Yadcf.getSettingsObjFromTable( oTable );
-    columnObj  = Yadcf.getOptions( oTable.context[0].oInstance.selector )[ column_number ];
+    columnObj  = Yadcf.getOptions( oTable.selector )[ column_number ];
 
     column_number_filter = Yadcf.calcColumnNumberFilter( settingsDt, column_number, table_selector_jq_friendly );
     Yadcf.resetExcludeRegexCheckboxes( $( `#yadcf-filter-wrapper-${table_selector_jq_friendly}-${column_number}` ) );
     Yadcf.clearStateSave( oTable, column_number, table_selector_jq_friendly );
 
     if ( columnObj.null_check_box ) {
-      $( '#' + fromId.replace( '-from-date-', '-from-' ) ).prop( 'disabled', false );
-      $( '#' + toId.replace( '-to-date-', '-to-' ) ).prop( 'disabled', false );
+      $( `#${fromId}`.replace( '-from-date-', '-from-' ) ).prop( 'disabled', false );
+      $( `#${toId}`.replace( '-to-date-', '-to-' ) ).prop( 'disabled', false );
 
       if ( oTable.settings()[0].oFeatures.bServerSide !== true ) {
         oTable.fnDraw();
@@ -1517,13 +2540,13 @@ class Yadcf {
     buttonSelector.parent().find( '.yadcf-filter-range' ).removeClass( 'inuse inuse-exclude' );
 
     if ( columnObj.datepicker_type === 'bootstrap-datepicker' ) {
-      $fromInput = $( '#' + fromId );
-      $toInput = $( '#' + toId );
+      $fromInput = $( `#${fromId}` );
+      $toInput = $( `#${toId}` );
       $fromInput.datepicker( 'update' );
       $toInput.datepicker( 'update' );
     } else if ( columnObj.datepicker_type === 'jquery-ui' ) {
-      $( '#' + fromId ).datepicker( 'option', 'maxDate', null );
-      $( '#' + toId ).datepicker( 'option', 'minDate', null );
+      $( `#${fromId}` ).datepicker( 'option', 'maxDate', null );
+      $( `#${toId}` ).datepicker( 'option', 'minDate', null );
     }
 
     return;
@@ -1538,7 +2561,9 @@ class Yadcf {
    * @param event
    * @returns
    */
-  public static rangeNumberSliderClear( table_selector_jq_friendly: string, event: JQuery.KeyPressEvent | JQuery.MouseDownEvent | JQuery.DragOverEvent ): void {
+  private static rangeNumberSliderClear( table_selector_jq_friendly: string, event: JQuery.KeyPressEvent | JQuery.MouseDownEvent | JQuery.DragOverEvent ): void {
+    $.fn.slider = jQuery.ui.slider;
+
     const oTable = Yadcf.oTables[ table_selector_jq_friendly ];
 
     let min_val: number,
@@ -1587,8 +2612,8 @@ class Yadcf {
    * @param date_format
    * @param event
    */
-  public static dateKeyUP( table_selector_jq_friendly: string, date_format: DateFormat, event: any ): void {
-    let oTable: DataTablesStaticExt,
+  private static dateKeyUP( table_selector_jq_friendly: string, date_format: DateFormat, event: any ): void {
+    let oTable: DataTableInstance,
         date: Date | string,
         dateId: string,
         column_number: number | string,
@@ -1601,9 +2626,9 @@ class Yadcf {
 
     $.fn.dataTable.ext.iApiIndex = Yadcf.oTablesIndex[ table_selector_jq_friendly ];
 
-    oTable        = Yadcf.oTables[ table_selector_jq_friendly ] as DataTableInstance;
+    oTable        = Yadcf.oTables[ table_selector_jq_friendly ];
     column_number = parseInt( dateId.replace( 'yadcf-filter-' + table_selector_jq_friendly + '-', '' ), 10 );
-    columnObj     = Yadcf.getOptions( oTable.context[0].oInstance.selector )[ column_number ];
+    columnObj     = Yadcf.getOptions( oTable.selector )[ column_number ];
 
     try {
       if ( columnObj.datepicker_type === 'jquery-ui' ) {
@@ -1614,7 +2639,7 @@ class Yadcf {
     } catch ( err1 ) {}
 
     if ( date instanceof Date || moment( date, columnObj.date_format ).isValid() ) {
-      $( '#' + dateId ).addClass( 'inuse' );
+      $( `#${dateId}` ).addClass( 'inuse' );
 
       if ( columnObj.filter_type !== 'date_custom_func' ) {
         oTable.fnFilter( (document.getElementById( dateId ) as HTMLInputElement).value, column_number );
@@ -1623,7 +2648,7 @@ class Yadcf {
         Yadcf.doFilterCustomDateFunc( { value: date }, table_selector_jq_friendly, column_number );
       }
     } else if ( date === '' || trim( event.target.value ) === '' ) {
-      $( '#' + dateId ).removeClass( 'inuse' );
+      $( `#${dateId}` ).removeClass( 'inuse' );
       $( '#' + event.target.id ).removeClass( 'inuse' );
 
       oTable.fnFilter( '', column_number );
@@ -1645,16 +2670,16 @@ class Yadcf {
    * @param date_format
    * @param event
    */
-  public static rangeDateKeyUP( table_selector_jq_friendly: string, date_format: DateFormat, event: any ): void {
-    let oTable: DataTablesStaticExt,
+  private static rangeDateKeyUP( table_selector_jq_friendly: string, date_format: DateFormat, event: any ): void {
+    let oTable: DataTableInstance,
         min: number | string | Date,
         max: number | string | Date,
         fromId: string,
         toId: string,
         column_number: number,
-        columnObj: ColumnObj,
+        columnObj: any,
         keyUp: () => void,
-        settingsDt: Api<any>,
+        settingsDt: DataTableSettings,
         column_number_filter: number | string,
         dpg: any,
         minTmp: number | string,
@@ -1666,7 +2691,7 @@ class Yadcf {
     oTable = Yadcf.oTables[ table_selector_jq_friendly ];
 
     column_number        = parseInt( $( event.target ).attr( 'id' ).replace( '-from-date-', '' ).replace( '-to-date-', '' ).replace( `yadcf-filter-${table_selector_jq_friendly}`, '' ), 10 );
-    columnObj            = Yadcf.getOptions( oTable.context[0].oInstance.selector )[ column_number ];
+    columnObj            = Yadcf.getOptions( oTable.selector )[ column_number ];
     settingsDt           = Yadcf.getSettingsObjFromTable( oTable );
     column_number_filter = Yadcf.calcColumnNumberFilter( settingsDt, column_number, table_selector_jq_friendly );
 
@@ -1746,15 +2771,15 @@ class Yadcf {
         }
 
         if ( min instanceof Date ) {
-          $( '#' + fromId ).addClass( 'inuse' );
+          $( `#${fromId}` ).addClass( 'inuse' );
         } else {
-          $( '#' + fromId ).removeClass( 'inuse' );
+          $( `#${fromId}` ).removeClass( 'inuse' );
         }
 
         if ( max instanceof Date ) {
-          $( '#' + toId ).addClass( 'inuse' );
+          $( `#${toId}` ).addClass( 'inuse' );
         } else {
-          $( '#' + toId ).removeClass( 'inuse' );
+          $( `#${toId}` ).removeClass( 'inuse' );
         }
 
         if ( trim( event.target.value ) === '' && $( event.target ).hasClass( 'inuse' ) ) {
@@ -1783,7 +2808,7 @@ class Yadcf {
    * @param table_selector_jq_friendly
    * @param event
    */
-  public static rangeNumberKeyUP( table_selector_jq_friendly: string, event: JQuery.KeyUpEvent ): void {
+  private static rangeNumberKeyUP( table_selector_jq_friendly: string, event: JQuery.KeyUpEvent ): void {
     const oTable = Yadcf.oTables[ table_selector_jq_friendly ];
 
     let min,
@@ -1808,7 +2833,7 @@ class Yadcf {
     $.fn.dataTable.ext.iApiIndex = Yadcf.oTablesIndex[ table_selector_jq_friendly ];
 
     column_number        = parseInt( target.attr( 'id' ).replace( '-from-', '' ).replace( '-to-', '' ).replace( 'yadcf-filter-' + table_selector_jq_friendly, '' ), 10 );
-    columnObj            = Yadcf.getOptions( oTable.context[0].oInstance.selector )[ column_number ];
+    columnObj            = Yadcf.getOptions( oTable.selector )[ column_number ];
     settingsDt           = Yadcf.getSettingsObjFromTable( oTable );
     column_number_filter = Yadcf.calcColumnNumberFilter( settingsDt, column_number, table_selector_jq_friendly );
 
@@ -1851,17 +2876,17 @@ class Yadcf {
           oTable.fnFilter( exclude_delimeter + min + columnObj.custom_range_delimiter + max, column_number_filter );
         }
 
-        $( '#' + fromId ).removeClass( 'inuse inuse-exclude' );
-        $( '#' + toId ).removeClass( 'inuse inuse-exclude' );
+        $( `#${fromId}` ).removeClass( 'inuse inuse-exclude' );
+        $( `#${toId}` ).removeClass( 'inuse inuse-exclude' );
 
         const inuse_class = exclude_checked ? 'inuse inuse-exclude' : 'inuse';
 
         if ( (document.getElementById( fromId ) as HTMLInputElement).value !== '' ) {
-          $( '#' + fromId ).addClass( inuse_class );
+          $( `#${fromId}` ).addClass( inuse_class );
         }
 
         if ( (document.getElementById( toId ) as HTMLInputElement).value !== '' ) {
-          $( '#' + toId ).addClass( inuse_class );
+          $( `#${toId}` ).addClass( inuse_class );
         }
 
         if ( !oTable.settings()[0].oLoadedState ) {
@@ -1914,7 +2939,7 @@ class Yadcf {
    * @param column_number_str
    * @param clear
    */
-  public static textKeyUpMultiTables( tablesSelectors: string, event: any, column_number_str: string, clear?: string ): void {
+  private static textKeyUpMultiTables( tablesSelectors: string, event: any, column_number_str: string, clear?: string ): void {
     let caseInsen   = true,
         smart       = true,
         regex       = false,
@@ -1995,7 +3020,7 @@ class Yadcf {
    * @param clear
    * @returns
    */
-  public static textKeyUP( ev: any, table_selector_jq_friendly: string, column_number: number | string, clear?: string ): void {
+  private static textKeyUP( ev: any, table_selector_jq_friendly: string, column_number: number | string, clear?: string ): void {
     const oTable       = Yadcf.oTables[ table_selector_jq_friendly ],
           settingsDt   = Yadcf.getSettingsObjFromTable( oTable );
 
@@ -2013,12 +3038,12 @@ class Yadcf {
 
     column_number_filter = Yadcf.calcColumnNumberFilter( settingsDt, column_number, table_selector_jq_friendly );
 
-    columnObj = Yadcf.getOptions( oTable.context[0].oInstance.selector )[ column_number ];
+    columnObj = Yadcf.getOptions( oTable.selector )[ column_number ];
 
     keyUp = function( table_selector_jq_friendly: string, column_number: number | string, clear?: string ): void {
       let fixedPrefix = '';
 
-      if ( (settingsDt as Api<any>).fixedHeader !== undefined && $( '.fixedHeader-floating' ).is( ':visible' ) ) {
+      if ( (settingsDt as DataTableSettings).fixedHeader !== undefined && $( '.fixedHeader-floating' ).is( ':visible' ) ) {
         fixedPrefix = '.fixedHeader-floating ';
       }
 
@@ -2124,10 +3149,10 @@ class Yadcf {
    * @param event
    * @returns
    */
-  public static autocompleteKeyUP( table_selector_jq_friendly: string, event: any ) {
+  private static autocompleteKeyUP( table_selector_jq_friendly: string, event: any ) {
     const keyCodes = [ 37, 38, 39, 40 ];
 
-    let oTable: DataTablesStaticExt,
+    let oTable: DataTableInstance,
         column_number: number;
 
     event = Yadcf.eventTargetFixUp( event );
@@ -2162,7 +3187,7 @@ class Yadcf {
    * @param table_selector_jq_friendly
    * @param column_number
    */
-  public static nullChecked( ev: JQuery.Event, table_selector_jq_friendly: string, column_number: number | string ): void {
+  private static nullChecked( ev: JQuery.Event, table_selector_jq_friendly: string, column_number: number | string ): void {
     const oTable = Yadcf.oTables[ table_selector_jq_friendly ];
 
     let settingsDt      = Yadcf.getSettingsObjFromTable( oTable ),
@@ -2174,11 +3199,11 @@ class Yadcf {
         null_checked;
 
     column_number_filter = Yadcf.calcColumnNumberFilter( settingsDt, column_number, table_selector_jq_friendly );
-    columnObj            = Yadcf.getOptions( oTable.context[0].oInstance.selector )[ column_number ];
+    columnObj            = Yadcf.getOptions( oTable.selector )[ column_number ];
 
     let fixedPrefix = '';
 
-    if ( (settingsDt as Api<any>).fixedHeader !== undefined && $( '.fixedHeader-floating' ).is( ':visible' ) ) {
+    if ( (settingsDt as DataTableSettings).fixedHeader !== undefined && $( '.fixedHeader-floating' ).is( ':visible' ) ) {
       fixedPrefix = '.fixedHeader-floating ';
     }
 
@@ -2285,7 +3310,7 @@ class Yadcf {
    * @param tablesArray
    * @param filtersOptions
    */
-  public static initMultipleTables( tablesArray: Array<Api<any>>, filtersOptions: Array<APFT> ) {
+  private static initMultipleTables( tablesArray: Array<DataTableInstance>, filtersOptions: Array<AllParameters<FilterTypeMulti>> ) {
     let i: number,
         tablesSelectors: string = '',
         default_options: MultiParams = {
@@ -2294,9 +3319,9 @@ class Yadcf {
           filter_reset_button_text: 'x',
           case_insensitive: true
         },
-        columnsObj: APFT,
+        columnsObj: AllParameters,
         columnsArrIndex: number,
-        column_number_str: ColumnNumberObject['column_number_str'],
+        column_number_str: AllParameters['column_number_str'],
         dummyArr: Array<any>;
 
     for ( columnsArrIndex = 0; columnsArrIndex < filtersOptions.length; columnsArrIndex++ ) {
@@ -2350,8 +3375,8 @@ class Yadcf {
   /**
    * @see initMultipleTables
    */
-  public static initMultipleColumns( table: Api<any>, filtersOptions: Array<APMT> ) {
-    let tablesArray = [];
+  private static initMultipleColumns( table: DataTableInstance, filtersOptions: Array<AllParameters<FilterTypeMulti>> ) {
+    let tablesArray: Array<DataTable<any>> = [];
 
     tablesArray.push( table );
 
@@ -2363,7 +3388,7 @@ class Yadcf {
    *
    * @param evt
    */
-  public static stopPropagation( evt: any ) {
+  private static stopPropagation( evt: any ) {
     Yadcf.close3rdPPluginsNeededClose( evt );
 
     if ( evt.stopPropagation !== undefined ) {
@@ -2379,7 +3404,7 @@ class Yadcf {
    * @param evt
    * @returns
    */
-  public static preventDefaultForEnter( evt: any ): void {
+  private static preventDefaultForEnter( evt: any ): void {
     Yadcf.ctrlPressed = false;
 
     if ( evt.keyCode === 13 ) {
@@ -2418,7 +3443,9 @@ class Yadcf {
    * @param col_filter_arr
    * @param ajaxSource
    */
-  public static exFilterColumn( table_arg: Api<any>, col_filter_arr: Array<ExFilterColArgs>, ajaxSource: boolean = true ) {
+  private static exFilterColumn( table_arg: DataTableInstance, col_filter_arr: Array<ExFilterColArgs>, ajaxSource: boolean = true ) {
+    $.fn.slider = jQuery.ui.slider;
+
     let table_selector_jq_friendly: string,
         j: number,
         tmpStr: string,
@@ -2428,7 +3455,7 @@ class Yadcf {
         fromId: string,
         toId: string,
         sliderId: string,
-        optionsObj: APFT,
+        optionsObj: AllParameters<FilterType>,
         min: number | string,
         max: number | string,
         exclude: boolean = false;
@@ -2516,20 +3543,20 @@ class Yadcf {
             fromId = `yadcf-filter-${table_selector_jq_friendly}-from-date-${column_number}`;
             toId   = `yadcf-filter-${table_selector_jq_friendly}-to-date-${column_number}`;
 
-            $( '#' + fromId ).val( filter_value.from );
+            $( `#${fromId}` ).val( filter_value.from );
 
             if ( filter_value.from !== '' ) {
-              $( '#' + fromId ).addClass( 'inuse' );
+              $( `#${fromId}` ).addClass( 'inuse' );
             } else {
-              $( '#' + fromId ).removeClass( 'inuse' );
+              $( `#${fromId}` ).removeClass( 'inuse' );
             }
 
-            $( '#' + toId ).val( filter_value.to );
+            $( `#${toId}` ).val( filter_value.to );
 
             if ( filter_value.to !== '' ) {
-              $( '#' + toId ).addClass( 'inuse' );
+              $( `#${toId}` ).addClass( 'inuse' );
             } else {
-              $( '#' + toId ).removeClass( 'inuse' );
+              $( `#${toId}` ).removeClass( 'inuse' );
             }
 
             if ( table_arg.settings()[0].oFeatures.bServerSide === true ) {
@@ -2545,20 +3572,20 @@ class Yadcf {
             fromId = `yadcf-filter-${table_selector_jq_friendly}-from-${column_number}`;
             toId   = `yadcf-filter-${table_selector_jq_friendly}-to-${column_number}`;
 
-            $( '#' + fromId ).val( filter_value.from );
+            $( `#${fromId}` ).val( filter_value.from );
 
             if ( filter_value.from !== '' ) {
-              $( '#' + fromId ).addClass( 'inuse' );
+              $( `#${fromId}` ).addClass( 'inuse' );
             } else {
-              $( '#' + fromId ).removeClass( 'inuse' );
+              $( `#${fromId}` ).removeClass( 'inuse' );
             }
 
-            $( '#' + toId ).val( filter_value.to );
+            $( `#${toId}` ).val( filter_value.to );
 
             if ( filter_value.to !== '' ) {
-              $( '#' + toId ).addClass( 'inuse' );
+              $( `#${toId}` ).addClass( 'inuse' );
             } else {
-              $( '#' + toId ).removeClass( 'inuse' );
+              $( `#${toId}` ).removeClass( 'inuse' );
             }
 
             if ( table_arg.settings()[0].oFeatures.bServerSide === true ) {
@@ -2574,35 +3601,35 @@ class Yadcf {
             toId = `yadcf-filter-${table_selector_jq_friendly}-max_tip-${column_number}`;
 
             if ( filter_value.from !== '' ) {
-              min = $( '#' + fromId ).closest( '.yadcf-filter-range-number-slider' ).find( '.yadcf-filter-range-number-slider-min-tip-hidden' ).text();
+              min = $( `#${fromId}` ).closest( '.yadcf-filter-range-number-slider' ).find( '.yadcf-filter-range-number-slider-min-tip-hidden' ).text();
 
-              max = $( '#' + fromId ).closest( '.yadcf-filter-range-number-slider' ).find( '.yadcf-filter-range-number-slider-max-tip-hidden' ).text();
+              max = $( `#${fromId}` ).closest( '.yadcf-filter-range-number-slider' ).find( '.yadcf-filter-range-number-slider-max-tip-hidden' ).text();
 
-              $( '#' + fromId ).text( filter_value.from );
+              $( `#${fromId}` ).text( filter_value.from );
 
               if ( min !== filter_value.from ) {
-                $( '#' + fromId ).parent().addClass( 'inuse' );
-                $( '#' + fromId ).parent().parent().find( 'ui-slider-range' ).addClass( 'inuse' );
+                $( `#${fromId}` ).parent().addClass( 'inuse' );
+                $( `#${fromId}` ).parent().parent().find( 'ui-slider-range' ).addClass( 'inuse' );
               } else {
-                $( '#' + fromId ).parent().removeClass( 'inuse' );
-                $( '#' + fromId ).parent().parent().find( 'ui-slider-range' ).removeClass( 'inuse' );
+                $( `#${fromId}` ).parent().removeClass( 'inuse' );
+                $( `#${fromId}` ).parent().parent().find( 'ui-slider-range' ).removeClass( 'inuse' );
               }
 
-              $( '#' + sliderId ).slider( 'values', 0, filter_value.from );
+              $( `#${sliderId}` ).slider( 'values', 0, filter_value.from );
             }
 
             if ( filter_value.to !== '' ) {
-              $( '#' + toId ).text( filter_value.to );
+              $( `#${toId}` ).text( filter_value.to );
 
               if ( max !== filter_value.to ) {
-                $( '#' + toId ).parent().addClass( 'inuse' );
-                $( '#' + toId ).parent().parent().find( '.ui-slider-range' ).addClass( 'inuse' );
+                $( `#${toId}` ).parent().addClass( 'inuse' );
+                $( `#${toId}` ).parent().parent().find( '.ui-slider-range' ).addClass( 'inuse' );
               } else {
-                $( '#' + toId ).parent().removeClass( 'inuse' );
-                $( '#' + toId ).parent().parent().find( '.ui-slider-range' ).removeClass( 'inuse' );
+                $( `#${toId}` ).parent().removeClass( 'inuse' );
+                $( `#${toId}` ).parent().parent().find( '.ui-slider-range' ).removeClass( 'inuse' );
               }
 
-              $( '#' + sliderId ).slider( 'values', 1, filter_value.to );
+              $( `#${sliderId}` ).slider( 'values', 1, filter_value.to );
             }
 
             if ( table_arg.settings()[0].oFeatures.bServerSide === true ) {
@@ -2657,12 +3684,12 @@ class Yadcf {
    * @param column_number
    * @returns
    */
-  public static exGetColumnFilterVal( table_arg: Api<any> & Config & DataTables.SettingsLegacy, column_number: number | string ) {
+  private static exGetColumnFilterVal( table_arg: DataTableInstance & DataTables.SettingsLegacy, column_number: number | string ) {
     let retVal: any,
         fromId: string,
         toId: string,
         table_selector_jq_friendly: string,
-        optionsObj: APFT,
+        optionsObj: AllParameters<FilterType>,
         $filterElement: JQuery | globalThis.JQuery;
 
     // Check if the table arg is from new datatables API (capital 'D').
@@ -2692,6 +3719,7 @@ class Yadcf {
           retVal = '';
         }
         break;
+
       case 'auto_complete':
       case 'text':
       case 'date':
@@ -2702,7 +3730,8 @@ class Yadcf {
           retVal = '_exclude_' + retVal;
         }
         break;
-      case 'multi_select':
+
+        case 'multi_select':
       case 'multi_select_custom_func':
         retVal = $filterElement.val();
 
@@ -2710,32 +3739,35 @@ class Yadcf {
           retVal = '';
         }
         break;
-      case 'range_date':
+
+        case 'range_date':
         retVal = {};
         fromId = `yadcf-filter-${table_selector_jq_friendly}-from-date-${column_number}`;
         toId   = `yadcf-filter-${table_selector_jq_friendly}-to-date-${column_number}`;
 
-        retVal.from = $( selectorePrefix + '#' + fromId ).val();
-        retVal.to   = $( selectorePrefix + '#' + toId ).val();
+        retVal.from = $( selectorePrefix + `#${fromId}` ).val();
+        retVal.to   = $( selectorePrefix + `#${toId}` ).val();
         break;
-      case 'range_number':
+
+        case 'range_number':
         retVal = {};
         fromId = `yadcf-filter-${table_selector_jq_friendly}-from-${column_number}`;
         toId   = `yadcf-filter-${table_selector_jq_friendly}-to-${column_number}`;
 
-        retVal.from = $( selectorePrefix + '#' + fromId ).val();
-        retVal.to = $( selectorePrefix + '#' + toId ).val();
+        retVal.from = $( selectorePrefix + `#${fromId}` ).val();
+        retVal.to = $( selectorePrefix + `#${toId}` ).val();
         break;
+
       case 'range_number_slider':
         retVal = {};
         fromId = `yadcf-filter-${table_selector_jq_friendly}-min_tip-${column_number}`;
         toId   = `yadcf-filter-${table_selector_jq_friendly}-max_tip-${column_number}`;
 
-        retVal.from = $( selectorePrefix + '#' + fromId ).text();
-        retVal.to   = $( selectorePrefix + '#' + toId ).text();
-
+        retVal.from = $( selectorePrefix + `#${fromId}` ).text();
+        retVal.to   = $( selectorePrefix + `#${toId}` ).text();
         break;
-      default:
+
+        default:
         console.log( 'exGetColumnFilterVal error: no such filter_type: ' + optionsObj.filter_type );
     }
     return retVal;
@@ -2753,16 +3785,18 @@ class Yadcf {
    * @param noRedraw
    * @param columns
    */
-  public static exResetAllFilters( table_arg: Api<any>, noRedraw: boolean, columns: Array<number | string> ): void {
+  private static exResetAllFilters( table_arg: DataTableInstance, noRedraw: boolean, columns: Array<number | string> ): void {
+    $.fn.slider = jQuery.ui.slider;
+
     let table_selector_jq_friendly: string,
         column_number: number,
         fromId: string,
         toId: string,
         sliderId: string,
         tableOptions: TableParameters,
-        optionsObj: APFT,
+        optionsObj: AllParameters<FilterType>,
         columnObjKey: string,
-        settingsDt: Api<any> & SettingsDT & DTSettings,
+        settingsDt: DataTableSettings,
         i: number,
         $filterElement: JQuery | globalThis.JQuery;
 
@@ -2809,6 +3843,7 @@ class Yadcf {
               Yadcf.refreshSelectPlugin( optionsObj, $filterElement, '-1' );
             }
             break;
+
           case 'auto_complete':
           case 'text':
             $filterElement.prop( 'disabled', false );
@@ -2821,6 +3856,7 @@ class Yadcf {
 
             Yadcf.clearStateSave( table_arg, column_number, table_selector_jq_friendly );
             break;
+
           case 'date':
             $filterElement.val( '' ).removeClass( 'inuse' );
 
@@ -2830,6 +3866,7 @@ class Yadcf {
               $filterElement.prev().find( 'input' ).prop( 'checked', false );
             }
             break;
+
           case 'multi_select':
           case 'multi_select_custom_func':
             $filterElement.val( '-1' );
@@ -2842,13 +3879,14 @@ class Yadcf {
               Yadcf.refreshSelectPlugin( optionsObj, $filterElement, '-1' );
             }
             break;
+
           case 'range_date':
             fromId = `yadcf-filter-${table_selector_jq_friendly}-from-date-${column_number}`;
             toId = `yadcf-filter-${table_selector_jq_friendly}-to-date-${column_number}`;
-            $( selectorePrefix + '#' + fromId ).val( '' );
-            $( selectorePrefix + '#' + fromId ).removeClass( 'inuse' );
-            $( selectorePrefix + '#' + toId ).val( '' );
-            $( selectorePrefix + '#' + toId ).removeClass( 'inuse' );
+            $( selectorePrefix + `#${fromId}` ).val( '' );
+            $( selectorePrefix + `#${fromId}` ).removeClass( 'inuse' );
+            $( selectorePrefix + `#${toId}` ).val( '' );
+            $( selectorePrefix + `#${toId}` ).removeClass( 'inuse' );
 
             if ( table_arg.settings()[0].oFeatures.bServerSide === true ) {
               table_arg.settings()[0].aoPreSearchCols[ column_number ].sSearch = '';
@@ -2856,34 +3894,36 @@ class Yadcf {
 
             Yadcf.clearStateSave( table_arg, column_number, table_selector_jq_friendly );
             break;
+
           case 'range_number':
             fromId = `yadcf-filter-${table_selector_jq_friendly}-from-${column_number}`;
             toId = `yadcf-filter-${table_selector_jq_friendly}-to-${column_number}`;
-            $( selectorePrefix + '#' + fromId ).prop( 'disabled', false );
-            $( selectorePrefix + '#' + fromId ).val( '' );
-            $( selectorePrefix + '#' + fromId ).removeClass( 'inuse inuse-exclude' );
-            $( selectorePrefix + '#' + toId ).prop( 'disabled', false );
-            $( selectorePrefix + '#' + toId ).val( '' );
-            $( selectorePrefix + '#' + toId ).removeClass( 'inuse inuse-exclude' );
+            $( selectorePrefix + `#${fromId}` ).prop( 'disabled', false );
+            $( selectorePrefix + `#${fromId}` ).val( '' );
+            $( selectorePrefix + `#${fromId}` ).removeClass( 'inuse inuse-exclude' );
+            $( selectorePrefix + `#${toId}` ).prop( 'disabled', false );
+            $( selectorePrefix + `#${toId}` ).val( '' );
+            $( selectorePrefix + `#${toId}` ).removeClass( 'inuse inuse-exclude' );
 
             if ( table_arg.settings()[0].oFeatures.bServerSide === true ) {
               table_arg.settings()[0].aoPreSearchCols[ column_number ].sSearch = '';
             }
 
-            Yadcf.resetExcludeRegexCheckboxes( $( selectorePrefix + '#' + fromId ).parent().parent() );
+            Yadcf.resetExcludeRegexCheckboxes( $( selectorePrefix + `#${fromId}` ).parent().parent() );
             Yadcf.clearStateSave( table_arg, column_number, table_selector_jq_friendly );
             break;
+
           case 'range_number_slider':
             sliderId = `yadcf-filter-${table_selector_jq_friendly}-slider-${column_number}`;
             fromId = `yadcf-filter-${table_selector_jq_friendly}-min_tip-${column_number}`;
             toId = `yadcf-filter-${table_selector_jq_friendly}-max_tip-${column_number}`;
-            $( selectorePrefix + '#' + fromId ).text( '' );
-            $( selectorePrefix + '#' + fromId ).parent().removeClass( 'inuse' );
-            $( selectorePrefix + '#' + fromId ).parent().parent().find( 'ui-slider-range' ).removeClass( 'inuse' );
-            $( selectorePrefix + '#' + toId ).text( '' );
-            $( selectorePrefix + '#' + toId ).parent().removeClass( 'inuse' );
-            $( selectorePrefix + '#' + toId ).parent().parent().find( '.ui-slider-range' ).removeClass( 'inuse' );
-            $( selectorePrefix + '#' + sliderId ).slider( 'option', 'values', [ $( '#' + fromId ).parent().parent().find( '.yadcf-filter-range-number-slider-min-tip-hidden' ).text(), $( '#' + fromId ).parent().parent().find( '.yadcf-filter-range-number-slider-max-tip-hidden' ).text() ] );
+            $( selectorePrefix + `#${fromId}` ).text( '' );
+            $( selectorePrefix + `#${fromId}` ).parent().removeClass( 'inuse' );
+            $( selectorePrefix + `#${fromId}` ).parent().parent().find( 'ui-slider-range' ).removeClass( 'inuse' );
+            $( selectorePrefix + `#${toId}` ).text( '' );
+            $( selectorePrefix + `#${toId}` ).parent().removeClass( 'inuse' );
+            $( selectorePrefix + `#${toId}` ).parent().parent().find( '.ui-slider-range' ).removeClass( 'inuse' );
+            $( selectorePrefix + `#${sliderId}` ).slider( 'option', 'values', [ $( `#${fromId}` ).parent().parent().find( '.yadcf-filter-range-number-slider-min-tip-hidden' ).text(), $( `#${fromId}` ).parent().parent().find( '.yadcf-filter-range-number-slider-max-tip-hidden' ).text() ] );
 
             if ( table_arg.settings()[0].oFeatures.bServerSide === true ) {
               table_arg.settings()[0].aoPreSearchCols[ column_number ].sSearch = '';
@@ -2917,7 +3957,7 @@ class Yadcf {
    * @param columns
    * @param noRedraw
    */
-  public static exResetFilters( table_arg: Api<any>, columns: Array<number | string>, noRedraw: boolean ): void {
+  private static exResetFilters( table_arg: DataTableInstance, columns: Array<number | string>, noRedraw: boolean ): void {
     Yadcf.exResetAllFilters( table_arg, noRedraw, columns );
   }
 
@@ -2928,7 +3968,7 @@ class Yadcf {
    *
    * @param table_arg
    */
-  public static exFilterExternallyTriggered( table_arg: Api<any> ) {
+  private static exFilterExternallyTriggered( table_arg: DataTableInstance ) {
     let columnsObj: AllParameters,
         columnObjKey: string,
         columnObj: AllParameters,
@@ -2966,7 +4006,7 @@ class Yadcf {
    * @param col_num
    * @param updatedData
    */
-  public static exRefreshColumnFilterWithDataProp( table_arg: Api<any>, col_num: number, updatedData: Record<string, any> ): void {
+  private static exRefreshColumnFilterWithDataProp( table_arg: DataTableInstance, col_num: number, updatedData: Record<string, any> ): void {
     if ( table_arg.settings !== undefined ) {
       table_arg = table_arg.settings()[0].oInstance;
     }
@@ -3009,35 +4049,39 @@ class Yadcf {
    * @returns
    */
   private static getSettingsObjFromTable( dt: any ): DataTableSettings {
-    let oConfig: DataTableSettings;
+    let oDataTableSettings: DataTableSettings;
 
-    if ( $.fn.dataTable.Api ) {
-      oConfig = new $.fn.dataTable.Api( dt ).settings()[0];
-    } else if ( dt.fnSettings ) { // 1.9 compatibility
+    if ( $.fn.dataTable && typeof $.fn.dataTable.Api !== 'undefined' ) {
+      oDataTableSettings = new $.fn.dataTable.Api( dt ).settings()[0];
+    } else if ( typeof dt.settings !== 'undefined' ) { // 1.9 compatibility
       // DataTables object, convert to the settings object
-      oConfig = dt.settings()[0];
+      oDataTableSettings = dt.settings()[0];
     } else if ( typeof dt === 'string' ) { // jQuery selector
-      if ( $.fn.dataTable.isDataTable( $( dt )[0] ) ) {
+      if ( $.fn.dataTable && $.fn.dataTable.isDataTable( $( dt )[0] ) ) {
         // @ts-ignore
-        oConfig = $( dt ).eq( 0 ).dataTable().settings()[0];
+        oDataTableSettings = $( dt ).eq( 0 ).dataTable().settings()[0];
       }
     } else if ( dt.nodeName && dt.nodeName.toLowerCase() === 'table' ) {
       // Table node
-      if ( $.fn.dataTable.isDataTable( dt.nodeName ) ) {
+      if ( $.fn.dataTable && $.fn.dataTable.isDataTable( dt.nodeName ) ) {
         // @ts-ignore
-        oConfig = $( dt.nodeName ).dataTable().settings()[0];
+        oDataTableSettings = $( dt.nodeName ).dataTable().settings()[0];
+      } else {
+        oDataTableSettings = new DataTable( dt.nodeName ).settings()
       }
     } else if ( dt instanceof jQuery ) {
       // jQuery object
-      if ( $.fn.dataTable.isDataTable( dt[0] ) ) {
-        oConfig = dt[0].dataTable().settings()[0];
+      if ( $.fn.dataTable && $.fn.dataTable.isDataTable( dt[0] ) ) {
+        oDataTableSettings = dt[0].dataTable().settings()[0];
+      } else {
+        oDataTableSettings = dt[0].DataTable().settings()[0]
       }
     } else {
       // DataTables settings object
-      oConfig = dt;
+      oDataTableSettings = dt;
     }
 
-    return oConfig;
+    return oDataTableSettings;
   }
 
   private static arraySwapValueWithIndex( pArray: Array<any> ): Array<Record<any, number>> {
@@ -3074,13 +4118,13 @@ class Yadcf {
    * @param settingsDt
    * @param table_selector_jq_friendly
    */
-  private static initColReorder2( settingsDt: any, table_selector_jq_friendly: string ): void {
+  private static initColReorder2( settingsDt: DataTableSettings, table_selector_jq_friendly: string ): void {
     if ( settingsDt.oSavedState && settingsDt.oSavedState.ColReorder !== undefined ) {
       if ( Yadcf.plugins[ table_selector_jq_friendly ] === undefined ) {
         Yadcf.plugins[ table_selector_jq_friendly ] = {};
         Yadcf.plugins[ table_selector_jq_friendly ].ColReorder = Yadcf.arraySwapValueWithIndex( settingsDt.oSavedState.ColReorder );
       }
-    } else if ( settingsDt.aoColumns[0]._ColReorder_iOrigCol !== undefined ) {
+    } else if ( settingsDt.aoColumns && typeof settingsDt.aoColumns[0]._ColReorder_iOrigCol !== 'undefined' ) {
       if ( Yadcf.plugins[ table_selector_jq_friendly ] === undefined ) {
         Yadcf.plugins[ table_selector_jq_friendly ] = {};
         Yadcf.plugins[ table_selector_jq_friendly ].ColReorder = Yadcf.arraySwapValueWithIndex2( settingsDt.aoColumns );
@@ -3174,7 +4218,7 @@ class Yadcf {
    * @param table
    * @returns
    */
-  public static setOptions( selector_arg: string, options_arg: ArrayObjects, params: any, table?: Api<any> ): void {
+  private static setOptions( selector_arg: string, options_arg: ArrayObjects, params: any, table?: DataTableInstance ): void {
     let tmpOptions: Record<string, any> = {},
         i: number,
         col_num_as_int: number;
@@ -3221,7 +4265,7 @@ class Yadcf {
         }
       } else {
         if ( table && table.column ) {
-          // Translate from `column_selector` to `column_number`.
+          // Translate from "https://esm.sh/column_selector" to `column_number`.
           let columnNumber = table.column( options_arg[ i ].column_selector );
 
           if ( columnNumber.index() >= 0 ) {
@@ -3313,7 +4357,7 @@ class Yadcf {
    * @returns Escaped regular expression string.
    */
   private static escapeRegExp( string: string ): string {
-    return string.replace( /([.*+?^=!:${}()|'\[\]\/\\])/g, '\\$1' );
+    return string && string.replace( /([.*+?^=!:${}()|'\[\]\/\\])/g, '\\$1' );
   }
 
   /**
@@ -3351,7 +4395,7 @@ class Yadcf {
    * @param obj
    * @returns
    */
-  private static getTableId( obj: Api<any> ): number | string {
+  private static getTableId( obj: DataTableInstance ): number | string {
     let tableId: Element['id'];
 
     if ( obj.table !== undefined ) {
@@ -3376,7 +4420,11 @@ class Yadcf {
    * @param selectObject
    * @param select_type_options
    */
-  private static initializeSelectPlugin( select_type: SelectType, selectObject: string | JQuery | globalThis.JQuery, select_type_options: SelectTypeOptions<DefaultOptions['select_type']> ): void {
+  private static initializeSelectPlugin(
+      select_type: SelectType,
+      selectObject: string | JQuery | globalThis.JQuery,
+      select_type_options: SelectTypeOptions<DefaultOptions['select_type']>
+  ): void {
     const $selectObject = typeof selectObject === 'string' ? $( selectObject ) : selectObject;
 
     if ( select_type === 'chosen' && typeof $.fn.chosen === 'function' ) {
@@ -3405,7 +4453,7 @@ class Yadcf {
    * @param selectObject
    * @param val
    */
-  private static refreshSelectPlugin( columnObj?: Partial<APFT>, selectObject?: string | JQuery | globalThis.JQuery, val?: any ): void {
+  private static refreshSelectPlugin( columnObj?: Partial<AllParameters<FilterType>>, selectObject?: string | JQuery | globalThis.JQuery, val?: any ): void {
     const $selectObject = typeof selectObject === 'string' ? $( selectObject ) : selectObject;
 
     let select_type         = columnObj.select_type,
@@ -3463,7 +4511,14 @@ class Yadcf {
    * @param exclude
    * @returns
    */
-  private static yadcfMatchFilterString( table_arg: Config, column_number: number | string, selected_value: any, filter_match_mode: FilterMatchMode, multiple?: boolean, exclude?: boolean ): string {
+  private static yadcfMatchFilterString(
+      table_arg: DataTableSettings,
+      column_number: number | string,
+      selected_value: any,
+      filter_match_mode: FilterMatchMode,
+      multiple?: boolean,
+      exclude?: boolean
+  ): string {
     let case_insensitive = Yadcf.getOptions( table_arg.selector )[ column_number ].case_insensitive,
         ret_val;
 
@@ -3525,8 +4580,15 @@ class Yadcf {
    * @param original_column_number
    * @returns
    */
-  private static yadcfMatchFilter( oTable: DT & Config & Api<any>, selected_value: any, filter_match_mode: FilterMatchMode, column_number: number | string, exclude: boolean, original_column_number: number | string ): void {
-    let columnObj        = Yadcf.getOptions( oTable.context[0].oInstance.selector )[ original_column_number ],
+  private static yadcfMatchFilter(
+      oTable: DataTableInstance,
+      selected_value: any,
+      filter_match_mode: FilterMatchMode,
+      column_number: number | string,
+      exclude: boolean,
+      original_column_number: number | string
+  ): void {
+    let columnObj        = Yadcf.getOptions( oTable.selector )[ original_column_number ],
         case_insensitive = columnObj.case_insensitive;
 
     if ( exclude !== true ) {
@@ -3609,7 +4671,7 @@ class Yadcf {
    * @param table_selector_jq_friendly
    * @returns
    */
-  private static calcColumnNumberFilter( settingsDt: Config, column_number: number | string, table_selector_jq_friendly: string ): string | number {
+  private static calcColumnNumberFilter( settingsDt: DataTableSettings, column_number: number | string, table_selector_jq_friendly: string ): string | number {
     let column_number_filter;
 
     if (
@@ -3637,7 +4699,14 @@ class Yadcf {
    * @param filter_match_mode
    * @param exclude_checked
    */
-  private static stateSaveNullSelect( oTable: DataTablesStaticExt, columnObj: APFT, table_selector_jq_friendly: string, column_number: number | string, filter_match_mode: FilterMatchMode, exclude_checked?: boolean ): void {
+  private static stateSaveNullSelect(
+      oTable: DataTableInstance,
+      columnObj: AllParameters<FilterType>,
+      table_selector_jq_friendly: string,
+      column_number: number | string,
+      filter_match_mode: FilterMatchMode,
+      exclude_checked?: boolean
+  ): void {
     let null_str = columnObj.select_null_option;
 
     switch ( filter_match_mode ) {
@@ -3714,7 +4783,7 @@ class Yadcf {
   private static sortNumDesc( a: number, b: number ): number {
     return b - a;
   }
-  private static findMinInArray( array: Array<any>, columnObj: APFT ): number {
+  private static findMinInArray( array: Array<any>, columnObj: AllParameters<FilterType> ): number {
     let narray = [],
         i,
         num,
@@ -3753,7 +4822,7 @@ class Yadcf {
 
     return min;
   }
-  private static findMaxInArray( array: Array<any>, columnObj: APFT ): number {
+  private static findMaxInArray( array: Array<any>, columnObj: AllParameters<FilterType> ): number {
     let narray = [],
         i,
         num,
@@ -3804,9 +4873,16 @@ class Yadcf {
    * @param ignore_char
    * @param sliderMaxMin
    */
-  private static addRangeNumberAndSliderFilterCapability( table_selector_jq_friendly: string, fromId: number | string, toId: number | string, col_num: number, ignore_char: IgnoreChar, sliderMaxMin?: Record<'min' | 'max', number | string> ): void {
+  private static addRangeNumberAndSliderFilterCapability(
+      table_selector_jq_friendly: string,
+      fromId: number | string,
+      toId: number | string,
+      col_num: number,
+      ignore_char: IgnoreChar,
+      sliderMaxMin?: Record<'min' | 'max', number | string>
+  ): void {
     $.fn.dataTable.ext.afnFiltering.push(
-      function( settingsDt: Api<any>, aData: any, iDataIndex: RowIdx, rowData?: Array<any> ): boolean {
+      function( settingsDt: DataTableSettings, aData: any, iDataIndex: RowIdx, rowData?: Array<any> ): boolean {
         let min: any,
             max: any,
             val: any,
@@ -3816,7 +4892,7 @@ class Yadcf {
             ignore_char_local: IgnoreChar = ignore_char,
             column_data_type: ColumnDataType,
             html_data_type: HTMLDataType,
-            columnObj: Partial<APFT>,
+            columnObj: Partial<AllParameters<FilterType>>,
             column_number_filter: number | string,
             valFrom: number | string,
             valTo: number | string,
@@ -3829,11 +4905,11 @@ class Yadcf {
         columnObj = Yadcf.getOptions( settingsDt.oInstance.selector )[ col_num ];
 
         if ( columnObj.filter_type === 'range_number_slider' ) {
-          min = $( '#' + fromId ).text();
-          max = $( '#' + toId ).text();
+          min = $( `#${fromId}` ).text();
+          max = $( `#${toId}` ).text();
         } else {
-          min = $( '#' + fromId ).val();
-          max = $( '#' + toId ).val();
+          min = $( `#${fromId}` ).val();
+          max = $( `#${toId}` ).val();
         }
 
         if ( columnObj.exclude ) {
@@ -4033,7 +5109,7 @@ class Yadcf {
    */
   private static addCustomFunctionFilterCapability( table_selector_jq_friendly: string, filterId: string, col_num: number ): void {
     $.fn.dataTable.ext.afnFiltering.push(
-      function( settingsDt: Api<any>, aData: Array<any>, iDataIndex: RowIdx, stateVal: Node ): boolean {
+      function( settingsDt: DataTableSettings, aData: Array<any>, iDataIndex: RowIdx, stateVal: Node ): boolean {
         let filterVal: any                             = $( '#' + filterId ).val(),
             columnVal: number | string,
             retVal: boolean                            = false,
@@ -4073,7 +5149,7 @@ class Yadcf {
    */
   private static addRangeDateFilterCapability( table_selector_jq_friendly: string, fromId: string, toId: string, col_num: number, date_format: DateFormat ): void {
     $.fn.dataTable.ext.afnFiltering.push(
-      function( settingsDt: Api<any>, aData: any, iDataIndex: RowIdx, rowData: Array<any> ): boolean {
+      function( settingsDt: DataTableSettings, aData: any, iDataIndex: RowIdx, rowData: Array<any> ): boolean {
         let min: any = document.getElementById( fromId ) !== null ? (document.getElementById( fromId ) as HTMLInputElement).value : '',
             max: any = document.getElementById( toId ) !== null ? (document.getElementById( toId ) as HTMLInputElement).value : '',
             val: any,
@@ -4082,7 +5158,7 @@ class Yadcf {
             current_table_selector_jq_friendly: string = Yadcf.generateTableSelectorJQFriendly2( settingsDt ),
             column_data_type: ColumnDataType,
             html_data_type: HTMLDataType,
-            columnObj: Partial<APFT>,
+            columnObj: Partial<AllParameters<FilterType>>,
             column_number_filter: number | string,
             min_time: number | string | Moment,
             max_time: number | string | Moment,
@@ -4097,8 +5173,8 @@ class Yadcf {
 
         if ( columnObj.filters_position === 'tfoot' && settingsDt.oScroll.sX ) {
           let selectorePrefix = '.dataTables_scrollFoot ';
-          min = document.querySelector( selectorePrefix + '#' + fromId ) ? (document.querySelector( selectorePrefix + '#' + fromId ) as HTMLInputElement).value : '';
-          max = document.querySelector( selectorePrefix + '#' + toId ) ? (document.querySelector( selectorePrefix + '#' + toId ) as HTMLInputElement).value : '';
+          min = document.querySelector( selectorePrefix + `#${fromId}` ) ? (document.querySelector( selectorePrefix + `#${fromId}` ) as HTMLInputElement).value : '';
+          max = document.querySelector( selectorePrefix + `#${toId}` ) ? (document.querySelector( selectorePrefix + `#${toId}` ) as HTMLInputElement).value : '';
         }
 
         if ( columnObj.datepicker_type === 'daterangepicker' ) {
@@ -4252,12 +5328,12 @@ class Yadcf {
    */
   private static addNullFilterCapability( table_selector_jq_friendly: string, col_num: number, isSelect: boolean ): void {
     $.fn.dataTable.ext.afnFiltering.push(
-      function( settingsDt: Api<any>, aData: Array<any>, iDataIndex: RowIdx, rowData?: Array<any> ): boolean {
+      function( settingsDt: DataTableSettings, aData: Array<any>, iDataIndex: RowIdx, rowData?: Array<any> ): boolean {
         let val: any,
             retVal: boolean = false,
             table_selector_jq_friendly_local: string = table_selector_jq_friendly,
             current_table_selector_jq_friendly: string = Yadcf.generateTableSelectorJQFriendly2( settingsDt ),
-            columnObj: Partial<APFT>,
+            columnObj: Partial<AllParameters<FilterType>>,
             column_number_filter: number | string,
             null_checked: boolean,
             exclude_checked: boolean;
@@ -4272,7 +5348,7 @@ class Yadcf {
 
         let fixedPrefix = '';
 
-        if ( (settingsDt as Api<any>).fixedHeader !== undefined && $( '.fixedHeader-floating' ).is( ':visible' ) ) {
+        if ( (settingsDt as DataTableSettings).fixedHeader !== undefined && $( '.fixedHeader-floating' ).is( ':visible' ) ) {
           fixedPrefix = '.fixedHeader-floating ';
         }
 
@@ -4359,12 +5435,19 @@ class Yadcf {
    * @param ignore_char
    * @returns
    */
-  private static addRangeNumberFilter( filter_selector_string: string, table_selector_jq_friendly: string, column_number: number | string, filter_reset_button_text: FilterResetButtonText, filter_default_label: FilterDefaultLabel<FilterType>, ignore_char: IgnoreChar ): void {
+  private static addRangeNumberFilter(
+      filter_selector_string: string,
+      table_selector_jq_friendly: string,
+      column_number: number | string,
+      filter_reset_button_text: FilterResetButtonText,
+      filter_default_label: FDL,
+      ignore_char: IgnoreChar
+  ): void {
     let fromId = `yadcf-filter-${table_selector_jq_friendly}-from-${column_number}`,
         toId   = `yadcf-filter-${table_selector_jq_friendly}-to-${column_number}`,
         filter_selector_string_tmp: string,
         filter_wrapper_id: number | string,
-        oTable: Config,
+        oTable: DataTableSettings,
         columnObj: AllParameters,
         filterActionFn: ( arg?: any ) => any,
         null_str: JQuery | globalThis.JQuery,
@@ -4380,7 +5463,7 @@ class Yadcf {
 
     oTable = Yadcf.oTables[ table_selector_jq_friendly ];
 
-    columnObj = Yadcf.getOptions( oTable.context[0].oInstance.selector )[ column_number ];
+    columnObj = Yadcf.getOptions( oTable.selector )[ column_number ];
 
     // Add a wrapper to hold both filter and reset button.
     $( filter_selector_string ).append(
@@ -4396,7 +5479,7 @@ class Yadcf {
     filter_selector_string_tmp = filter_selector_string;
 
     $( filter_selector_string ).append(
-      Yadcf.makeElement( '<div>', {
+      Yadcf.makeElement( '<div />', {
         id: `yadcf-filter-wrapper-inner-${table_selector_jq_friendly}-${column_number}`,
         class: `yadcf-filter-wrapper-inner -${table_selector_jq_friendly}-${column_number}`
       })
@@ -4415,7 +5498,7 @@ class Yadcf {
     }
 
     $( filter_selector_string ).append(
-      Yadcf.makeElement( '<input>', {
+      Yadcf.makeElement( '<input />', {
         onkeydown: Yadcf.preventDefaultForEnter,
         placeholder: filter_default_label[0],
         id: fromId,
@@ -4425,13 +5508,13 @@ class Yadcf {
     );
 
     $( filter_selector_string ).append(
-      Yadcf.makeElement( '<span>', {
+      Yadcf.makeElement( '<span />', {
         class: 'yadcf-filter-range-number-seperator'
       })
     );
 
     $( filter_selector_string ).append(
-      Yadcf.makeElement( '<input>', {
+      Yadcf.makeElement( '<input />', {
         onkeydown: Yadcf.preventDefaultForEnter,
         placeholder: filter_default_label[1],
         id: toId,
@@ -4442,7 +5525,7 @@ class Yadcf {
 
     if ( filter_reset_button_text !== false ) {
       $( filter_selector_string_tmp ).append(
-        Yadcf.makeElement( '<button>', {
+        Yadcf.makeElement( '<button />', {
           type: 'button',
           id: `yadcf-filter-${table_selector_jq_friendly}-${column_number}-reset`,
           onmousedown: Yadcf.stopPropagation,
@@ -4461,7 +5544,7 @@ class Yadcf {
 
     if ( columnObj.externally_triggered_checkboxes_text && typeof columnObj.externally_triggered_checkboxes_function === 'function' ) {
       $( filter_selector_string_tmp ).append(
-        Yadcf.makeElement( '<button>', {
+        Yadcf.makeElement( '<button />', {
           type: 'button',
           id: `yadcf-filter-${table_selector_jq_friendly}-${column_number}-externally_triggered_checkboxes-button`,
           onmousedown: Yadcf.stopPropagation,
@@ -4478,19 +5561,19 @@ class Yadcf {
 
     if ( columnObj.exclude === true ) {
       if ( columnObj.externally_triggered !== true ) {
-        exclude_str = Yadcf.makeElement( '<div>', {
+        exclude_str = Yadcf.makeElement( '<div />', {
           class: 'yadcf-exclude-wrapper',
           onmousedown: Yadcf.stopPropagation,
           onclick: Yadcf.stopPropagation
         })
         .append(
-          Yadcf.makeElement( '<span>', {
+          Yadcf.makeElement( '<span />', {
             class: 'yadcf-label small',
             text: columnObj.exclude_label
           })
         )
         .append(
-          Yadcf.makeElement( '<input>', {
+          Yadcf.makeElement( '<input />', {
             type: 'checkbox',
             title: columnObj.exclude_label,
             onclick: function( tableSel: string ) {
@@ -4502,19 +5585,19 @@ class Yadcf {
           })
         );
       } else {
-        exclude_str = Yadcf.makeElement( '<div>', {
+        exclude_str = Yadcf.makeElement( '<div />', {
           class: 'yadcf-exclude-wrapper',
           onmousedown: Yadcf.stopPropagation,
           onclick: Yadcf.stopPropagation
         })
         .append(
-          Yadcf.makeElement( '<span>', {
+          Yadcf.makeElement( '<span />', {
             class: 'yadcf-label small',
             text: columnObj.exclude_label
           })
         )
         .append(
-          Yadcf.makeElement( '<input>', {
+          Yadcf.makeElement( '<input />', {
             type: 'checkbox',
             title: columnObj.exclude_label,
             onclick: Yadcf.stopPropagation
@@ -4526,19 +5609,19 @@ class Yadcf {
     null_str = $();
 
     if ( columnObj.null_check_box === true ) {
-      null_str = Yadcf.makeElement( '<div>', {
+      null_str = Yadcf.makeElement( '<div />', {
         class: 'yadcf-null-wrapper',
         onmousedown: Yadcf.stopPropagation,
         onclick: Yadcf.stopPropagation
       })
       .append(
-        Yadcf.makeElement( '<span>', {
+        Yadcf.makeElement( '<span />', {
           class: 'yadcf-label small',
           text: columnObj.null_label
         })
       )
       .append(
-        Yadcf.makeElement( '<input>', {
+        Yadcf.makeElement( '<input />', {
           type: 'checkbox',
           title: columnObj.null_label,
           onclick: function( colNo: number, tableSel: string ) {
@@ -4582,33 +5665,33 @@ class Yadcf {
         if ( columnObj.null_check_box ) {
           null_checked = oTable.settings()[0].oLoadedState.yadcfState[ table_selector_jq_friendly ][ column_number ].null_checked;
 
-          $( '#' + filter_wrapper_id ).find( '.yadcf-null-wrapper :checkbox' ).prop( 'checked', null_checked );
+          $( `#${filter_wrapper_id}` ).find( '.yadcf-null-wrapper :checkbox' ).prop( 'checked', null_checked );
 
           if ( columnObj.exclude ) {
             exclude_checked = oTable.settings()[0].oLoadedState.yadcfState[ table_selector_jq_friendly ][ column_number ].exclude_checked;
-            $( '#' + filter_wrapper_id ).find( '.yadcf-exclude-wrapper :checkbox' ).prop( 'checked', exclude_checked );
+            $( `#${filter_wrapper_id}` ).find( '.yadcf-exclude-wrapper :checkbox' ).prop( 'checked', exclude_checked );
           }
         }
 
         if ( null_checked ) {
-          $( '#' + fromId ).prop( 'disabled', true );
-          $( '#' + toId ).prop( 'disabled', true );
+          $( `#${fromId}` ).prop( 'disabled', true );
+          $( `#${toId}` ).prop( 'disabled', true );
         } else {
           const inuseClass = exclude_checked ? ' inuse inuse-exclude' : ' inuse ';
 
           if ( oTable.settings()[0].oLoadedState.yadcfState[ table_selector_jq_friendly ][ column_number ].from ) {
-            $( '#' + fromId ).val( oTable.settings()[0].oLoadedState.yadcfState[ table_selector_jq_friendly ][ column_number ].from );
+            $( `#${fromId}` ).val( oTable.settings()[0].oLoadedState.yadcfState[ table_selector_jq_friendly ][ column_number ].from );
 
             if ( oTable.settings()[0].oLoadedState.yadcfState[ table_selector_jq_friendly ][ column_number ].from !== '' ) {
-              $( '#' + fromId ).addClass( inuseClass );
+              $( `#${fromId}` ).addClass( inuseClass );
             }
           }
 
           if ( oTable.settings()[0].oLoadedState.yadcfState[ table_selector_jq_friendly ][ column_number ].to ) {
-            $( '#' + toId ).val( oTable.settings()[0].oLoadedState.yadcfState[ table_selector_jq_friendly ][ column_number ].to );
+            $( `#${toId}` ).val( oTable.settings()[0].oLoadedState.yadcfState[ table_selector_jq_friendly ][ column_number ].to );
 
             if ( oTable.settings()[0].oLoadedState.yadcfState[ table_selector_jq_friendly ][ column_number ].to !== '' ) {
-              $( '#' + toId ).addClass( inuseClass );
+              $( `#${toId}` ).addClass( inuseClass );
             }
           }
         }
@@ -4666,7 +5749,7 @@ class Yadcf {
 
     $.fn.dataTable.ext.iApiIndex = Yadcf.oTablesIndex[ table_selector_jq_friendly ];
 
-    columnObj = Yadcf.getOptions( oTable.context[0].oInstance.selector )[ column_number ];
+    columnObj = Yadcf.getOptions( oTable.selector )[ column_number ];
 
     if ( pDate.type === 'dp' ) {
       event = pDate.target;
@@ -4766,13 +5849,20 @@ class Yadcf {
    * @param date_format
    * @returns
    */
-  private static addRangeDateFilter( filter_selector_string: string, table_selector_jq_friendly: string, column_number: number, filter_reset_button_text: FilterResetButtonText, filter_default_label: FilterDefaultLabel<FilterType>, date_format: DateFormat ): void {
+  private static addRangeDateFilter(
+      filter_selector_string: string,
+      table_selector_jq_friendly: string,
+      column_number: number,
+      filter_reset_button_text: FilterResetButtonText,
+      filter_default_label: FilterDefaultLabel,
+      date_format: DateFormat
+  ): void {
     let fromId: string = `yadcf-filter-${table_selector_jq_friendly}-from-date-${column_number}`,
         toId: string   = `yadcf-filter-${table_selector_jq_friendly}-to-date-${column_number}`,
         filter_selector_string_tmp: string,
         filter_wrapper_id: string,
-        oTable: DataTablesStaticExt,
-        columnObj: Partial<APFT>,
+        oTable: DataTableInstance,
+        columnObj: Partial<AllParameters<FilterType>>,
         datepickerObj = {},
         filterActionFn: ( arg?: any ) => any,
         $fromInput: JQuery,
@@ -4781,7 +5871,7 @@ class Yadcf {
 
     filter_wrapper_id = `yadcf-filter-wrapper-${table_selector_jq_friendly}-${column_number}`;
 
-    if ( $( '#' + filter_wrapper_id ).length > 0 ) {
+    if ( $( `#${filter_wrapper_id}` ).length > 0 ) {
       return;
     }
 
@@ -4789,7 +5879,7 @@ class Yadcf {
 
     oTable = Yadcf.oTables[ table_selector_jq_friendly ];
 
-    columnObj = Yadcf.getOptions( oTable.context[0].oInstance.selector )[ column_number ];
+    columnObj = Yadcf.getOptions( oTable.selector )[ column_number ];
 
     if ( columnObj.datepicker_type === 'bootstrap-datepicker' ) {
       innerWrapperAdditionalClass = 'input-daterange';
@@ -4809,7 +5899,7 @@ class Yadcf {
     filter_selector_string_tmp = filter_selector_string;
 
     $( filter_selector_string ).append(
-      Yadcf.makeElement( '<div>', {
+      Yadcf.makeElement( '<div />', {
         id: `yadcf-filter-wrapper-inner-${table_selector_jq_friendly}-${column_number}`,
         class: `yadcf-filter-wrapper-inner ${innerWrapperAdditionalClass}`
       })
@@ -4828,7 +5918,7 @@ class Yadcf {
     }
 
     $( filter_selector_string ).append(
-      Yadcf.makeElement( '<input>', {
+      Yadcf.makeElement( '<input />', {
         onkeydown: Yadcf.preventDefaultForEnter,
         placeholder: filter_default_label[0],
         id: fromId,
@@ -4838,13 +5928,13 @@ class Yadcf {
     );
 
     $( filter_selector_string ).append(
-      Yadcf.makeElement( '<span>', {
+      Yadcf.makeElement( '<span />', {
         class: 'yadcf-filter-range-date-seperator'
       })
     );
 
     $( filter_selector_string ).append(
-      Yadcf.makeElement( '<input>', {
+      Yadcf.makeElement( '<input />', {
         onkeydown: Yadcf.preventDefaultForEnter,
         placeholder: filter_default_label[1],
         id: toId,
@@ -4853,12 +5943,12 @@ class Yadcf {
       })
     );
 
-    $fromInput = $( '#' + fromId );
-    $toInput   = $( '#' + toId );
+    $fromInput = $( `#${fromId}` );
+    $toInput   = $( `#${toId}` );
 
     if ( filter_reset_button_text !== false ) {
       $( filter_selector_string_tmp ).append(
-        Yadcf.makeElement( '<button>', {
+        Yadcf.makeElement( '<button />', {
           type: 'button',
           onmousedown: Yadcf.stopPropagation,
           onclick: function( colNo: number, tableSel: string ) {
@@ -4943,21 +6033,21 @@ class Yadcf {
         oTable.settings()[0].oLoadedState.yadcfState[ table_selector_jq_friendly ] &&
         oTable.settings()[0].oLoadedState.yadcfState[ table_selector_jq_friendly ][ column_number ]
       ) {
-        $( '#' + fromId ).val( oTable.settings()[0].oLoadedState.yadcfState[ table_selector_jq_friendly ][ column_number ].from );
+        $( `#${fromId}` ).val( oTable.context[0].oLoadedState.yadcfState[ table_selector_jq_friendly ][ column_number ].from );
 
-        if ( oTable.settings()[0].oLoadedState.yadcfState[ table_selector_jq_friendly ][ column_number ].from !== '' ) {
-          $( '#' + fromId ).addClass( 'inuse' );
+        if ( oTable.context[0].oLoadedState.yadcfState[ table_selector_jq_friendly ][ column_number ].from !== '' ) {
+          $( `#${fromId}` ).addClass( 'inuse' );
         }
 
-        $( '#' + toId ).val( oTable.settings()[0].oLoadedState.yadcfState[ table_selector_jq_friendly ][ column_number ].to );
+        $( `#${toId}` ).val( oTable.context[0].oLoadedState.yadcfState[ table_selector_jq_friendly ][ column_number ].to );
 
-        if ( oTable.settings()[0].oLoadedState.yadcfState[ table_selector_jq_friendly ][ column_number ].to !== '' ) {
-          $( '#' + toId ).addClass( 'inuse' );
+        if ( oTable.context[0].oLoadedState.yadcfState[ table_selector_jq_friendly ][ column_number ].to !== '' ) {
+          $( `#${toId}` ).addClass( 'inuse' );
         }
       }
     }
 
-    if ( oTable.settings()[0].oFeatures.bServerSide !== true ) {
+    if ( oTable.context[0].oFeatures.bServerSide !== true ) {
       Yadcf.addRangeDateFilterCapability( table_selector_jq_friendly, fromId, toId, column_number, date_format );
     }
 
@@ -4986,29 +6076,36 @@ class Yadcf {
    * @param date_format
    * @returns
    */
-  private static addDateFilter( filter_selector_string: string, table_selector_jq_friendly: string, column_number: number, filter_reset_button_text: FilterResetButtonText, filter_default_label: FilterDefaultLabel<FilterType>, date_format: DateFormat ): void {
+  private static addDateFilter(
+      filter_selector_string: string,
+      table_selector_jq_friendly: string,
+      column_number: number,
+      flter_reset_button_text: FilterResetButtonText,
+      filter_default_label: FilterDefaultLabel<FilterType>,
+      date_format: DateFormat
+  ): void {
     let dateId: string = `yadcf-filter-${table_selector_jq_friendly}-${column_number}`,
         filter_selector_string_tmp: string,
         filter_wrapper_id: string,
-        oTable: DataTablesStaticExt,
-        columnObj: ColumnObj,
+        oTable: DataTableInstance,
+        columnObj: any,
         datepickerObj: any = {},
         filterActionFn: ( arg?: any ) => any,
-        settingsDt: Api<any> & SettingsDT & DTSettings;
+        settingsDt: DataTableSettings;
 
     filter_wrapper_id = `yadcf-filter-wrapper-${table_selector_jq_friendly}-${column_number}`;
 
-    if ( $( '#' + filter_wrapper_id ).length > 0 ) {
+    if ( $( `#${filter_wrapper_id}` ).length > 0 ) {
       return;
     }
 
     $.fn.dataTable.ext.iApiIndex = Yadcf.oTablesIndex[ table_selector_jq_friendly ];
     oTable = Yadcf.oTables[ table_selector_jq_friendly ];
-    columnObj = Yadcf.getOptions( oTable.context[0].oInstance.selector )[ column_number ];
+    columnObj = Yadcf.getOptions( oTable.selector )[ column_number ];
 
     // Add a wrapper to hold both filter and reset button.
     $( filter_selector_string ).append(
-      Yadcf.makeElement( '<div>', {
+      Yadcf.makeElement( '<div />', {
         onmousedown: Yadcf.stopPropagation,
         onclick: Yadcf.stopPropagation,
         id: filter_wrapper_id,
@@ -5030,7 +6127,7 @@ class Yadcf {
     }
 
     $( filter_selector_string ).append(
-      Yadcf.makeElement( '<input>', {
+      Yadcf.makeElement( '<input />', {
         onkeydown: Yadcf.preventDefaultForEnter,
         placeholder: filter_default_label as string,
         id: dateId,
@@ -5041,7 +6138,7 @@ class Yadcf {
 
     if ( filter_reset_button_text !== false ) {
       $( filter_selector_string_tmp ).append(
-        Yadcf.makeElement( '<button>', {
+        Yadcf.makeElement( '<button />', {
           type: 'button',
           id: dateId + '-reset',
           onmousedown: Yadcf.stopPropagation,
@@ -5052,7 +6149,7 @@ class Yadcf {
               return false;
             };
           }( table_selector_jq_friendly ),
-          class: 'yadcf-filter-reset-button ' + columnObj.reset_button_style_class,
+          class: `yadcf-filter-reset-button ${columnObj.reset_button_style_class}`,
           text: filter_reset_button_text
         })
       );
@@ -5069,7 +6166,6 @@ class Yadcf {
 
     if ( columnObj.externally_triggered !== true ) {
       if ( columnObj.datepicker_type === 'jquery-ui' ) {
-        // @ts-expect-error
         datepickerObj.onSelect = dateSelectSingle;
       }
     }
@@ -5081,23 +6177,23 @@ class Yadcf {
         $.extend( datepickerObj, $.datepicker.regional[ columnObj.jquery_ui_datepicker_locale ] );
       }
 
-      $( '#' + dateId ).datepicker( datepickerObj );
+      $( `#${dateId}` ).datepicker( datepickerObj );
     }
     else if ( columnObj.datepicker_type === 'bootstrap-datetimepicker' ) {
       datepickerObj.useCurrent = false;
 
-      $( '#' + dateId ).datetimepicker( datepickerObj );
+      $( `#${dateId}` ).datetimepicker( datepickerObj );
 
       if ( columnObj.externally_triggered !== true ) {
         if ( datepickerObj.format.toLowerCase() !== 'hh:mm' ) {
-          $( '#' + dateId ).on( 'dp.change', Yadcf.dateSelectSingle );
+          $( `#${dateId}` ).on( 'dp.change', Yadcf.dateSelectSingle );
         } else {
-          $( '#' + dateId ).on( 'dp.hide', Yadcf.dateSelectSingle );
+          $( `#${dateId}` ).on( 'dp.hide', Yadcf.dateSelectSingle );
         }
       }
     }
     else if ( columnObj.datepicker_type === 'bootstrap-datepicker' ) {
-      $( '#' + dateId ).datepicker( datepickerObj ).on( 'changeDate', function( e ) {
+      $( `#${dateId}` ).datepicker( datepickerObj ).on( 'changeDate', function( e ) {
         // @ts-ignore
         Yadcf.dateSelectSingle( e );
 
@@ -5107,7 +6203,7 @@ class Yadcf {
     else if ( columnObj.datepicker_type === 'dt-datetime' ) {
       // @ts-ignore
       new $.fn.DataTable.Editor.DateTime(
-        $( '#' + dateId ), {
+        $( `#${dateId}` ), {
           format: date_format,
           onChange: Yadcf.dateSelectSingle
         }
@@ -5115,8 +6211,8 @@ class Yadcf {
     }
     else if ( columnObj.datepicker_type === 'daterangepicker' ) {
       // @ts-ignore
-      $( '#' + dateId ).daterangepicker( datepickerObj );
-      $( '#' + dateId ).on( 'apply.daterangepicker, hide.daterangepicker', function( ev, picker ) {
+      $( `#${dateId}` ).daterangepicker( datepickerObj );
+      $( `#${dateId}` ).on( 'apply.daterangepicker, hide.daterangepicker', function( ev, picker ) {
         Yadcf.dateSelect( ev, picker );
       });
     }
@@ -5130,10 +6226,10 @@ class Yadcf {
 
       if ( oTable.settings()[0].oFeatures.bStateSave === true && oTable.settings()[0].oLoadedState ) {
         if ( oTable.settings()[0].oLoadedState.yadcfState && oTable.settings()[0].oLoadedState.yadcfState[ table_selector_jq_friendly ] && oTable.settings()[0].oLoadedState.yadcfState[ table_selector_jq_friendly ][ column_number ] ) {
-          $( '#' + dateId ).val( oTable.settings()[0].oLoadedState.yadcfState[ table_selector_jq_friendly ][ column_number ].from );
+          $( `#${dateId}` ).val( oTable.settings()[0].oLoadedState.yadcfState[ table_selector_jq_friendly ][ column_number ].from );
 
           if ( oTable.settings()[0].oLoadedState.yadcfState[ table_selector_jq_friendly ][ column_number ].from !== '' ) {
-            $( '#' + dateId ).addClass( 'inuse' );
+            $( `#${dateId}` ).addClass( 'inuse' );
           }
         }
       }
@@ -5149,7 +6245,14 @@ class Yadcf {
 
     Yadcf.resetIApiIndex();
   }
-  private static rangeNumberSldierDrawTips( min_tip_val: number, max_tip_val: number, min_tip_id: string, max_tip_id: string, table_selector_jq_friendly: string, column_number: number | string ): void {
+  private static rangeNumberSldierDrawTips(
+      min_tip_val: number,
+      max_tip_val: number,
+      min_tip_id: string,
+      max_tip_id: string,
+      table_selector_jq_friendly: string,
+      column_number: number | string
+  ): void {
     let first_handle = $( `.yadcf-number-slider-filter-wrapper-inner.-${table_selector_jq_friendly}-${column_number}` ), // + ' .ui-slider-handle:first'),
         last_handle = $( `.yadcf-number-slider-filter-wrapper-inner.-${table_selector_jq_friendly}-${column_number}` ), // + ' .ui-slider-handle:last'),
         min_tip_inner,
@@ -5196,7 +6299,7 @@ class Yadcf {
    * @param ui
    */
   private static rangeNumberSliderChange( table_selector_jq_friendly: string, event: InputEvent, ui: Record<'values', Array<any>> ): void {
-    let oTable: DataTablesStaticExt,
+    let oTable: DataTableInstance,
         min_val: number | string,
         max_val: number | string,
         slider_inuse,
@@ -5214,7 +6317,7 @@ class Yadcf {
     settingsDt           = Yadcf.getSettingsObjFromTable( oTable );
     column_number_filter = Yadcf.calcColumnNumberFilter( settingsDt, column_number, table_selector_jq_friendly );
 
-    columnObj = Yadcf.getOptions( oTable.context[0].oInstance.selector )[ column_number ];
+    columnObj = Yadcf.getOptions( oTable.selector )[ column_number ];
 
     keyUp = function() {
       $.fn.dataTable.ext.iApiIndex = Yadcf.oTablesIndex[ table_selector_jq_friendly ];
@@ -5306,16 +6409,28 @@ class Yadcf {
    * @param ignore_char
    * @returns
    */
-  private static addRangeNumberSliderFilter( filter_selector_string: string, table_selector_jq_friendly: string, column_number: number, filter_reset_button_text: FilterResetButtonText, min_val: number | string, max_val: number | string, ignore_char: IgnoreChar ): void {
-    let sliderId: string = `yadcf-filter-${table_selector_jq_friendly}-slider-${column_number}`,
+  private static addRangeNumberSliderFilter(
+    filter_selector_string: string,
+    table_selector_jq_friendly: string,
+    column_number: number,
+    filter_reset_button_text: FilterResetButtonText,
+    min_val: number | string,
+    max_val: number | string,
+    ignore_char: IgnoreChar
+  ): void {
+    $.fn.slider = jQuery.ui.slider;
+
+    let sliderId: string   = `yadcf-filter-${table_selector_jq_friendly}-slider-${column_number}`,
         min_tip_id: string = `yadcf-filter-${table_selector_jq_friendly}-min_tip-${column_number}`,
         max_tip_id: string = `yadcf-filter-${table_selector_jq_friendly}-max_tip-${column_number}`,
-        filter_selector_string_tmp: string,
-        filter_wrapper_id: string,
-        oTable: DataTablesStaticExt,
         min_state_val: any = min_val,
         max_state_val: any = max_val,
-        columnObj: ColumnObj,
+        currSliderMin      = $( `#${sliderId}` ).slider( 'option', 'min' ),
+        currSliderMax      = $( `#${sliderId}` ).slider( 'option', 'max' ),
+        filter_selector_string_tmp: string,
+        filter_wrapper_id: string,
+        oTable: DataTableInstance,
+        columnObj: any,
         slideFunc: ( ...args: any ) => any,
         changeFunc: ( ...args: any ) => any,
         sliderObj: any,
@@ -5323,14 +6438,12 @@ class Yadcf {
           min: min_val,
           max: max_val
         },
-        settingsDt: Api<any>,
-        currSliderMin = $( '#' + sliderId ).slider( 'option', 'min' ),
-        currSliderMax = $( '#' + sliderId ).slider( 'option', 'max' ),
+        settingsDt: DataTableSettings,
         redrawTable: boolean;
 
     filter_wrapper_id = `yadcf-filter-wrapper-${table_selector_jq_friendly}-${column_number}`;
 
-    if ( $( '#' + filter_wrapper_id ).length > 0 && ( currSliderMin === min_val && currSliderMax === max_val ) ) {
+    if ( $( `#${filter_wrapper_id}` ).length > 0 && ( currSliderMin === min_val && currSliderMax === max_val ) ) {
       return;
     }
 
@@ -5338,13 +6451,13 @@ class Yadcf {
     oTable     = Yadcf.oTables[ table_selector_jq_friendly ];
     settingsDt = Yadcf.settingsMap[ Yadcf.generateTableSelectorJQFriendly2( oTable ) ];
 
-    if ( $( '#' + filter_wrapper_id ).length > 0 ) {
-      $( '#' + sliderId ).slider( 'destroy' );
-      $( '#' + filter_wrapper_id ).remove();
+    if ( $( `#${filter_wrapper_id}` ).length > 0 ) {
+      $( `#${sliderId}` ).slider( 'destroy' );
+      $( `#${filter_wrapper_id}` ).remove();
       redrawTable = true;
     }
 
-    columnObj = Yadcf.getOptions( oTable.context[0].oInstance.selector )[ column_number ];
+    columnObj = Yadcf.getOptions( oTable.selector )[ column_number ];
 
     if ( settingsDt.oFeatures.bStateSave === true && settingsDt.oLoadedState ) {
       if ( settingsDt.oLoadedState.yadcfState && settingsDt.oLoadedState.yadcfState[ table_selector_jq_friendly ] && settingsDt.oLoadedState.yadcfState[ table_selector_jq_friendly ][ column_number ] ) {
@@ -5360,7 +6473,7 @@ class Yadcf {
 
     if ( isFinite( min_val as number ) && isFinite( max_val as number ) && isFinite( min_state_val ) && isFinite( max_state_val ) ) {
       // Add a wrapper to hold both filter and reset button.
-      $( filter_selector_string ).append( Yadcf.makeElement( '<div>', {
+      $( filter_selector_string ).append( Yadcf.makeElement( '<div />', {
         onmousedown: Yadcf.stopPropagation,
         onclick: Yadcf.stopPropagation,
         id: filter_wrapper_id,
@@ -5370,26 +6483,26 @@ class Yadcf {
       filter_selector_string    += ' div.yadcf-filter-wrapper';
       filter_selector_string_tmp = filter_selector_string;
 
-      $( filter_selector_string ).append( Yadcf.makeElement( '<div>', {
+      $( filter_selector_string ).append( Yadcf.makeElement( '<div />', {
         id: `yadcf-filter-wrapper-inner-${table_selector_jq_friendly}-${column_number}`,
         class: `yadcf-number-slider-filter-wrapper-inner -${table_selector_jq_friendly}-${column_number}`
       }) );
 
       filter_selector_string += ' div.yadcf-number-slider-filter-wrapper-inner';
 
-      $( filter_selector_string ).append( Yadcf.makeElement( '<div>', {
+      $( filter_selector_string ).append( Yadcf.makeElement( '<div />', {
         id: sliderId,
         class: 'yadcf-filter-range-number-slider'
       }) );
 
       filter_selector_string += ' #' + sliderId;
 
-      $( filter_selector_string ).append( Yadcf.makeElement( '<span>', {
+      $( filter_selector_string ).append( Yadcf.makeElement( '<span />', {
         class: 'yadcf-filter-range-number-slider-min-tip-hidden hide',
         text: min_val as string
       }) );
 
-      $( filter_selector_string ).append( Yadcf.makeElement( '<span>', {
+      $( filter_selector_string ).append( Yadcf.makeElement( '<span />', {
         class: 'yadcf-filter-range-number-slider-max-tip-hidden hide',
         text: max_val as string
       }) );
@@ -5435,10 +6548,10 @@ class Yadcf {
         $.extend( sliderObj, columnObj.filter_plugin_options );
       }
 
-      $( '#' + sliderId ).slider( sliderObj );
+      $( `#${sliderId}` ).slider( sliderObj );
 
       if ( filter_reset_button_text !== false ) {
-        $( filter_selector_string_tmp ).append( Yadcf.makeElement( '<button>', {
+        $( filter_selector_string_tmp ).append( Yadcf.makeElement( '<button />', {
           type: 'button',
           onmousedown: Yadcf.stopPropagation,
           onclick: function( tableSel: string ) {
@@ -5492,7 +6605,9 @@ class Yadcf {
    *
    * @param table_arg
    */
-  private static destroyThirdPartyPlugins( table_arg: Api<any> & Config ): void {
+  private static destroyThirdPartyPlugins( table_arg: DataTableInstance ): void {
+    $.fn.slider = jQuery.ui.slider;
+
     let tableOptions: AllParameters,
         table_selector_jq_friendly: string,
         columnObjKey: string,
@@ -5552,14 +6667,14 @@ class Yadcf {
             toId = `yadcf-filter-${table_selector_jq_friendly}-to-date-${column_number}`;
             switch ( optionsObj.select_type ) {
               case 'jquery-ui':
-                $( '#' + fromId ).datepicker( 'destroy' );
-                $( '#' + toId ).datepicker( 'destroy' );
+                $( `#${fromId}` ).datepicker( 'destroy' );
+                $( `#${toId}` ).datepicker( 'destroy' );
                 break;
               case 'bootstrap-datetimepicker':
                 // @ts-ignore
-                $( '#' + fromId ).destroy();
+                $( `#${fromId}` ).destroy();
                 // @ts-ignore
-                $( '#' + toId ).destroy();
+                $( `#${toId}` ).destroy();
                 break;
             }
             break;
@@ -5578,20 +6693,25 @@ class Yadcf {
    *
    * @param oTable
    */
-  private static removeFilters( oTable: DataTablesStaticExt ): void {
+  private static removeFilters( oTable: DataTableInstance ): void {
     const tableId = Yadcf.getTableId( oTable );
 
     $( '#' + tableId + ' .yadcf-filter-wrapper' ).remove();
 
-    if ( Yadcf.yadcfVersionCheck( '1.13' ) ) {
-      $( document ).off( 'draw.dt', oTable.context[0].oInstance.selector );
-      $( document ).off( 'xhr.dt', oTable.context[0].oInstance.selector );
-      $( document ).off( 'column-visibility.dt', oTable.context[0].oInstance.selector );
-      $( document ).off( 'destroy.dt', oTable.context[0].oInstance.selector );
-      $( document ).off( 'stateLoaded.dt', oTable.context[0].oInstance.selector );
+    if (
+      Yadcf.yadcfVersionCheck( '1.10' ) ||
+      Yadcf.yadcfVersionCheck( '1.11' ) ||
+      Yadcf.yadcfVersionCheck( '1.12' ) ||
+      Yadcf.yadcfVersionCheck( '1.13' )
+    ) {
+      $( document ).off( 'draw.dt', oTable.selector );
+      $( document ).off( 'xhr.dt', oTable.selector );
+      $( document ).off( 'column-visibility.dt', oTable.selector );
+      $( document ).off( 'destroy.dt', oTable.selector );
+      $( document ).off( 'stateLoaded.dt', oTable.selector );
     } else {
-      $( document ).off( 'draw', oTable.context[0].oInstance.selector );
-      $( document ).off( 'destroy', oTable.context[0].oInstance.selector );
+      $( document ).off( 'draw', oTable.selector );
+      $( document ).off( 'destroy', oTable.selector );
     }
 
     if ( $.fn.dataTable.ext.afnFiltering.length > 0 ) {
@@ -5667,7 +6787,7 @@ class Yadcf {
    * @param columnObj
    * @returns
    */
-  private static sortColumnData( column_data: Array<any>, columnObj: APFT ): Record<string, any> {
+  private static sortColumnData( column_data: Array<any>, columnObj: AllParameters<FilterType> ): Record<string, any> {
     if ( includes( ['select', 'auto_complete', 'multi_select', 'multi_select_custom_func', 'custom_func'], columnObj.filter_type ) ) {
       if ( columnObj.sort_as === 'alpha' ) {
         if ( columnObj.sort_order === 'asc' ) {
@@ -5709,13 +6829,18 @@ class Yadcf {
    * @param table
    * @returns
    */
-  private static getFilteredRows( table: Api<any> | globalThis.DataTables.Api ): any {
+  private static getFilteredRows( table: DataTableInstance | globalThis.DataTables.Api ): any {
     let data: Array<any> = [],
         dataTmp: Array<any>,
         i: number;
 
     if ( table.rows || table._ ) {
-      if ( Yadcf.yadcfVersionCheck( '1.10' ) || Yadcf.yadcfVersionCheck( '1.11' ) || Yadcf.yadcfVersionCheck( '1.12' ) || Yadcf.yadcfVersionCheck( '1.13' ) ) {
+      if (
+        Yadcf.yadcfVersionCheck( '1.10' ) ||
+        Yadcf.yadcfVersionCheck( '1.11' ) ||
+        Yadcf.yadcfVersionCheck( '1.12' ) ||
+        Yadcf.yadcfVersionCheck( '1.13' )
+      ) {
         dataTmp = table.rows({ search: 'applied' }).data().toArray();
       } else { // v 1.9 and below
         dataTmp = table._( 'tr', { search: 'applied' });
@@ -5741,17 +6866,17 @@ class Yadcf {
    * @param pSettings
    * @returns
    */
-  private static parseTableColumn( pTable: Api<any> | globalThis.DataTables.Api, columnObj: ColumnObj, table_selector_jq_friendly: string, pSettings?: Api<any> ): Array<ColumnParameters<number>> {
+  private static parseTableColumn( pTable: DataTableInstance | globalThis.DataTables.Api, columnObj: any, table_selector_jq_friendly: string, pSettings?: Api<any> ): Array<ColumnParameters<number>> {
     let col_filter_array: Record<string, any> = {},
         column_data: Array<any> = [],
-        col_inner_elements: Record<string, any> | Array<any> | DomSelector | Api<any>,
+        col_inner_elements: Record<string, any> | Array<any> | InstSelector | Api<any>,
         col_inner_data: any,
         col_inner_data_helper: any,
         j: number,
         k: number,
         data: Record<string, any>,
         data_length: number,
-        settingsDt: Api<any>,
+        settingsDt: DataTableSettings,
         column_number_filter: number | string;
 
     if ( pSettings !== undefined ) {
@@ -6070,7 +7195,7 @@ class Yadcf {
    * @param pSettings
    * @returns
    */
-  private static appendFilters( oTable: DataTablesStaticExt, args: Partial<APFT>, table_selector: DomSelector, pSettings?: Api<any> ) {
+  private static appendFilters( oTable: DataTableInstance, args: AllParameters<FilterType>, table_selector: DomSelector, pSettings?: Api<any> ) {
     let $filter_selector: JQuery,
         filter_selector_string: string,
         data: any,
@@ -6095,22 +7220,26 @@ class Yadcf {
         col_num_visible_iter: number,
         tmpStr: any,
         columnObjKey: string,
-        columnObj: APFT,
+        columnObj: AllParameters<FilterType>,
         filters_position: string,
         unique_th: HTMLElement | undefined,
-        settingsDt: Api<any>,
+        settingsDt: DataTableSettings,
         filterActionFn: ( ...args: any ) => any,
         custom_func_filter_value_holder: any,
         exclude_str: JQuery,
         regex_str: JQuery,
         null_str: JQuery,
-        externally_triggered_checkboxes_text: APFT['externally_triggered_checkboxes_text'],
-        externally_triggered_checkboxes_function: APFT['externally_triggered_checkboxes_function'];
+        externally_triggered_checkboxes_text: AllParameters<FilterType>['externally_triggered_checkboxes_text'],
+        externally_triggered_checkboxes_function: AllParameters<FilterType>['externally_triggered_checkboxes_function'];
 
     if ( pSettings === undefined ) {
-      settingsDt = Yadcf.getSettingsObjFromTable( oTable );
+      const _settings = Yadcf.getSettingsObjFromTable( oTable );
+
+      settingsDt = _settings;
+      console.log( 'appendFilters', settingsDt );
     } else {
       settingsDt = pSettings;
+      console.log( 'appendFilters.pSettings', settingsDt );
     }
 
     Yadcf.settingsMap[ Yadcf.generateTableSelectorJQFriendly2( oTable ) ] = settingsDt;
@@ -6125,13 +7254,118 @@ class Yadcf {
       table_selector = `.yadcf-datatables-table-${table_selector_jq_friendly}`;
 
       if ( $( table_selector ).length === 0 ) {
-        Yadcf.scrollXYHandler( oTable, '#' + Yadcf.getTableId( oTable ) );
+        Yadcf.scrollXYHandler( oTable, `#${Yadcf.getTableId( oTable )}` );
       }
     }
 
-    if ( settingsDt.oApi._fnGetUniqueThs !== undefined ) {
-      unique_th = settingsDt.oApi._fnGetUniqueThs( settingsDt );
+    if ( typeof settingsDt._fnGetUniqueThs === 'undefined' ) {
+      /**
+       * Get an array of unique th elements, one for each column.
+       *
+       * @param {object} oSettings DataTables settings object
+       * @param {node}   nHeader   Automatically detect the layout from this node - optional
+       * @param {array}  aLayout   THead/TFoot layout from _fnDetectHeader - optional
+       * @returns array {node} aReturn list of unique th's
+       */
+      settingsDt._fnGetUniqueThs = function( oSettings: DataTableSettings, nHeader: HTMLTableCellElement, aLayout: Array<Array<any>> ) {
+        var aReturn: Array<any> = [];
+
+        if ( !aLayout ) {
+          aLayout = oSettings.aoHeader;
+
+          if ( nHeader ) {
+            aLayout = [];
+            _fnDetectHeader( aLayout, nHeader );
+          }
+        }
+
+        for ( var i = 0, iLen = aLayout.length; i < iLen; i++ ) {
+          for ( var j = 0, jLen = aLayout[i].length; j < jLen; j++ ) {
+            if ( aLayout[i][j].unique && (!aReturn[j] || !oSettings.bSortCellsTop) ) {
+              aReturn[j] = aLayout[i][j].cell;
+            }
+          }
+        }
+
+        return aReturn;
+      };
+
+      /**
+       * Use the DOM source to create up an array of header cells. The idea here is to
+       * create a layout grid (array) of rows x columns, which contains a reference
+       * to the cell that that point in the grid (regardless of col/rowspan), such that
+       * any column / row could be removed and the new grid constructed
+       *  @param array {object} aLayout Array to store the calculated layout in
+       *  @param {node} nThead The header/footer element for the table
+       *  @memberof DataTable#oApi
+       */
+      function _fnDetectHeader ( aLayout: any, nThead: HTMLTableCellElement ) {
+        var nTrs = $(nThead).children('tr');
+        var nTr, nCell;
+        var i, k, l, iLen, jLen, iColShifted, iColumn, iColspan, iRowspan;
+        var bUnique;
+        var fnShiftCol = function ( a, i, j ) {
+          var k = a[i];
+                      while ( k[j] ) {
+            j++;
+          }
+          return j;
+        };
+
+        aLayout.splice( 0, aLayout.length );
+
+        /* We know how many rows there are in the layout - so prep it */
+        for ( i=0, iLen=nTrs.length ; i<iLen ; i++ )
+        {
+          aLayout.push( [] );
+        }
+
+        /* Calculate a layout array */
+        for ( i=0, iLen=nTrs.length ; i<iLen ; i++ )
+        {
+          nTr = nTrs[i];
+          iColumn = 0;
+
+          /* For every cell in the row... */
+          nCell = nTr.firstChild;
+          while ( nCell ) {
+            if ( nCell.nodeName.toUpperCase() == "TD" ||
+                nCell.nodeName.toUpperCase() == "TH" )
+            {
+              /* Get the col and rowspan attributes from the DOM and sanitise them */
+              iColspan = nCell.getAttribute('colspan') * 1;
+              iRowspan = nCell.getAttribute('rowspan') * 1;
+              iColspan = (!iColspan || iColspan===0 || iColspan===1) ? 1 : iColspan;
+              iRowspan = (!iRowspan || iRowspan===0 || iRowspan===1) ? 1 : iRowspan;
+
+              /* There might be colspan cells already in this row, so shift our target
+              * accordingly
+              */
+              iColShifted = fnShiftCol( aLayout, i, iColumn );
+
+              /* Cache calculation for unique columns */
+              bUnique = iColspan === 1 ? true : false;
+
+              /* If there is col / rowspan, copy the information into the layout grid */
+              for ( l=0 ; l<iColspan ; l++ )
+              {
+                for ( k=0 ; k<iRowspan ; k++ )
+                {
+                  aLayout[i+k][iColShifted+l] = {
+                    "cell": nCell,
+                    "unique": bUnique
+                  };
+                  aLayout[i+k].nTr = nTr;
+                }
+              }
+            }
+            nCell = nCell.nextSibling;
+          }
+        }
+      }
     }
+
+    unique_th = settingsDt._fnGetUniqueThs( settingsDt );
 
     for ( columnObjKey in args ) {
       if ( args.hasOwnProperty( columnObjKey ) ) {
@@ -6425,7 +7659,7 @@ class Yadcf {
                 tmpStr = settingsDt.aoPreSearchCols[ column_position ].sSearch;
 
                 if ( columnObj.filter_type === 'select' ) {
-                  tmpStr = Yadcf.yadcfParseMatchFilter( tmpStr, Yadcf.getOptions( oTable.context[0].oInstance.selector )[ column_number ].filter_match_mode );
+                  tmpStr = Yadcf.yadcfParseMatchFilter( tmpStr, Yadcf.getOptions( oTable.selector )[ column_number ].filter_match_mode );
 
                   let foundEntry = $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` + ' option' ).filter( function() {
                     return $( this ).val() === tmpStr;
@@ -6435,7 +7669,7 @@ class Yadcf {
                     $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ).addClass( 'inuse' );
                   }
                 } else if ( columnObj.filter_type === 'multi_select' ) {
-                  tmpStr = Yadcf.yadcfParseMatchFilterMultiSelect( tmpStr, Yadcf.getOptions( oTable.context[0].oInstance.selector )[ column_number ].filter_match_mode );
+                  tmpStr = Yadcf.yadcfParseMatchFilterMultiSelect( tmpStr, Yadcf.getOptions( oTable.selector )[ column_number ].filter_match_mode );
                   tmpStr = (tmpStr as string).replace( /\\/g, '' );
                   tmpStr = (tmpStr as string).split( '|' );
 
@@ -6473,7 +7707,7 @@ class Yadcf {
             }
 
             if ( $( '#yadcf-filter-wrapper-' + Yadcf.generateTableSelectorJQFriendlyNew( columnObj.filter_container_selector ) ).length === 0 ) {
-              $( columnObj.filter_container_selector ).append( Yadcf.makeElement( '<div>', {
+              $( columnObj.filter_container_selector ).append( Yadcf.makeElement( '<div />', {
                 id: 'yadcf-filter-wrapper-' + Yadcf.generateTableSelectorJQFriendlyNew( columnObj.filter_container_selector )
               }) );
             }
@@ -6484,7 +7718,7 @@ class Yadcf {
           if ( columnObj.filter_type === 'select' || columnObj.filter_type === 'custom_func' ) {
             // Add a wrapper to hold both filter and reset button.
             $( filter_selector_string ).append(
-              Yadcf.makeElement( '<div>', {
+              Yadcf.makeElement( '<div />', {
                 id: `yadcf-filter-wrapper-${table_selector_jq_friendly}-${column_number}`,
                 class: 'yadcf-filter-wrapper'
               })
@@ -6517,7 +7751,7 @@ class Yadcf {
 
               if ( filter_reset_button_text !== false ) {
                 $( filter_selector_string ).find( '.yadcf-filter' ).after(
-                  Yadcf.makeElement( '<button>', {
+                  Yadcf.makeElement( '<button />', {
                     type: 'button',
                     id: `yadcf-filter-${table_selector_jq_friendly}-${column_number}` + '-reset',
                     onmousedown: Yadcf.stopPropagation,
@@ -6538,7 +7772,7 @@ class Yadcf {
                 typeof columnObj.externally_triggered_checkboxes_function === 'function'
               ) {
                 $( filter_selector_string ).append(
-                  Yadcf.makeElement( '<button>', {
+                  Yadcf.makeElement( '<button />', {
                     type: 'button',
                     id: `yadcf-filter-${table_selector_jq_friendly}-${column_number}` + '-externally_triggered_checkboxes-button',
                     onmousedown: Yadcf.stopPropagation,
@@ -6554,19 +7788,19 @@ class Yadcf {
               exclude_str = $();
 
               if ( columnObj.exclude === true ) {
-                exclude_str = Yadcf.makeElement( '<span>', {
+                exclude_str = Yadcf.makeElement( '<div />', {
                   class: 'yadcf-exclude-wrapper',
                   onmousedown: Yadcf.stopPropagation,
                   onclick: Yadcf.stopPropagation
                 })
                 .append(
-                  Yadcf.makeElement( '<div>', {
+                  Yadcf.makeElement( '<span />', {
                     class: 'yadcf-label small',
                     text: columnObj.exclude_label
                   })
                 )
                 .append(
-                  Yadcf.makeElement( '<input>', {
+                  Yadcf.makeElement( '<input />', {
                     type: 'checkbox',
                     title: columnObj.exclude_label,
                     onclick: function( colNo, tableSel ) {
@@ -6621,7 +7855,7 @@ class Yadcf {
 
               if ( filter_reset_button_text !== false ) {
                 $( filter_selector_string ).find( '.yadcf-filter' ).after(
-                  Yadcf.makeElement( '<button>', {
+                  Yadcf.makeElement( '<button />', {
                     type: 'button',
                     onmousedown: Yadcf.stopPropagation,
                     onclick: function( colNo: number, tableSel: string ) {
@@ -6663,9 +7897,9 @@ class Yadcf {
 
             if ( settingsDt.aoPreSearchCols[ column_position ].sSearch !== '' ) {
               tmpStr = settingsDt.aoPreSearchCols[ column_position ].sSearch;
-              tmpStr = Yadcf.yadcfParseMatchFilter( tmpStr, Yadcf.getOptions( oTable.context[0].oInstance.selector )[ column_number ].filter_match_mode );
+              tmpStr = Yadcf.yadcfParseMatchFilter( tmpStr, Yadcf.getOptions( oTable.selector )[ column_number ].filter_match_mode );
 
-              const match_mode = Yadcf.getOptions( oTable.context[0].oInstance.selector )[ column_number ].filter_match_mode;
+              const match_mode = Yadcf.getOptions( oTable.selector )[ column_number ].filter_match_mode;
 
               let null_str        = columnObj.select_null_option;
               let excludeStrStart = '^((?!';
@@ -6687,7 +7921,7 @@ class Yadcf {
               }
 
               null_str = '^((?!' + null_str + ').)*$';
-              null_str = Yadcf.yadcfParseMatchFilter( null_str, Yadcf.getOptions( oTable.context[0].oInstance.selector )[ column_number ].filter_match_mode );
+              null_str = Yadcf.yadcfParseMatchFilter( null_str, Yadcf.getOptions( oTable.selector )[ column_number ].filter_match_mode );
 
               let exclude = false;
 
@@ -6695,7 +7929,7 @@ class Yadcf {
               if ( null_str === tmpStr ) {
                 exclude = true;
                 tmpStr  = columnObj.select_null_option;
-              } else if ( tmpStr.includes( excludeStrStart ) && tmpStr.includes( excludeStrEnd ) ) {
+              } else if ( tmpStr && tmpStr.includes( excludeStrStart ) && tmpStr.includes( excludeStrEnd ) ) {
                 exclude = true;
                 tmpStr  = tmpStr.replace( excludeStrStart, '' );
                 tmpStr  = tmpStr.replace( excludeStrEnd, '' );
@@ -6744,7 +7978,7 @@ class Yadcf {
           } else if ( columnObj.filter_type === 'multi_select' || columnObj.filter_type === 'multi_select_custom_func' ) {
             // Add a wrapper to hold both filter and reset button.
             $( filter_selector_string ).append(
-              Yadcf.makeElement( '<div>', {
+              Yadcf.makeElement( '<div />', {
                 id: `yadcf-filter-wrapper-${table_selector_jq_friendly}-${column_number}`,
                 class: 'yadcf-filter-wrapper'
               })
@@ -6779,7 +8013,7 @@ class Yadcf {
 
               if ( filter_reset_button_text !== false ) {
                 $( filter_selector_string ).find( '.yadcf-filter' ).after(
-                  Yadcf.makeElement( '<button>', {
+                  Yadcf.makeElement( '<button />', {
                     type: 'button',
                     onmousedown: Yadcf.stopPropagation,
                     onclick: function( colNo: number, tableSel: string ) {
@@ -6797,7 +8031,7 @@ class Yadcf {
 
               if ( settingsDt.aoPreSearchCols[ column_position ].sSearch !== '' ) {
                 tmpStr = settingsDt.aoPreSearchCols[ column_position ].sSearch;
-                tmpStr = Yadcf.yadcfParseMatchFilterMultiSelect( tmpStr, Yadcf.getOptions( oTable.context[0].oInstance.selector )[ column_number ].filter_match_mode );
+                tmpStr = Yadcf.yadcfParseMatchFilterMultiSelect( tmpStr, Yadcf.getOptions( oTable.selector )[ column_number ].filter_match_mode );
                 tmpStr = tmpStr.replace( /\\/g, '' );
                 tmpStr = tmpStr.split( '|' );
 
@@ -6830,7 +8064,7 @@ class Yadcf {
 
               if ( filter_reset_button_text !== false ) {
                 $( filter_selector_string ).find( '.yadcf-filter' ).after(
-                  Yadcf.makeElement( '<button>', {
+                  Yadcf.makeElement( '<button />', {
                     type: 'button',
                     onmousedown: Yadcf.stopPropagation,
                     onclick: function( colNo: number, tableSel: string ) {
@@ -6885,7 +8119,7 @@ class Yadcf {
           } else if ( columnObj.filter_type === 'auto_complete' ) {
             // Add a wrapper to hold both filter and reset button.
             $( filter_selector_string ).append(
-              Yadcf.makeElement( '<div>', {
+              Yadcf.makeElement( '<div />', {
                 id: `yadcf-filter-wrapper-${table_selector_jq_friendly}-${column_number}`,
                 class: 'yadcf-filter-wrapper'
               })
@@ -6904,7 +8138,7 @@ class Yadcf {
             }
 
             $( filter_selector_string ).append(
-              Yadcf.makeElement( '<input>', {
+              Yadcf.makeElement( '<input />', {
                 onkeydown: Yadcf.preventDefaultForEnter,
                 id: `yadcf-filter-${table_selector_jq_friendly}-${column_number}`,
                 class: 'yadcf-filter',
@@ -6920,7 +8154,7 @@ class Yadcf {
 
             if ( filter_reset_button_text !== false ) {
               $( filter_selector_string ).find( '.yadcf-filter' ).after(
-                Yadcf.makeElement( '<button>', {
+                Yadcf.makeElement( '<button />', {
                   type: 'button',
                   onmousedown: Yadcf.stopPropagation,
                   onclick: function( colNo, tableSel ) {
@@ -6938,7 +8172,7 @@ class Yadcf {
           } else if ( columnObj.filter_type === 'text' ) {
             // Add a wrapper to hold both filter and reset button.
             $( filter_selector_string ).append(
-              Yadcf.makeElement( '<div>', {
+              Yadcf.makeElement( '<div />', {
                 id: `yadcf-filter-wrapper-${table_selector_jq_friendly}-${column_number}`,
                 class: 'yadcf-filter-wrapper'
               })
@@ -6961,19 +8195,19 @@ class Yadcf {
 
             if ( columnObj.exclude === true ) {
               if ( columnObj.externally_triggered !== true ) {
-                exclude_str = Yadcf.makeElement( '<span>', {
+                exclude_str = Yadcf.makeElement( '<div />', {
                   class: 'yadcf-exclude-wrapper',
                   onmousedown: Yadcf.stopPropagation,
                   onclick: Yadcf.stopPropagation
                 })
                 .append(
-                  Yadcf.makeElement( '<div>', {
+                  Yadcf.makeElement( '<span />', {
                     class: 'yadcf-label small',
                     text: columnObj.exclude_label
                   })
                 )
                 .append(
-                  Yadcf.makeElement( '<input>', {
+                  Yadcf.makeElement( '<input />', {
                     type: 'checkbox',
                     title: columnObj.exclude_label,
                     onclick: function( colNo: number, tableSel: string ) {
@@ -6985,19 +8219,19 @@ class Yadcf {
                   })
                 );
               } else {
-                exclude_str = Yadcf.makeElement( '<span>', {
+                exclude_str = Yadcf.makeElement( '<div />', {
                   class: 'yadcf-exclude-wrapper',
                   onmousedown: Yadcf.stopPropagation,
                   onclick: Yadcf.stopPropagation
                 })
                 .append(
-                  Yadcf.makeElement( '<div>', {
+                  Yadcf.makeElement( '<span />', {
                     class: 'yadcf-label small',
                     text: columnObj.exclude_label
                   })
                 )
                 .append(
-                  Yadcf.makeElement( '<input>', {
+                  Yadcf.makeElement( '<input />', {
                     type: 'checkbox',
                     title: columnObj.exclude_label,
                     onclick: Yadcf.stopPropagation
@@ -7010,19 +8244,19 @@ class Yadcf {
 
             if ( columnObj.regex_check_box === true ) {
               if ( columnObj.externally_triggered !== true ) {
-                regex_str = Yadcf.makeElement( '<span>', {
+                regex_str = Yadcf.makeElement( '<div />', {
                   class: 'yadcf-regex-wrapper',
                   onmousedown: Yadcf.stopPropagation,
                   onclick: Yadcf.stopPropagation
                 })
                 .append(
-                  Yadcf.makeElement( '<div>', {
+                  Yadcf.makeElement( '<span />', {
                     class: 'yadcf-label small',
                     text: columnObj.regex_label
                   })
                 )
                 .append(
-                  Yadcf.makeElement( '<input>', {
+                  Yadcf.makeElement( '<input />', {
                     type: 'checkbox',
                     title: columnObj.regex_label,
                     onclick: function( colNo: number, tableSel: string ) {
@@ -7034,19 +8268,19 @@ class Yadcf {
                   })
                 );
               } else {
-                regex_str = Yadcf.makeElement( '<span>', {
+                regex_str = Yadcf.makeElement( '<div />', {
                   class: 'yadcf-regex-wrapper',
                   onmousedown: Yadcf.stopPropagation,
                   onclick: Yadcf.stopPropagation
                 })
                 .append(
-                  Yadcf.makeElement( '<div>', {
+                  Yadcf.makeElement( '<span />', {
                     class: 'yadcf-label small',
                     text: columnObj.regex_label
                   })
                 )
                 .append(
-                  Yadcf.makeElement( '<input>', {
+                  Yadcf.makeElement( '<input />', {
                     type: 'checkbox',
                     title: columnObj.regex_label,
                     onclick: Yadcf.stopPropagation
@@ -7058,19 +8292,19 @@ class Yadcf {
             null_str = $();
 
             if ( columnObj.null_check_box === true ) {
-              null_str = Yadcf.makeElement( '<span>', {
+              null_str = Yadcf.makeElement( '<div />', {
                 class: 'yadcf-null-wrapper',
                 onmousedown: Yadcf.stopPropagation,
                 onclick: Yadcf.stopPropagation
               })
               .append(
-                Yadcf.makeElement( '<div>', {
+                Yadcf.makeElement( '<span />', {
                   class: 'yadcf-label small',
                   text: columnObj.null_label
                 })
               )
               .append(
-                Yadcf.makeElement( '<input>', {
+                Yadcf.makeElement( '<input />', {
                   type: 'checkbox',
                   title: columnObj.null_label,
                   onclick: function( colNo: number, tableSel: string ) {
@@ -7087,7 +8321,7 @@ class Yadcf {
               }
             }
 
-            let append_input = Yadcf.makeElement( '<input>', {
+            let append_input = Yadcf.makeElement( '<input />', {
               type: 'text',
               onkeydown: Yadcf.preventDefaultForEnter,
               id: `yadcf-filter-${table_selector_jq_friendly}-${column_number}`,
@@ -7118,7 +8352,7 @@ class Yadcf {
               sel.find( '.yadcf-null-wrapper' ).hide();
 
               $( filter_selector_string ).find( '.yadcf-filter' ).after(
-                Yadcf.makeElement( '<button>', {
+                Yadcf.makeElement( '<button />', {
                   type: 'button',
                   id: `yadcf-filter-${table_selector_jq_friendly}-${column_number}-externally_triggered_checkboxes-button`,
                   onmousedown: Yadcf.stopPropagation,
@@ -7133,7 +8367,7 @@ class Yadcf {
 
             if ( filter_reset_button_text !== false ) {
               $( filter_selector_string ).find( '.yadcf-filter' ).after(
-                Yadcf.makeElement( '<button>', {
+                Yadcf.makeElement( '<button />', {
                   type: 'button',
                   id: `yadcf-filter-${table_selector_jq_friendly}-${column_number}` + '-reset',
                   onmousedown: Yadcf.stopPropagation,
@@ -7196,7 +8430,7 @@ class Yadcf {
 
           if ( settingsDt.aoPreSearchCols[ column_position ].sSearch !== '' ) {
             tmpStr = settingsDt.aoPreSearchCols[ column_position ].sSearch;
-            tmpStr = Yadcf.yadcfParseMatchFilter( tmpStr, Yadcf.getOptions( oTable.context[0].oInstance.selector )[ column_number ].filter_match_mode );
+            tmpStr = Yadcf.yadcfParseMatchFilter( tmpStr, Yadcf.getOptions( oTable.selector )[ column_number ].filter_match_mode );
             $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ).val( tmpStr ).addClass( 'inuse' );
           }
         }
@@ -7212,7 +8446,7 @@ class Yadcf {
    * @see yadcfParseMatchFilter
    * @see getOptions
    */
-  private static loadFromStateSaveTextFilter( oTable: DataTablesStaticExt, settingsDt: Api<any>, columnObj: AllParameters, table_selector_jq_friendly: string, column_position: number, column_number: number | string ) {
+  private static loadFromStateSaveTextFilter( oTable: DataTableInstance, settingsDt: DataTableSettings, columnObj: AllParameters, table_selector_jq_friendly: string, column_position: number, column_number: number | string ) {
     if ( columnObj.null_check_box === true ) {
       if ( settingsDt.oFeatures.bStateSave === true && settingsDt.oLoadedState ) {
         if (
@@ -7266,13 +8500,20 @@ class Yadcf {
         }
       }
 
-      tmpStr = Yadcf.yadcfParseMatchFilter( tmpStr, Yadcf.getOptions( oTable.context[0].oInstance.selector )[ column_number ].filter_match_mode );
+      tmpStr = Yadcf.yadcfParseMatchFilter( tmpStr, Yadcf.getOptions( oTable.selector )[ column_number ].filter_match_mode );
 
       $( `#yadcf-filter-${table_selector_jq_friendly}-${column_number}` ).val( tmpStr ).addClass( 'inuse' );
     }
   }
 
-  private static saveTextKeyUpState( oTable: DataTablesStaticExt, table_selector_jq_friendly: string, column_number: number | string, regex_check_box: APFT['regex_check_box'], null_checked: boolean, exclude: boolean ): void {
+  private static saveTextKeyUpState(
+      oTable: DataTableInstance,
+      table_selector_jq_friendly: string,
+      column_number: number | string,
+      regex_check_box: AllParameters<FilterType>['regex_check_box'],
+      null_checked: boolean,
+      exclude: boolean
+  ): void {
     let yadcfState;
 
     if (
@@ -7308,12 +8549,11 @@ class Yadcf {
    * @param tableVar
    * @returns
    */
-  private static isDOMSource( tableVar: Api<any> | globalThis.DataTables.JQueryDataTables ): boolean {
-    let settingsDt: Config;
+  private static isDOMSource( tableVar: DataTableInstance | globalThis.DataTables.JQueryDataTables ): boolean {
+    const settingsDt: DataTableSettings = Yadcf.getSettingsObjFromTable( tableVar );
+    console.log( 'isDOMSource', settingsDt );
 
-    settingsDt = Yadcf.getSettingsObjFromTable( tableVar );
-
-    if ( !settingsDt.sAjaxSource && !settingsDt.ajax && settingsDt.oFeatures.bServerSide !== true ) {
+    if ( !settingsDt && !settingsDt.sAjaxSource && !settingsDt.ajax && settingsDt.oFeatures.bServerSide !== true ) {
       return true;
     }
 
@@ -7323,7 +8563,7 @@ class Yadcf {
   /**
    * @see generateTableSelectorJQFriendly2
    */
-  private static scrollXYHandler( oTable: DataTablesStaticExt, table_selector: string ): void {
+  private static scrollXYHandler( oTable: DataTableInstance, table_selector: string ): void {
     let $tmpSelector: JQuery,
         filters_position = $( document ).data( `${table_selector}_filters_position` ),
         table_selector_jq_friendly = Yadcf.generateTableSelectorJQFriendly2( oTable );
@@ -7334,13 +8574,13 @@ class Yadcf {
       filters_position = '.dataTables_scrollFoot';
     }
 
-    if ( oTable.settings()[0].oScroll.sX !== '' || oTable.settings()[0].oScroll.sY !== '' ) {
+    if ( oTable.api().context[0].oScroll.sX !== '' || oTable.api().context[0].oScroll.sY !== '' ) {
       $tmpSelector = $( table_selector ).closest( '.dataTables_scroll' ).find( filters_position + ' table' );
       $tmpSelector.addClass( `yadcf-datatables-table-${table_selector_jq_friendly}` );
     }
   }
 
-  private static firstFromObject( obj: Object ): string {
+  private static firstFromObject( obj: Record<string, any> ): string {
     for ( const key in obj ) {
       if ( obj.hasOwnProperty( key ) ) {
         return key;
@@ -7349,7 +8589,7 @@ class Yadcf {
   }
 
   /**
-   * Methods.
+   * // Methods
    * @see generateTableSelectorJQFriendly2
    * @see scrollXYHandler
    * @see isDOMSource
@@ -7364,7 +8604,7 @@ class Yadcf {
    * @see initColReorderFromEvent
    * @see removeFilters
    *
-   * Properties.
+   * // Properties
    * @see oTables
    * @see tablesDT
    * @see oTablesIndex
@@ -7374,13 +8614,13 @@ class Yadcf {
    * @param index
    * @param pTableDT
    */
-  public static initAndBindTable( oTable: DataTablesStaticExt & Config, table_selector: string, index: number, pTableDT?: Api<any> ): void {
+  private static initAndBindTable( oTable: DataTableInstance, table_selector: string, index: number, pTableDT?: DataTableInstance ): void {
     const table_selector_jq_friendly = Yadcf.generateTableSelectorJQFriendly2( oTable );
 
     let table_selector_tmp: string;
 
-    Yadcf.oTables[ table_selector_jq_friendly ]      = oTable;
-    Yadcf.tablesDT[ table_selector_jq_friendly ]     = pTableDT;
+    Yadcf.oTables[ table_selector_jq_friendly ] = oTable;
+    Yadcf.tablesDT[ table_selector_jq_friendly ] = pTableDT;
     Yadcf.oTablesIndex[ table_selector_jq_friendly ] = index;
 
     Yadcf.scrollXYHandler( oTable, table_selector );
@@ -7398,14 +8638,14 @@ class Yadcf {
       if ( Yadcf.getOptions( table_selector_tmp )[ Yadcf.firstFromObject( Yadcf.getOptions( table_selector_tmp ) ) ].cumulative_filtering === true ) {
         // When filters should be populated only from visible rows (non filtered).
         // @ts-ignore
-        $( document ).off( 'search.dt', oTable.context[0].oInstance.selector ).on( 'search.dt', oTable.context[0].oInstance.selector, ( e: Event, settings: Api<any>, json: Record<string, any> ) => {
-          let table_selector_tmp = oTable.context[0].oInstance.selector;
+        $( document ).off( 'search.dt', oTable.selector ).on( 'search.dt', oTable.selector, ( e: Event, settings: DataTableSettings, json: Record<string, any> ) => {
+          let table_selector_tmp = oTable.selector;
 
           if ( table_selector.indexOf( ':eq' ) !== -1 ) {
             table_selector_tmp = table_selector.substring( 0, table_selector.lastIndexOf( ':eq' ) );
           }
 
-          Yadcf.appendFilters( oTable, Yadcf.getOptions( table_selector_tmp ), oTable.context[0].oInstance.selector, settings );
+          Yadcf.appendFilters( oTable, Yadcf.getOptions( table_selector_tmp ), oTable.selector, settings );
         });
       }
     }
@@ -7413,8 +8653,13 @@ class Yadcf {
     {
       Yadcf.appendFilters( oTable, Yadcf.getOptions( table_selector ), table_selector );
 
-      if ( Yadcf.yadcfVersionCheck( '1.10' ) || Yadcf.yadcfVersionCheck( '1.11' ) || Yadcf.yadcfVersionCheck( '1.12' ) || Yadcf.yadcfVersionCheck( '1.13' ) ) {
-        $( document ).off( 'xhr.dt', oTable.context[0].oInstance.selector ).on( 'xhr.dt', oTable.context[0].oInstance.selector, ( e: any, settings: Api<any>, json: Record<string, any> ) => {
+      if (
+        Yadcf.yadcfVersionCheck( '1.10' ) ||
+        Yadcf.yadcfVersionCheck( '1.11' ) ||
+        Yadcf.yadcfVersionCheck( '1.12' ) ||
+        Yadcf.yadcfVersionCheck( '1.13' )
+      ) {
+        $( document ).off( 'xhr.dt', oTable.selector ).on( 'xhr.dt', oTable.selector, ( e: any, settings: DataTableSettings, json: Record<string, any> ) => {
           let col_num: string,
               column_number_filter: any,
               table_selector_jq_friendly: string = Yadcf.generateTableSelectorJQFriendly2( oTable );
@@ -7453,9 +8698,13 @@ class Yadcf {
     }
 
     // Events that affects both DOM and Ajax.
-    if ( Yadcf.yadcfVersionCheck( '1.10' ) || Yadcf.yadcfVersionCheck( '1.11' ) || Yadcf.yadcfVersionCheck( '1.12' ) || Yadcf.yadcfVersionCheck( '1.13' ) )
-    {
-      $( document ).off( 'stateLoaded.dt', oTable.context[0].oInstance.selector ).on( 'stateLoaded.dt', oTable.context[0].oInstance.selector, ( event: any, settings: Api<any> ) => {
+    if (
+      Yadcf.yadcfVersionCheck( '1.10' ) ||
+      Yadcf.yadcfVersionCheck( '1.11' ) ||
+      Yadcf.yadcfVersionCheck( '1.12' ) ||
+      Yadcf.yadcfVersionCheck( '1.13' )
+    ) {
+      $( document ).off( 'stateLoaded.dt', oTable.selector ).on( 'stateLoaded.dt', oTable.selector, ( event: any, settings: DataTableSettings ) => {
         let args = Yadcf.getOptions( settings.oInstance.selector );
         let columnObjKey: string;
 
@@ -7474,12 +8723,12 @@ class Yadcf {
         }
       });
 
-      $( document ).off( 'draw.dt', oTable.context[0].oInstance.selector ).on( 'draw.dt', oTable.context[0].oInstance.selector, ( event: any, settings: Api<any> ) => {
+      $( document ).off( 'draw.dt', oTable.selector ).on( 'draw.dt', oTable.selector, ( event: any, settings: DataTableSettings ) => {
         Yadcf.appendFilters( oTable, Yadcf.getOptions( settings.oInstance.selector ), settings.oInstance.selector, settings );
       });
 
-      $( document ).off( 'column-visibility.dt', oTable.context[0].oInstance.selector ).on( 'column-visibility.dt', oTable.context[0].oInstance.selector, ( e: any, settings: Api<any>, col_num: number, state: any ) => {
-        const obj: Partial<APFT> = {},
+      $( document ).off( 'column-visibility.dt', oTable.selector ).on( 'column-visibility.dt', oTable.selector, ( e: any, settings: DataTableSettings, col_num: number, state: any ) => {
+        const obj: Partial<AllParameters<FilterType>> = {},
               columnsObj = Yadcf.getOptions( settings.oInstance.selector );
 
         if ( state === true && settings._oFixedColumns === undefined ) {
@@ -7512,23 +8761,23 @@ class Yadcf {
         }
       });
 
-      $( document ).off( 'column-reorder.dt', oTable.context[0].oInstance.selector ).on( 'column-reorder.dt', oTable.context[0].oInstance.selector, ( e: any, settings: Api<any>, json: Record<string, any> ) => {
+      $( document ).off( 'column-reorder.dt', oTable.selector ).on( 'column-reorder.dt', oTable.selector, ( e: any, settings: DataTableSettings, json: Record<string, any> ) => {
         const table_selector_jq_friendly = Yadcf.generateTableSelectorJQFriendly2( oTable );
         Yadcf.initColReorderFromEvent( table_selector_jq_friendly );
       });
 
-      $( document ).off( 'destroy.dt', oTable.context[0].oInstance.selector ).on( 'destroy.dt', oTable.context[0].oInstance.selector, ( e: any, ui: Record<string, any> ) => {
+      $( document ).off( 'destroy.dt', oTable.selector ).on( 'destroy.dt', oTable.selector, ( e: any, ui: Record<string, any> ) => {
         Yadcf.removeFilters( oTable );
         Yadcf.removeFilters( ui.oInstance )
       });
     }
     else
     {
-      $( document ).off( 'draw', oTable.context[0].oInstance.selector ).on( 'draw', oTable.context[0].oInstance.selector, ( e: any, settings: Api<any> ) => {
+      $( document ).off( 'draw', oTable.selector ).on( 'draw', oTable.selector, ( e: any, settings: DataTableSettings ) => {
         Yadcf.appendFilters( oTable, Yadcf.getOptions( settings.oInstance.selector ), settings.oInstance.selector, settings );
       });
 
-      $( document ).off( 'destroy', oTable.context[0].oInstance.selector ).on( 'destroy', oTable.context[0].oInstance.selector, ( e: any, ui: Record<string, any> ) => {
+      $( document ).off( 'destroy', oTable.selector ).on( 'destroy', oTable.selector, ( e: any, ui: Record<string, any> ) => {
         Yadcf.removeFilters( oTable );
         Yadcf.removeFilters( ui.oInstance.selector );
       });
@@ -7536,9 +8785,13 @@ class Yadcf {
 
     if ( oTable.settings()[0].oFeatures.bStateSave === true )
     {
-      if ( Yadcf.yadcfVersionCheck( '1.10' ) || Yadcf.yadcfVersionCheck( '1.11' ) || Yadcf.yadcfVersionCheck( '1.12' ) || Yadcf.yadcfVersionCheck( '1.13' ) )
-      {
-        $( oTable.context[0].oInstance.selector as string ).off( 'stateSaveParams.dt' ).on( 'stateSaveParams.dt', ( e: any, settings: Api<any>, data: Record<string, any> ) => {
+      if (
+        Yadcf.yadcfVersionCheck( '1.10' ) ||
+        Yadcf.yadcfVersionCheck( '1.11' ) ||
+        Yadcf.yadcfVersionCheck( '1.12' ) ||
+        Yadcf.yadcfVersionCheck( '1.13' )
+      ) {
+        $( oTable.selector as string ).off( 'stateSaveParams.dt' ).on( 'stateSaveParams.dt', ( e: any, settings: DataTableSettings, data: Record<string, any> ) => {
           if ( settings.oLoadedState && settings.oLoadedState.yadcfState !== undefined ) {
             data.yadcfState = settings.oLoadedState.yadcfState;
           } else {
@@ -7548,7 +8801,7 @@ class Yadcf {
       }
       else
       {
-        $( oTable.context[0].oInstance.selector as string ).off( 'stateSaveParams' ).on( 'stateSaveParams', ( e: any, settings: Api<any>, data: Record<string, any> ) => {
+        $( oTable.selector as string ).off( 'stateSaveParams' ).on( 'stateSaveParams', ( e: any, settings: DataTableSettings, data: Record<string, any> ) => {
           if ( settings.oLoadedState && settings.oLoadedState.yadcfState !== undefined ) {
             data.yadcfState = settings.oLoadedState.yadcfState;
           } else {
@@ -7562,7 +8815,7 @@ class Yadcf {
         // We need to make sure that the yadcf state will be saved after page reload.
         oTable.settings()[0].oApi._fnSaveState( oTable.settings()[0] );
         // Redraw the table in order to apply the filters.
-        oTable.draw( false );
+        oTable.fnDraw( false );
       }
     }
   }
@@ -7589,11 +8842,11 @@ class Yadcf {
    * @param tablesSelectors
    * @param colObjDummy
    */
-  private static appendFiltersMultipleTables( tablesArray: Array<Api<any>>, tablesSelectors: string, colObjDummy: APFT ): void {
+  private static appendFiltersMultipleTables( tablesArray: Array<DataTableInstance>, tablesSelectors: string, colObjDummy: AllParameters<FilterType> ): void {
     let filter_selector_string: string = '#' + colObjDummy.filter_container_id,
         table_selector_jq_friendly: string = Yadcf.generateTableSelectorJQFriendlyNew( tablesSelectors ),
         column_number_str: string = Yadcf.columnsArrayToString( colObjDummy.column_number ).column_number_str.toString(),
-        filterOptions: APFT = Yadcf.getOptions( tablesSelectors + '_' + column_number_str )[ column_number_str ],
+        filterOptions: AllParameters<FilterType> = Yadcf.getOptions( tablesSelectors + '_' + column_number_str )[ column_number_str ],
         options_tmp: JQuery<HTMLOptionElement>,
         ii: number,
         tableTmp: any,
@@ -7601,13 +8854,13 @@ class Yadcf {
         tableTmpArrIndex: number,
         column_number_index: number,
         columnsTmpArr: number | Array<number>,
-        settingsDt: Api<any>,
+        settingsDt: DataTableSettings,
         tmpStr: string | Array<string>,
         columnForStateSaving: string;
 
     //add a wrapper to hold both filter and reset button
     $( filter_selector_string ).append(
-      Yadcf.makeElement( '<div>', {
+      Yadcf.makeElement( '<div />', {
         id: `yadcf-filter-wrapper-${table_selector_jq_friendly}-${column_number_str}`,
         class: 'yadcf-filter-wrapper'
       })
@@ -7624,7 +8877,7 @@ class Yadcf {
     switch ( filterOptions.filter_type ) {
       case 'text':
         $( filter_selector_string ).append(
-          Yadcf.makeElement( '<input>', {
+          Yadcf.makeElement( '<input />', {
             type: 'text',
             id: `yadcf-filter-${table_selector_jq_friendly}-${column_number_str}`,
             class: 'yadcf-filter',
@@ -7643,7 +8896,7 @@ class Yadcf {
 
         if ( filterOptions.filter_reset_button_text !== false ) {
           $( filter_selector_string ).find( '.yadcf-filter' ).after(
-            Yadcf.makeElement( '<button>', {
+            Yadcf.makeElement( '<button />', {
               type: 'button',
               id: `yadcf-filter-${table_selector_jq_friendly}-${column_number_str}-reset`,
               onmousedown: Yadcf.stopPropagation,
@@ -7842,7 +9095,7 @@ class Yadcf {
         if ( filterOptions.filter_type === 'select' ) {
           if ( filterOptions.filter_reset_button_text !== false ) {
             $( filter_selector_string ).find( '.yadcf-filter' ).after(
-              Yadcf.makeElement( '<button>', {
+              Yadcf.makeElement( '<button />', {
                 type: 'button',
                 id: `yadcf-filter-${table_selector_jq_friendly}-${column_number_str}-reset`,
                 onmousedown: Yadcf.stopPropagation,
@@ -7861,7 +9114,7 @@ class Yadcf {
         } else if ( filterOptions.filter_type === 'multi_select' ) {
           if ( filterOptions.filter_reset_button_text !== false ) {
             $( filter_selector_string ).find( '.yadcf-filter' ).after(
-              Yadcf.makeElement( '<button>', {
+              Yadcf.makeElement( '<button />', {
                 type: 'button',
                 id: `yadcf-filter-${table_selector_jq_friendly}-${column_number_str}-reset`,
                 onmousedown: Yadcf.stopPropagation,
@@ -7938,13 +9191,13 @@ class Yadcf {
    * @param col_filter_arr
    * @returns
    */
-  private static exInternalFilterColumnAJAXQueue( table_arg: Api<any>, col_filter_arr: Array<ExFilterColArgs> ) {
+  private static exInternalFilterColumnAJAXQueue( table_arg: DataTableInstance, col_filter_arr: Array<ExFilterColArgs> ) {
     return function() {
       Yadcf.exFilterColumn( table_arg, col_filter_arr, true );
     };
   }
 
-  private static clearStateSave( oTable: DataTablesStaticExt, column_number: Array<number> | number | string, table_selector_jq_friendly: string ) {
+  private static clearStateSave( oTable: DataTableInstance, column_number: Array<number> | number | string, table_selector_jq_friendly: string ) {
     let yadcfState: Record<string, any>;
 
     if ( oTable.settings()[0].oFeatures.bStateSave === true ) {
@@ -7966,7 +9219,13 @@ class Yadcf {
     }
   }
 
-  private static saveStateSave( oTable: DataTablesStaticExt, column_number: number | string, table_selector_jq_friendly: string, from: number | string, to: number | string  ) {
+  private static saveStateSave(
+    oTable: DataTableInstance,
+    column_number: number | string,
+    table_selector_jq_friendly: string,
+    from: number | string,
+    to: number | string
+  ) {
     let yadcfState;
 
     if ( oTable.settings()[0].oFeatures.bStateSave === true ) {
@@ -8061,3 +9320,736 @@ $.fn.yadcf = function( options_arg: ArrayObjects, params: any ) {
 
 const yadcf = Yadcf.instance();
 export default yadcf;
+
+const oTable = new DataTable( '#example', { stateSave: true });
+
+console.log( oTable );
+// console.log( 'settingsDt', $.fn.dataTable( oTable.context, oTable.data() ) );
+
+//----------------------------------------------
+//notice the new yadcf API for init the filters:
+//----------------------------------------------
+
+yadcf.init(
+  oTable,
+  [
+    {
+      column_number: 0
+    },
+    {
+      column_number: 1,
+      filter_type: 'range_number_slider'
+    },
+    {
+      column_number: 2,
+      filter_type: 'date'
+    },
+    {
+      column_number: 3,
+      filter_type: 'auto_complete',
+      text_data_delimiter: ','
+    },
+    {
+      column_number: 4,
+      column_data_type: 'html',
+      html_data_type: 'text',
+      filter_default_label: 'Select tag'
+    }
+  ]
+);
+
+const oTable2 = new DataTable( '#entrys_table', {
+  responsive: true,
+  processing: true,
+  data: [
+    {
+      "engine": "Trident",
+      "browser": "Internet Explorer 4.0",
+      "platform": {
+        "inner": "Win 95+",
+        "details": [
+          "4",
+          "X"
+        ]
+      }
+    },
+    {
+      "engine": "Trident",
+      "browser": "Internet Explorer 5.0",
+      "platform": {
+        "inner": "Win 95+",
+        "details": [
+          "5",
+          "C"
+        ]
+      }
+    },
+    {
+      "engine": "Trident",
+      "browser": "Internet Explorer 5.5",
+      "platform": {
+        "inner": "Win 95+",
+        "details": [
+          "5.5",
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Trident",
+      "browser": "Internet Explorer 6",
+      "platform": {
+        "inner": "Win 98+",
+        "details": [
+          "6",
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Trident",
+      "browser": "Internet Explorer 7",
+      "platform": {
+        "inner": "Win XP SP2+",
+        "details": [
+          "7",
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Trident",
+      "browser": "AOL browser (AOL desktop)",
+      "platform": {
+        "inner": "Win XP",
+        "details": [
+          "6",
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Gecko",
+      "browser": "Firefox 1.0",
+      "platform": {
+        "inner": "Win 98+ / OSX.2+",
+        "details": [
+          "1.7",
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Gecko",
+      "browser": "Firefox 1.5",
+      "platform": {
+        "inner": "Win 98+ / OSX.2+",
+        "details": [
+          "1.8",
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Gecko",
+      "browser": "Firefox 2.0",
+      "platform": {
+        "inner": "Win 98+ / OSX.2+",
+        "details": [
+          "1.8",
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Gecko",
+      "browser": "Firefox 3.0",
+      "platform": {
+        "inner": "Win 2k+ / OSX.3+",
+        "details": [
+          "1.9",
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Gecko",
+      "browser": "Camino 1.0",
+      "platform": {
+        "inner": "OSX.2+",
+        "details": [
+          "1.8",
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Gecko",
+      "browser": "Camino 1.5",
+      "platform": {
+        "inner": "OSX.3+",
+        "details": [
+          "1.8",
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Gecko",
+      "browser": "Netscape 7.2",
+      "platform": {
+        "inner": "Win 95+ / Mac OS 8.6-9.2",
+        "details": [
+          "1.7",
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Gecko",
+      "browser": "Netscape Browser 8",
+      "platform": {
+        "inner": "Win 98SE+",
+        "details": [
+          "1.7",
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Gecko",
+      "browser": "Netscape Navigator 9",
+      "platform": {
+        "inner": "Win 98+ / OSX.2+",
+        "details": [
+          "1.8",
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Gecko",
+      "browser": "Mozilla 1.0",
+      "platform": {
+        "inner": "Win 95+ / OSX.1+",
+        "details": [
+          1,
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Gecko",
+      "browser": "Mozilla 1.1",
+      "platform": {
+        "inner": "Win 95+ / OSX.1+",
+        "details": [
+          1.1,
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Gecko",
+      "browser": "Mozilla 1.2",
+      "platform": {
+        "inner": "Win 95+ / OSX.1+",
+        "details": [
+          1.2,
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Gecko",
+      "browser": "Mozilla 1.3",
+      "platform": {
+        "inner": "Win 95+ / OSX.1+",
+        "details": [
+          1.3,
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Gecko",
+      "browser": "Mozilla 1.4",
+      "platform": {
+        "inner": "Win 95+ / OSX.1+",
+        "details": [
+          1.4,
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Gecko",
+      "browser": "Mozilla 1.5",
+      "platform": {
+        "inner": "Win 95+ / OSX.1+",
+        "details": [
+          1.5,
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Gecko",
+      "browser": "Mozilla 1.6",
+      "platform": {
+        "inner": "Win 95+ / OSX.1+",
+        "details": [
+          1.6,
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Gecko",
+      "browser": "Mozilla 1.7",
+      "platform": {
+        "inner": "Win 98+ / OSX.1+",
+        "details": [
+          1.7,
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Gecko",
+      "browser": "Mozilla 1.8",
+      "platform": {
+        "inner": "Win 98+ / OSX.1+",
+        "details": [
+          1.8,
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Gecko",
+      "browser": "Seamonkey 1.1",
+      "platform": {
+        "inner": "Win 98+ / OSX.2+",
+        "details": [
+          "1.8",
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Gecko",
+      "browser": "Epiphany 2.20",
+      "platform": {
+        "inner": "Gnome",
+        "details": [
+          "1.8",
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Webkit",
+      "browser": "Safari 1.2",
+      "platform": {
+        "inner": "OSX.3",
+        "details": [
+          "125.5",
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Webkit",
+      "browser": "Safari 1.3",
+      "platform": {
+        "inner": "OSX.3",
+        "details": [
+          "312.8",
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Webkit",
+      "browser": "Safari 2.0",
+      "platform": {
+        "inner": "OSX.4+",
+        "details": [
+          "419.3",
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Webkit",
+      "browser": "Safari 3.0",
+      "platform": {
+        "inner": "OSX.4+",
+        "details": [
+          "522.1",
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Webkit",
+      "browser": "OmniWeb 5.5",
+      "platform": {
+        "inner": "OSX.4+",
+        "details": [
+          "420",
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Webkit",
+      "browser": "iPod Touch / iPhone",
+      "platform": {
+        "inner": "iPod",
+        "details": [
+          "420.1",
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Webkit",
+      "browser": "S60",
+      "platform": {
+        "inner": "S60",
+        "details": [
+          "413",
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Presto",
+      "browser": "Opera 7.0",
+      "platform": {
+        "inner": "Win 95+ / OSX.1+",
+        "details": [
+          "-",
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Presto",
+      "browser": "Opera 7.5",
+      "platform": {
+        "inner": "Win 95+ / OSX.2+",
+        "details": [
+          "-",
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Presto",
+      "browser": "Opera 8.0",
+      "platform": {
+        "inner": "Win 95+ / OSX.2+",
+        "details": [
+          "-",
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Presto",
+      "browser": "Opera 8.5",
+      "platform": {
+        "inner": "Win 95+ / OSX.2+",
+        "details": [
+          "-",
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Presto",
+      "browser": "Opera 9.0",
+      "platform": {
+        "inner": "Win 95+ / OSX.3+",
+        "details": [
+          "-",
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Presto",
+      "browser": "Opera 9.2",
+      "platform": {
+        "inner": "Win 88+ / OSX.3+",
+        "details": [
+          "-",
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Presto",
+      "browser": "Opera 9.5",
+      "platform": {
+        "inner": "Win 88+ / OSX.3+",
+        "details": [
+          "-",
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Presto",
+      "browser": "Opera for Wii",
+      "platform": {
+        "inner": "Wii",
+        "details": [
+          "-",
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Presto",
+      "browser": "Nokia N800",
+      "platform": {
+        "inner": "N800",
+        "details": [
+          "-",
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Presto",
+      "browser": "Nintendo DS browser",
+      "platform": {
+        "inner": "Nintendo DS",
+        "details": [
+          "8.5",
+          "C/A"
+        ]
+      }
+    },
+    {
+      "engine": "KHTML",
+      "browser": "Konqureror 3.1",
+      "platform": {
+        "inner": "KDE 3.1",
+        "details": [
+          "3.1",
+          "C"
+        ]
+      }
+    },
+    {
+      "engine": "KHTML",
+      "browser": "Konqureror 3.3",
+      "platform": {
+        "inner": "KDE 3.3",
+        "details": [
+          "3.3",
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "KHTML",
+      "browser": "Konqureror 3.5",
+      "platform": {
+        "inner": "KDE 3.5",
+        "details": [
+          "3.5",
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Tasman",
+      "browser": "Internet Explorer 4.5",
+      "platform": {
+        "inner": "Mac OS 8-9",
+        "details": [
+          "-",
+          "X"
+        ]
+      }
+    },
+    {
+      "engine": "Tasman",
+      "browser": "Internet Explorer 5.1",
+      "platform": {
+        "inner": "Mac OS 7.6-9",
+        "details": [
+          "1",
+          "C"
+        ]
+      }
+    },
+    {
+      "engine": "Tasman",
+      "browser": "Internet Explorer 5.2",
+      "platform": {
+        "inner": "Mac OS 8-X",
+        "details": [
+          "1",
+          "C"
+        ]
+      }
+    },
+    {
+      "engine": "Misc",
+      "browser": "NetFront 3.1",
+      "platform": {
+        "inner": "Embedded devices",
+        "details": [
+          "-",
+          "C"
+        ]
+      }
+    },
+    {
+      "engine": "Misc",
+      "browser": "NetFront 3.4",
+      "platform": {
+        "inner": "Embedded devices",
+        "details": [
+          "-",
+          "A"
+        ]
+      }
+    },
+    {
+      "engine": "Misc",
+      "browser": "Dillo 0.8",
+      "platform": {
+        "inner": "Embedded devices",
+        "details": [
+          "-",
+          "X"
+        ]
+      }
+    },
+    {
+      "engine": "Misc",
+      "browser": "Links",
+      "platform": {
+        "inner": "Text only",
+        "details": [
+          "-",
+          "X"
+        ]
+      }
+    },
+    {
+      "engine": "Misc",
+      "browser": "Lynx",
+      "platform": {
+        "inner": "Text only",
+        "details": [
+          "-",
+          "X"
+        ]
+      }
+    },
+    {
+      "engine": "Misc",
+      "browser": "IE Mobile",
+      "platform": {
+        "inner": "Windows Mobile 6",
+        "details": [
+          "-",
+          "C"
+        ]
+      }
+    },
+    {
+      "engine": "Misc",
+      "browser": "PSP browser",
+      "platform": {
+        "inner": "PSP",
+        "details": [
+          "-",
+          "C"
+        ]
+      }
+    },
+    {
+      "engine": "Other browsers",
+      "browser": "All others",
+      "platform": {
+        "inner": "-",
+        "details": [
+          "-",
+          "U"
+        ]
+      }
+    }
+  ],
+  columns: [
+    {
+      data: 'engine'
+    },
+    {
+      data: 'browser'
+    },
+    {
+      data: 'platform.inner'
+    },
+    {
+      data: 'platform.details.0'
+    },
+    {
+      data: 'platform.details.1'
+    }
+  ]
+});
+
+console.log( oTable2 );
+
+//----------------------------------------------
+//notice the new yadcf API for init the filters:
+//----------------------------------------------
+
+yadcf.init(
+  oTable2,
+  [
+    {
+      column_number: 0
+    },
+    {
+      column_number: 1,
+      filter_type: 'text',
+      exclude: true,
+      exclude_label: '!(not)'
+    },
+    {
+      column_number: 2,
+      filter_type: 'auto_complete'
+    },
+    {
+      column_number: 3,
+      filter_type: 'range_number_slider',
+      ignore_char: '-'
+    },
+    {
+      column_number: 4
+    }
+  ]
+);
+
+yadcf.exFilterColumn( oTable2, [
+  [ 0, 'Misc' ]
+] );
+
+yadcf.initMultipleTables(
+  [ oTable, oTable2 ],
+  [ {
+    filter_container_id: 'multi-table-filter',
+    filter_default_label: 'Filter all tables!'
+  } ]
+);

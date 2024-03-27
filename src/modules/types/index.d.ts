@@ -3,7 +3,7 @@
 // Definitions by: Davey Jacobson <https://daveyjake.dev>
 
 // @ts-ignore
-import DataTable, { type Api, type ColumnIdx as ColumnNumber, type ColumnSelector as ColSelector, type Config, type DomSelector } from 'datatables.net';
+import DataTable, { type Api, type number as ColumnNumber, type ColumnSelector as ColSelector, type Config, type DomSelector } from 'datatables.net';
 
 //
 // Column Parameters
@@ -23,9 +23,9 @@ type AppendDataToTableData = 'before' | 'sorted';
  *
  * @since 0.0.1
  *
- * @remarks Use with `select`, `auto_complete`, `text`.
+ * @remarks Use when **filter_type** equals `select`, `auto_complete`, `text`.
  *
- * @typeParam `T` Generic type placeholder.
+ * @typeParam `T` Generic type placeholder for {@link FilterType}.
  */
 type CaseInsensitive<T> = T extends FilterTypeMatchMode ? boolean : never;
 
@@ -36,16 +36,9 @@ type CaseInsensitive<T> = T extends FilterTypeMatchMode ? boolean : never;
  *
  * @remarks Use with `text` filter.
  *
- * @typeParam `T` Generic type placeholder.
+ * @typeParam `T` Generic type placeholder for {@link FilterType}.
  */
 type CheckboxPositionAfter<T> = T extends 'text' ? boolean : never;
-
-/**
- * The number of the column to which the filter will be applied.
- *
- * @since 0.0.1
- */
-type ColumnIdx = ColumnNumber;
 
 /**
  * Helper function to identify `text` present in any cell.
@@ -80,7 +73,7 @@ type ColumnDataType = 'text' | 'html' | 'rendered_html' | 'html5_data_complex';
  * @privateremarks When using **multi_select_custom_func** as {@link FilterType},
  * **filterVal** will hold an array of selected values from the multi select element.
  *
- * @typeParam `T` Generic type placeholder.
+ * @typeParam `T` Generic type placeholder for {@link FilterType}.
  *
  * @param filterVal Value from a select drop-down.
  * @param columnVal Value from the relevant row column.
@@ -121,7 +114,7 @@ type Data = any;
  *
  * @remarks Only use when **filter_type** is set to `select` or `multi_select`.
  *
- * @typeParam `T` Generic type placeholder.
+ * @typeParam `T` Generic type placeholder for {@link FilterType}.
  */
 type DataAsIs<T> = T extends FilterTypeDataAsIs ? boolean : never;
 
@@ -163,7 +156,7 @@ type DatepickerType = 'jquery-ui' | 'bootstrap-datetimepicker' | 'bootstrap-date
  *
  * @remarks Use with `text`, `select`, and `number_range`.
  *
- * @typeParam `T` Generic type placeholder.
+ * @typeParam `T` Generic type placeholder for {@link FilterType}.
  */
 type ExcludeCheckbox<T> = T extends FilterTypeExclude ? boolean : never;
 
@@ -196,6 +189,13 @@ type ExtTriggeredCheckboxesFunction = ( event: Event ) => any;
 type ExtTriggeredCheckboxesButtonStyleClass = string;
 
 /**
+ * The complete `filter_type` values.
+ *
+ * @since 0.0.1
+ */
+type Filter = 'select' | 'multi_select' | 'auto_complete' | 'text' | 'date' | 'range_number' | 'range_number_slider' | 'range_date' | 'custom_func' | 'multi_select_custom_func' | 'date_custom_func';
+
+/**
  * Use in lieu of placing filter in column header.
  *
  * @since 0.0.1
@@ -218,7 +218,7 @@ type FilterContainerSelector = string;
  *
  * @since 0.0.1
  *
- * @typeParam `T` Generic type placeholder.
+ * @typeParam `T` Generic type placeholder for {@link FilterType}.
  */
 type FilterDefaultLabel<T> = T extends 'range_number' ? Array<string> : string;
 
@@ -238,9 +238,9 @@ type FilterDelay<T> = T extends FilterTypeFilterDelay ? number : never;
  *
  * @remarks Only use with `select`, `auto_complete`, `text`.
  *
- * @typeParam `T` Generic type placeholder.
+ * @typeParam `T` Generic type placeholder for {@link FilterType}.
  */
-type FilterMatchMode<T> = T extends FilterTypeMatchMode ? 'contains' | 'exact' | 'startsWith' | 'regex' : never;
+type FilterMatchMode<T = 'select'> = T extends FilterTypeMatchMode ? 'contains' | 'exact' | 'startsWith' | 'regex' : never;
 
 /**
  * Parameter to pass to jQuery Autocomplete, jQuery Slider and/or Bootstrap Datetimepicker.
@@ -257,6 +257,13 @@ type FilterPluginOptions = Record<string, any>;
  * @remarks Set to `false` to hide from that specific column filter.
  */
 type FilterResetButtonText = false | string;
+
+/**
+ * The complete filter types.
+ *
+ * @since 0.0.1
+ */
+type FilterType = FilterTypeCustomFunc | FilterTypeDataAsIs | FilterTypeHTMLDataSelector | FilterTypeRemaining;
 
 /**
  * The `custom_func` setting is required when `filter_type` is one of these.
@@ -284,7 +291,8 @@ type FilterTypeDataAsIs = 'select' | 'multi_select';
  *
  * @since 0.0.1
  */
-type FilterTypeExclude = Exclude<FilterTypeRemaining, 'date' | 'range_date'> | Extract<FilterTypeDataAsIs, 'select'>;
+// type FilterTypeExclude = Exclude<FilterTypeRemaining, 'date' | 'range_date'> | Extract<FilterTypeDataAsIs, 'select'>;
+type FilterTypeExclude = 'range_number' | 'select' | 'text';
 
 /**
  * The `filter_delay` setting is only supported by...
@@ -296,7 +304,8 @@ type FilterTypeExclude = Exclude<FilterTypeRemaining, 'date' | 'range_date'> | E
  *
  * @since 0.0.1
  */
-type FilterTypeFilterDelay = Exclude<FilterTypeRemaining, 'date'> | Extract<FilterTypeHTMLDataSelector, 'range_number_slider'>;
+// type FilterTypeFilterDelay = Exclude<FilterTypeRemaining, 'date'> | Extract<FilterTypeHTMLDataSelector, 'range_number_slider'>;
+type FilterTypeFilterDelay = 'text' | 'range_date' | 'range_number' | 'range_number_slider';
 
 /**
  * The `html_data_selector` setting is only supported when `filter_type` is...
@@ -307,7 +316,8 @@ type FilterTypeFilterDelay = Exclude<FilterTypeRemaining, 'date'> | Extract<Filt
  *
  * @since 0.0.1
  */
-type FilterTypeHTMLDataSelector = 'auto_complete' | 'range_number_slider' | Exclude<FilterTypeDataAsIs, 'multi_select'>;
+// type FilterTypeHTMLDataSelector = 'auto_complete' | 'range_number_slider' | Exclude<FilterTypeDataAsIs, 'multi_select'>;
+type FilterTypeHTMLDataSelector = 'auto_complete' | 'range_number_slider' | 'select';
 
 /**
  * The `filter_match_mode` option only works when `filter_type` is set to...
@@ -318,9 +328,10 @@ type FilterTypeHTMLDataSelector = 'auto_complete' | 'range_number_slider' | Excl
  *
  * @since 0.0.1
  *
- * @typeParam `T` Generic type placeholder.
+ * @typeParam `T` Generic type placeholder for {@link FilterType}.
  */
-type FilterTypeMatchMode = Exclude<FilterTypeHTMLDataSelector, 'range_number_slider'> | Extract<FilterTypeRemaining, 'text'>;
+// type FilterTypeMatchMode = Exclude<FilterTypeHTMLDataSelector, 'range_number_slider'> | Extract<FilterTypeRemaining, 'text'>;
+type FilterTypeMatchMode = 'auto_complete' | 'select' | 'text';
 
 /**
  * The `filter_type` property values for use with the `initMultipleTables` method:
@@ -331,7 +342,8 @@ type FilterTypeMatchMode = Exclude<FilterTypeHTMLDataSelector, 'range_number_sli
  *
  * @since 0.0.1
  */
-type FilterTypeMulti = Exclude<FilterTypeMatchMode, 'auto_complete'> | Extract<FilterTypeDataAsIs, 'multi_select'>;
+// type FilterTypeMulti = Exclude<FilterTypeMatchMode, 'auto_complete'> | Extract<FilterTypeDataAsIs, 'multi_select'>;
+type FilterTypeMulti = 'text' | 'select' | 'multi_select';
 
 /**
  * The `omit_default_label` depends on the following `filter_type` values:
@@ -343,7 +355,8 @@ type FilterTypeMulti = Exclude<FilterTypeMatchMode, 'auto_complete'> | Extract<F
  *
  * @since 0.0.1
  */
-type FilterTypeOmitDefaultLabel = FilterTypeDataAsIs | Exclude<FilterTypeCustomFunc, 'date_custom_func'>;
+// type FilterTypeOmitDefaultLabel = FilterTypeDataAsIs | Exclude<FilterTypeCustomFunc, 'date_custom_func'>;
+type FilterTypeOmitDefaultLabel = 'select' | 'multi_select' | 'custom_func' | 'multi_select_custom_func';
 
 /**
  * Range filters:
@@ -354,7 +367,8 @@ type FilterTypeOmitDefaultLabel = FilterTypeDataAsIs | Exclude<FilterTypeCustomF
  *
  * @since 0.0.1
  */
-type FilterTypeRange = Exclude<FilterTypeFilterDelay, 'text'>;
+// type FilterTypeRange = Exclude<FilterTypeFilterDelay, 'text'>;
+type FilterTypeRange = 'range_date' | 'range_number' | 'range_number_slider';
 
 /**
  * The type of the filter to be used in the column.
@@ -377,14 +391,8 @@ type FilterTypeRemaining = 'text' | 'date' | 'range_number' | 'range_date';
  *
  * @since 0.0.1
  */
-type FilterTypeStyleClass = FilterTypeOmitDefaultLabel | Exclude<FilterTypeRemaining, 'date'> | Extract<FilterTypeHTMLDataSelector, 'range_number_slider'>;
-
-/**
- * The complete filter types.
- *
- * @since 0.0.1
- */
-type FilterType = FilterTypeCustomFunc | FilterTypeDataAsIs | FilterTypeHTMLDataSelector | FilterTypeRemaining;
+// type FilterTypeStyleClass = FilterTypeOmitDefaultLabel |& Exclude<FilterTypeRemaining, 'date'> |& Extract<FilterTypeHTMLDataSelector, 'range_number_slider'>;
+type FilterTypeStyleClass = 'select' | 'multi_select' | 'text' | 'custom_func' | 'multi_select_custom_func' | 'range_number' | 'range_number_slider' | 'range_date';
 
 /**
  * Allows for advanced text value selection within HTML inside table cell (ex: `li:eq(1)`).
@@ -394,7 +402,7 @@ type FilterType = FilterTypeCustomFunc | FilterTypeDataAsIs | FilterTypeHTMLData
  * @remarks Selector string is searched from the first element inside the table cell.
  * Only use with `range_number_slider`, `select`, `auto_complete`.
  *
- * @typeParam `T` Generic type placeholder.
+ * @typeParam `T` Generic type placeholder for {@link FilterType}.
  */
 type HTMLDataSelector<T> = T extends FilterTypeHTMLDataSelector ? string : never;
 
@@ -462,7 +470,7 @@ type NullLabel = string;
  *
  * @remarks Only use with 'select', 'multi_select', 'custom_func', 'multi_select_custom_func'.
  *
- * @typeParam `T` Generic type placeholder.
+ * @typeParam `T` Generic type placeholder for {@link FilterType}.
  */
 type OmitDefaultLabel<T> = T extends FilterTypeOmitDefaultLabel ? boolean : never;
 
@@ -473,7 +481,7 @@ type OmitDefaultLabel<T> = T extends FilterTypeOmitDefaultLabel ? boolean : neve
  *
  * @remarks Only use with `text` filter.
  *
- * @typeParam `T` Generic type placeholder.
+ * @typeParam `T` Generic type placeholder for {@link FilterType}.
  */
 type RegexCheckBox<T> = T extends 'text' ? boolean : never;
 
@@ -500,7 +508,7 @@ type SelectNullOption = string;
  *
  * @remarks When using `custom_select`, call `initSelectPluginCustomTriggers` before calling yadcf constructor / init.
  */
-type SelectType = 'chosen' | 'select2' | 'custom_select' | 'jquery-ui' | 'bootstrap-datetimepicker';
+type SelectType = 'chosen' | 'select2' | 'jquery-ui' | 'bootstrap-datetimepicker' | 'custom_select';
 
 /**
  * Parameter to pass as is to `Chosen/Select` plugin.
@@ -545,7 +553,7 @@ type SortOrder = 'asc' | 'desc';
  *
  * @remarks Only use with `range_number`, `range_number_slider`, or `range_date`.
  *
- * @typeParam `T` Generic type placeholder.
+ * @typeParam `T` Generic type placeholder for {@link FilterType}.
  */
 type RangeDataType<T> = T extends Exclude<FilterTypeFilterDelay, 'text'> ? 'single' | 'range' | 'delimeter' : never;
 
@@ -573,7 +581,7 @@ type ResetButtonStyleClass = string;
  * @remarks Use with `select`, `multi_select`, `text`, `custom_func`, `multi_select_custom_func`, `range_number`,
  * `range_number_slider`, `range_date`.
  *
- * @typeParam `T` Generic type placeholder.
+ * @typeParam `T` Generic type placeholder for {@link FilterType}.
  */
 type StyleClass<T> = T extends FilterTypeStyleClass ? string : never;
 
@@ -630,14 +638,16 @@ type OnInitComplete = ( args?: any ) => any;
  *
  * @since 0.0.1
  */
-type ISO2Locales = 'af' | 'ar-DZ' | 'ar'    | 'az'    | 'be'    | 'bg'    | 'bs' | 'ca' | 'cs' | 'cy-GB' |
-                   'da' | 'de'    | 'el'    | 'en-AU' | 'en-GB' | 'en-NZ' | 'eo' | 'es' | 'et' | 'eu'    |
-                   'fa' | 'fi'    | 'fo'    | 'fr-CA' | 'fr-CH' | 'fr'    | 'gl' | 'he' | 'hi' | 'hr'    |
-                   'hu' | 'hy'    | 'id'    | 'is'    | 'it-CH' | 'it'    | 'ja' | 'ka' | 'kk' | 'km'    |
-                   'ko' | 'ky'    | 'lb'    | 'lt'    | 'lv'    | 'mk'    | 'ml' | 'ms' | 'nb' | 'nl-BE' |
-                   'nl' | 'nn'    | 'no'    | 'pl'    | 'pt-BR' | 'pt'    | 'rm' | 'ro' | 'ru' | 'sk'    |
-                   'sl' | 'sq'    | 'sr-SR' | 'sr'    | 'sv'    | 'ta'    | 'th' | 'tj' | 'tr' | 'uk'    |
-                   'vi' | 'zh-CN' | 'zh-HK' | 'zh-TW';
+type ISO2Locales = (
+  'af' | 'ar-DZ' | 'ar'    | 'az'    | 'be'    | 'bg'    | 'bs' | 'ca' | 'cs' | 'cy-GB' |
+  'da' | 'de'    | 'el'    | 'en-AU' | 'en-GB' | 'en-NZ' | 'eo' | 'es' | 'et' | 'eu'    |
+  'fa' | 'fi'    | 'fo'    | 'fr-CA' | 'fr-CH' | 'fr'    | 'gl' | 'he' | 'hi' | 'hr'    |
+  'hu' | 'hy'    | 'id'    | 'is'    | 'it-CH' | 'it'    | 'ja' | 'ka' | 'kk' | 'km'    |
+  'ko' | 'ky'    | 'lb'    | 'lt'    | 'lv'    | 'mk'    | 'ml' | 'ms' | 'nb' | 'nl-BE' |
+  'nl' | 'nn'    | 'no'    | 'pl'    | 'pt-BR' | 'pt'    | 'rm' | 'ro' | 'ru' | 'sk'    |
+  'sl' | 'sq'    | 'sr-SR' | 'sr'    | 'sv'    | 'ta'    | 'th' | 'tj' | 'tr' | 'uk'    |
+  'vi' | 'zh-CN' | 'zh-HK' | 'zh-TW'
+);
 
 /**
  * Load localized jQuery UI `datepicker`.
@@ -701,35 +711,36 @@ type NotNullApiCallValue = string;
  * @property `sort_order`                                         — See {@link SortOrder}.
  * @property `style_class`                                        — See {@link StyleClass}.
  */
-interface DefaultOptions<F = FilterType> {
-  case_insensitive?: CaseInsensitive<DefaultOptions['filter_type']>;
-  checkbox_position_after?: CheckboxPositionAfter<DefaultOptions['filter_type']>;
-  column_data_type?: ColumnDataType;
-  custom_range_delimiter?: CustomRangeDelimeter;
-  date_format?: DateFormat;
-  datepicker_type?: DatepickerType;
-  enable_auto_complete?: boolean;
-  exclude_label?: ExcludeLabel;
-  externally_triggered_checkboxes_button_style_class?: ExtTriggeredCheckboxesButtonStyleClass;
+interface DefaultOptions<F = FilterType | FilterTypeMulti> {
+  case_insensitive: CaseInsensitive<F>;
+  checkbox_position_after: CheckboxPositionAfter<F>;
+  column_data_type: ColumnDataType;
+  custom_range_delimiter: CustomRangeDelimeter;
+  date_format: DateFormat;
+  datepicker_type: DatepickerType;
+  enable_auto_complete: boolean;
+  exclude_label: ExcludeLabel;
+  externally_triggered: boolean;
+  externally_triggered_checkboxes_button_style_class: ExtTriggeredCheckboxesButtonStyleClass;
   externally_triggered_checkboxes_function?: ExtTriggeredCheckboxesFunction;
-  externally_triggered_checkboxes_text?: ExtTriggeredCheckboxesText;
-  filter_match_mode?: FilterMatchMode<DefaultOptions['filter_type']>;
-  filter_type?: F;
-  html_data_type?: HTMLDataType;
+  externally_triggered_checkboxes_text: ExtTriggeredCheckboxesText;
+  filter_match_mode: FilterMatchMode<F>;
+  filter_type: F;
+  html_data_type: HTMLDataType;
   ignore_char?: IgnoreChar;
-  language?: Language;
-  null_label?: NullLabel;
-  omit_default_label?: OmitDefaultLabel<DefaultOptions['filter_type']>;
-  range_data_type?: RangeDataType<DefaultOptions['filter_type']>;
-  range_data_type_delim?: RangeDataTypeDelimeter<DefaultOptions['filter_type']>;
-  regex_label?: RegexLabel;
-  reset_button_style_class?: ResetButtonStyleClass | false;
-  select_null_option?: SelectNullOption;
+  language: Language;
+  null_label: NullLabel;
+  omit_default_label: OmitDefaultLabel<F>;
+  range_data_type: RangeDataType<F>;
+  range_data_type_delim: RangeDataTypeDelimeter<F>;
+  regex_label: RegexLabel;
+  reset_button_style_class: ResetButtonStyleClass | false;
+  select_null_option: SelectNullOption;
   select_type?: SelectType;
-  select_type_options?: SelectTypeOptions<DefaultOptions['select_type']>;
-  sort_as?: SortAs;
-  sort_order?: SortOrder;
-  style_class?: StyleClass<DefaultOptions['filter_type']>;
+  select_type_options: SelectTypeOptions<SelectType>;
+  sort_as: SortAs;
+  sort_order: SortOrder;
+  style_class: StyleClass<F>;
 }
 
 /**
@@ -758,28 +769,28 @@ interface DefaultOptions<F = FilterType> {
  * @property `sort_as_custom_func`
  * @property `text_data_delimiter`
  */
-interface MissingDefaults<F = FilterType> extends DefaultOptions<F> {
+interface MissingDefaults<F = FilterType | FilterTypeMulti> extends DefaultOptions<F> {
   append_data_to_table_data?: AppendDataToTableData;
   col_filter_array?: Record<string, any>;
   column_data_render?: ColumnDataRender;
   column_number_render?: ColumnNumberRender;
   column_number_str?: string;
-  column_number_data?: ColumnIdx;
-  custom_func?: CustomFunc<DefaultOptions['filter_type']>;
+  column_number_data?: number;
+  custom_func?: CustomFunc<F>;
   data?: Data;
-  data_as_is?: DataAsIs<DefaultOptions['filter_type']>;
-  exclude?: ExcludeCheckbox<DefaultOptions['filter_type']>;
+  data_as_is?: DataAsIs<F>;
+  exclude?: ExcludeCheckbox<F>;
   filter_container_id?: FilterContainerID;
   filter_container_selector?: FilterContainerSelector;
-  filter_default_label?: FilterDefaultLabel<DefaultOptions['filter_type']>;
-  filter_delay?: FilterDelay<DefaultOptions['filter_type']>;
+  filter_default_label?: FilterDefaultLabel<F>;
+  filter_delay?: FilterDelay<F>;
   filter_plugin_options?: FilterPluginOptions;
   filter_reset_button_text?: FilterResetButtonText;
-  html_data_selector?: HTMLDataSelector<DefaultOptions['filter_type']>;
+  html_data_selector?: HTMLDataSelector<F>;
   html5_data?: HTML5Data;
   moment_date_format?: DateFormatMoment;
-  null_check_box?: NullCheckBox<DefaultOptions['filter_type']>;
-  regex_check_box?: RegexCheckBox<DefaultOptions['filter_type']>;
+  null_check_box?: NullCheckBox<F>;
+  regex_check_box?: RegexCheckBox<F>;
   sort_as_custom_func?: SortAsCustomFunc;
   text_data_delimiter?: DataTextDelimeter;
 }
@@ -789,7 +800,7 @@ interface MissingDefaults<F = FilterType> extends DefaultOptions<F> {
  *
  * @since 0.0.1
  */
-type ColNum = { column_number: ColumnIdx };
+type ColNum = { column_number: number };
 type ColSel = { column_selector: string };
 type ColumnParameters<T extends number | string> = T extends number ? ColNum : ColSel;
 
@@ -809,7 +820,7 @@ type ColumnParameters<T extends number | string> = T extends number ? ColNum : C
  * @property `null_api_call_value`         — See {@link NullApiCallValue} for details.
  * @property `not_null_api_call_value`     — See {@link NotNullApiCallValue} for details.
  */
-interface TableParameters<F = FilterType> extends MissingDefaults<F> {
+interface TableParameters<F = FilterType | FilterTypeMulti> extends MissingDefaults<F> {
   externally_triggered?: ExternallyTriggered;
   cumulative_filtering?: CumulativeFiltering;
   filters_position?: FiltersPosition;
@@ -832,7 +843,7 @@ interface TableParameters<F = FilterType> extends MissingDefaults<F> {
  *
  * @property `filter_container_id`
  */
-interface MultiParams<F = FilterType> extends TableParameters<F> {
+interface MultiParams<F = FilterType | FilterTypeMulti> extends TableParameters<F> {
   filter_container_id: string;
 }
 
@@ -841,7 +852,7 @@ interface MultiParams<F = FilterType> extends TableParameters<F> {
  *
  * @since 0.0.1
  */
-type AllParameters<F = FilterType> = ColumnParameters<number> & MultiParams<F>;
+type AllParameters<F = FilterType | FilterTypeMulti> = ColumnParameters<number> & MultiParams<F>;
 
 /**
  * Essentials for the `makeElement` method.
@@ -849,11 +860,11 @@ type AllParameters<F = FilterType> = ColumnParameters<number> & MultiParams<F>;
  * @since 0.0.1
  */
 interface MakeElementAttrs {
-  onchange?: ( evt: Event | JQuery.Event ) => void;
-  onclick?: ( evt: Event | JQuery.Event ) => void;
-  onkeydown?: ( evt: Event | JQuery.Event ) => void;
-  onkeyup?: ( evt: Event | JQuery.Event ) => void;
-  onmousedown?: ( evt: Event | JQuery.Event ) => void;
+  onchange?: ( evt: GlobalEventHandlersEventMap['change'] ) => void;
+  onclick?: ( evt: GlobalEventHandlersEventMap['click'] ) => void;
+  onkeydown?: ( evt: GlobalEventHandlersEventMap['keydown'] ) => void;
+  onkeyup?: ( evt: GlobalEventHandlersEventMap['keyup'] ) => void;
+  onmousedown?: ( evt: GlobalEventHandlersEventMap['mousedown'] ) => void;
   id?: string;
   class?: string;
   multiple?: boolean;
@@ -862,7 +873,7 @@ interface MakeElementAttrs {
   title?: string;
   type?: string;
   html?: any;
-  filter_match_mode?: FMM;
+  filter_match_mode?: AllParameters['filter_match_mode'];
   'data-placeholder'?: string | Array<string>;
 }
 
@@ -874,53 +885,21 @@ interface MakeElementAttrs {
 type ExFilterColRange<T = number | string> = { from: T; to: T; }
 type ExFilterColArgs = [ number, (string | ExFilterColRange | string[]) ];
 
-// Aliases for commonly used types.
-type APFT               = AllParameters;
-type APMT               = AllParameters<FilterTypeMulti>;
-type FDL                = APFT['filter_default_label'];
-type FMM                = APFT['filter_match_mode'];
+/**
+ * jQuery-based callback function.
+ *
+ * @since 0.0.1
+ */
 type JQueryCallbackFunc = ( $filterSelector: JQuery<HTMLElement> ) => any;
 
-declare global {
-  interface JQuery<TElement = HTMLElement> {
-    chosen( select_type_options: Chosen.Options ): any;
-    data( arg: string ): number | string;
-    find( arg: string ): JQuery<HTMLElement>;
-    hasClass( arg: string ): boolean;
-    next(): JQuery<HTMLElement>;
-    off( events: string, handler: any ): any;
-    on( events: string, handler: (( e: JQuery.Event ) => any) ): any;
-    on( events: string, selector: string, handler: (( e: JQuery.Event ) => any) ): any;
-    parent(): JQuery<HTMLElement>;
-    prev(): JQuery<HTMLElement>;
-    prop( property: string, value?: any ): any;
-    slider( target: string, index: number, value: any ): any;
-    trigger( event: string ): any;
-    val( val?: any ): any;
-    fn: {
-      yadcf( options_arg: ArrayObjects, params: any ): ThisType<YADCF>;
-    }
-  }
+/**
+ * Primary DataTables instance.
+ *
+ * @since 0.0.1
+ */
+export type DataTableInstance = DomSelector & DataTable<any> & Api<any> & Api<Object>;
 
-  namespace JQueryUI {
-    interface AutocompleteEvent {
-      (event: JQuery.Event, ui: AutocompleteUIParams): void;
-    }
-  }
-}
-
-interface ColumnNumberObject {
-  column_number_str: string;
-  column_number: ColumnIdx | Array<ColumnIdx | string>;
-}
-
-declare type ArrayObjects   = Array<{ [ key: string ]: any }>;
-declare type ColumnObj      = Partial<APFT>;
-
-declare type DataTableInstance = InstanceType<DataTable<any>>;
-declare type DataTableSettings = ReturnType<DataTableInstance['settings']>;
-
-declare interface YADCF {
+export interface YADCF {
   /**
    * Primary initialization method.
    *
@@ -931,25 +910,17 @@ declare interface YADCF {
    * @param options_arg Array of objects found in {@link ColumnParameters}.
    * @param params      Optional. Global {@link TableParameters}.
    */
-  init( oTable: Api<any>, options_arg: Array<APFT | APMT>, params: any ): void;
+  init( oTable: DataTableInstance, options_arg: Array<AllParameters<FilterType> | AllParameters<FilterTypeMulti>>, params: any ): void;
 
   autocompleteKeyUP( table_selector_jq_friendly: string, event: Event ): void;
 
-  /**
-   * Reset all filters.
-   *
-   * @since 0.0.1
-   *
-   * @param table_arg DataTable variable instance.
-   * @param noRedraw  True if you don't want your table reloaded after resetting filter. Otherwise false.
-   */
   dateKeyUP( table_selector_jq_friendly: string, date_format: DateFormat, event: Event ): void;
 
   dateSelectSingle( pDate: JQuery.TriggeredEvent & Date, pEvent?: JQuery.TriggeredEvent, clear?: 'clear' | 0 | 1 ): void;
-  doFilter( arg: ('clear' | 'exclude') | { value: any }, table_selector_jq_friendly: string, column_number: ColumnIdx | string, filter_match_mode?: FMM ): void;
-  doFilterAutocomplete( arg: 'clear' | Record<string, any>, table_selector_jq_friendly: string, column_number: ColumnIdx, filter_match_mode: FilterMatchMode<DefaultOptions['filter_type']> ): void;
-  doFilterCustomDateFunc( arg: 'clear' | Record<string, any>, table_selector_jq_friendly: string , column_number: ColumnIdx ): void;
-  doFilterMultiSelect( arg: string, table_selector_jq_friendly: string, column_number: ColumnIdx, filter_match_mode: FilterMatchMode<DefaultOptions['filter_type']> ): void;
+  doFilter( arg: ('clear' | 'exclude') | { value: any }, table_selector_jq_friendly: string, column_number: number | string, filter_match_mode?: FilterMatchMode<DefaultOptions['filter_type']> ): void;
+  doFilterAutocomplete( arg: 'clear' | Record<string, any>, table_selector_jq_friendly: string, column_number: number, filter_match_mode: FilterMatchMode<DefaultOptions['filter_type']> ): void;
+  doFilterCustomDateFunc( arg: 'clear' | Record<string, any>, table_selector_jq_friendly: string , column_number: number ): void;
+  doFilterMultiSelect( arg: string, table_selector_jq_friendly: string, column_number: number, filter_match_mode: FilterMatchMode<DefaultOptions['filter_type']> ): void;
   doFilterMultiTables( tablesSelectors: string, event: JQuery.Event, column_number_str: string, clear?: boolean ): void;
   doFilterMultiTablesMultiSelect( tablesSelectors: string, event: Event, column_number_str: string, clear?: 'clear' ): void;
   eventTargetFixUp( pEvent: Event ): void;
@@ -965,7 +936,7 @@ declare interface YADCF {
    * @param col_filter_arr Array of tuples contain column index and what to filter by.
    * @param ajaxSource     True if using AJAX-sourced data. False if not.
    */
-  exFilterColumn( table_arg: Api<any>, col_filter_arr: Array<ExFilterColArgs>, ajaxSource: boolean ): void;
+  exFilterColumn( table_arg: DataTableInstance, col_filter_arr: Array<ExFilterColArgs>, ajaxSource: boolean ): void;
 
   /**
    * Trigger all available filters.
@@ -986,7 +957,7 @@ declare interface YADCF {
    * @param table_arg     DataTable variable instance.
    * @param column_number Column index number.
    */
-  exGetColumnFilterVal<T = FilterTypeRange | 'multi_select'>( table_arg: DataTable<any>, column_number: ColumnIdx ): T extends FilterTypeRange ? object : T extends 'multi_select' ? Array<string> : string;
+  exGetColumnFilterVal<T = FilterTypeRange | 'multi_select'>( table_arg: DataTable<any>, column_number: number ): T extends FilterTypeRange ? object : T extends 'multi_select' ? Array<string> : string;
 
   /**
    * Update column filter with new data.
@@ -997,7 +968,7 @@ declare interface YADCF {
    * @param column_num  Column index number.
    * @param updatedData Same-structured data to use as update.
    */
-  exRefreshColumnFilterWithDataProp( table_arg: Api<any>, col_num: ColumnIdx, updatedData: Record<string, any> ): void;
+  exRefreshColumnFilterWithDataProp( table_arg: DataTableInstance, col_num: number, updatedData: Record<string, any> ): void;
 
   /**
    * Reset all filters.
@@ -1008,7 +979,7 @@ declare interface YADCF {
    * @param noRedraw  True if you don't your table reloaded after resetting filter. Otherwise false.
    * @param columns   Array of column numbers starting at 1.
    */
-  exResetAllFilters( table_arg: Api<any>, noRedraw: boolean, columns: Array<ColumnIdx> ): void;
+  exResetAllFilters( table_arg: DataTableInstance, noRedraw: boolean, columns: Array<number> ): void;
 
   /**
    * Reset specific filters.
@@ -1019,12 +990,12 @@ declare interface YADCF {
    * @param columns   Column index numbers to target.
    * @param noRedraw  True if you don't your table reloaded after resetting filter. Otherwise false.
    */
-  exResetFilters( table_arg: Api<any>, columns: Array<number | string>, noRedraw: boolean ): void;
+  exResetFilters( table_arg: DataTableInstance, columns: Array<number | string>, noRedraw: boolean ): void;
 
   generateTableSelectorJQFriendlyNew( tmpStr: string ): string;
   generateTableSelectorJQFriendly2( obj: Api<any> ): void;
   getOptions<T = AllParameters>( selector: any ): Record<keyof T, T[ keyof T ]>;
-  initAndBindTable( oTable: Config, table_selector: string, index: number, pTableDT?: Config ): void;
+  initAndBindTable( oTable: DataTableInstance, table_selector: string, index: number, pTableDT?: DataTableInstance ): void;
 
   /**
    * Initialize global defaults for all `yadcf` instances.
@@ -1049,7 +1020,7 @@ declare interface YADCF {
    * @param tablesArray
    * @param filtersOptions
    */
-  initMultipleTables( tablesArray: Array<Api<any>>, filtersOptions: Array<APMT> ): void;
+  initMultipleTables( tablesArray: Array<DataTable<any>>, filtersOptions: Array<AllParameters<FilterTypeMulti>> ): void;
 
   /**
    * Creates a filter that will affect multiple tables and/or multiple columns in multiple tables.
@@ -1059,7 +1030,7 @@ declare interface YADCF {
    * @param table          DataTable instance.
    * @param filtersOptions Array of {@link AllParameters}.
    */
-  initMultipleColumns( table: Api<any>, filtersOptions: Array<APMT> ): void;
+  initMultipleColumns( table: DataTable<any>, filtersOptions: Array<AllParameters<FilterTypeMulti>> ): void;
 
   /**
    * Callback function to be fired after `dt.xhr` event finishes.
@@ -1081,14 +1052,14 @@ declare interface YADCF {
    */
   initSelectPluginCustomTriggers( initFunc: JQueryCallbackFunc, refreshFunc: JQueryCallbackFunc, destroyFunc: JQueryCallbackFunc ): void;
 
-  nullChecked( ev: Event, table_selector_jq_friendly: string, column_number: ColumnIdx ): void;
+  nullChecked( ev: Event, table_selector_jq_friendly: string, column_number: number ): void;
   preventDefaultForEnter( evt: Event ): void;
-  rangeClear( table_selector_jq_friendly: string, event: Event, column_number: ColumnIdx ): void;
+  rangeClear( table_selector_jq_friendly: string, event: Event, column_number: number ): void;
   rangeDateKeyUP( table_selector_jq_friendly: string, date_format: DateFormat, event: Event ): void;
   rangeNumberKeyUP( table_selector_jq_friendly: string, event: JQuery.Event ): void;
   rangeNumberSliderClear( table_selector_jq_friendly: string, event: Event ): void;
-  setOptions( selector_arg: string, options_arg: ArrayObjects, params: any, table?: Api<any> ): void;
+  setOptions( selector_arg: string, options_arg: Array<Record<string, any>>, params: any, table?: DataTableInstance ): void;
   stopPropagation( evt: Event ): void;
-  textKeyUP( ev: Event, table_selector_jq_friendly: string, column_number: ColumnIdx, clear?: 'clear' ): void;
+  textKeyUP( ev: Event, table_selector_jq_friendly: string, column_number: number, clear?: 'clear' ): void;
   textKeyUpMultiTables( tablesSelectors: string, event: JQuery.Event, column_number_str: string, clear?: string ): void;
 }

@@ -2323,6 +2323,7 @@ declare interface DataTablesStaticExt extends DTStaticExt {
 declare interface Config extends Config2 {
     aanFeatures: Record<'l' | 'f' | 't' | 'i' | 'p' | 'r', Array<number> | undefined>;
     fnSettings(): DataTables.SettingsLegacy;
+    oFeatures: any;
     oInstance: Api<any> & DataTables.SettingsLegacy & DT & { selector: DomSelector; };
     oPreviousSearch: { sSearch: string; };
     oSavedState: { ColReorder: number; };
